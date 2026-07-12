@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — Mandrágora</title>
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+
+<style>
+:root {
+  --c-bg: #f8f4ed; --c-cream: #1a1512; --c-gold: #b8892e;
+  --f-display: 'Cormorant Garamond', Georgia, serif;
+  --f-body: 'Jost', system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--c-bg); color: var(--c-cream); font-family: var(--f-body); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+.checkout { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 40px rgba(0,0,0,0.1); max-width: 500px; width: 100%; margin: 1rem; }
+.checkout h1 { font-family: var(--f-display); font-size: 2rem; margin-bottom: 1.5rem; text-align: center; }
+.checkout label { display: block; font-size: 0.85rem; margin-bottom: 0.3rem; font-weight: 500; }
+.checkout input, .checkout select { width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; font-size: 1rem; }
+.checkout button { width: 100%; padding: 1rem; background: var(--c-gold); color: #fff; border: none; border-radius: 4px; font-family: inherit; font-size: 1rem; cursor: pointer; transition: opacity 0.3s; }
+.checkout button:hover { opacity: 0.9; }
+.checkout button:disabled { opacity: 0.5; cursor: not-allowed; }
+#status { text-align: center; margin-top: 1rem; font-size: 0.9rem; }
+.back { display: block; text-align: center; margin-top: 1rem; color: var(--c-gold); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="checkout">
+  <h1>Mandragora</h1>
+  <form id="checkout-form">
+    <label for="concepto">Concepto</label>
+    <select id="concepto" required>
+      <option value="">Seleccioná...</option>
+      <option value="Inscripción a taller" data-price="2500">Inscripción a taller — $2.500</option>
+      <option value="Reserva de sala" data-price="5000">Reserva de sala — $5.000</option>
+      <option value="Entrada a función" data-price="400">Entrada a función — $400</option>
+      <option value="Donación" data-price="500">Donación — $500</option>
+    </select>
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="tu@email.com" required>
+    <button type="submit" id="btn-pagar">Pagar con MercadoPago</button>
+  </form>
+  <div id="status"></div>
+  <a href="index.html" class="back">← Volver al inicio</a>
+</div>
+
+<script>
+const API = '/.netlify/functions/crear-preferencia';
+
+document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('btn-pagar');
+  const status = document.getElementById('status');
+  btn.disabled = true;
+  status.textContent = 'Generando pago...';
+
+  const select = document.getElementById('concepto');
+  const option = select.options[select.selectedIndex];
+  const title = option.value;
+  const price = option.dataset.price;
+  const email = document.getElementById('email').value;
+
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, price: Number(price), quantity: 1, email }),
+    });
+    const data = await res.json();
+
+    if (data.id) {
+      const mp = new MercadoPago('TEST-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', { locale: 'es-UY' });
+      mp.checkout({ preference: { id: data.id }, render: { container: '.checkout', label: 'Pagar' } });
+      document.getElementById('checkout-form').style.display = 'none';
+    } else {
+      status.textContent = 'Error: ' + (data.error || 'No se pudo crear el pago');
+      btn.disabled = false;
+    }
+  } catch (err) {
+    status.textContent = 'Error de conexión';
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
