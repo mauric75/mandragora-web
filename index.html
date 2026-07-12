@@ -381,9 +381,9 @@ h1, h2, h3, h4, h5 {
   .scene__photo img { object-position: 42% 40%; }
   .scene__photo-fade {
     background: linear-gradient(0deg,
-      rgba(5,7,10,1) 0%,
-      rgba(5,7,10,0.72) 12%,
-      rgba(5,7,10,0.14) 38%,
+      var(--c-bg) 0%,
+      color-mix(in srgb, var(--c-bg) 72%, transparent) 12%,
+      color-mix(in srgb, var(--c-bg) 14%, transparent) 38%,
       transparent 62%
     );
   }
@@ -391,6 +391,18 @@ h1, h2, h3, h4, h5 {
   .hero__content { justify-content: flex-end; padding-bottom: 6rem; max-width: 100%; }
   .hero__title { font-size: clamp(2.8rem, 13vw, 4rem); }
   .hero__scroll-cue { left: 50%; transform: translateX(-50%); bottom: 1.2rem; }
+}
+
+/* general mobile fixes */
+@media (max-width: 600px) {
+  .btn { width: 100%; justify-content: center; }
+  .room { padding: 3rem var(--gutter); min-height: auto; }
+  .room__title { font-size: clamp(1.8rem, 8vw, 2.6rem); }
+  .agenda { padding: 3rem var(--gutter); }
+  .page-header { padding: 8rem var(--gutter) 3rem; }
+  .site-footer { padding: 3rem var(--gutter) 2rem; }
+  .casa-strip { padding: 2.5rem var(--gutter); }
+  .ubicacion { padding: 2.5rem var(--gutter); }
 }
 
 /* ============================================================
