@@ -482,6 +482,12 @@ to   { opacity: 1; transform: translateY(0); }
 
   // PWA
   if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
+
+  // nav scroll blur
+  var nav = document.querySelector('.site-nav');
+  window.addEventListener('scroll', function(){
+    if (nav) nav.classList.toggle('is-scrolled', window.pageYOffset > 50);
+  });
 })();
 </script>
 

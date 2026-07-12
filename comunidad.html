@@ -409,6 +409,12 @@ to   { opacity: 1; transform: translateY(0); }
     });
   });
 
+  
+  // nav scroll blur
+  var nav = document.querySelector('.site-nav');
+  window.addEventListener('scroll', function(){
+    if (nav) nav.classList.toggle('is-scrolled', window.pageYOffset > 50);
+  });
   // back to top
   var btt = document.getElementById('back-to-top');
   window.addEventListener('scroll', function(){

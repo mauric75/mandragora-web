@@ -204,10 +204,15 @@ h1, h2, h3, h4, h5 {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--c-ink);
-  transition: padding 0.4s var(--ease);
+  transition: padding 0.4s var(--ease), background 0.4s var(--ease);
+}
+.site-nav.is-scrolled {
+  background: color-mix(in srgb, var(--c-bg) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 [data-theme="dark"] .site-nav {
-  mix-blend-mode: difference; color: var(--c-cream);
+  color: var(--c-cream);
 }
 .site-nav__links {
   display: none; gap: 2rem;
@@ -1143,7 +1148,8 @@ h1, h2, h3, h4, h5 {
     });
   }
 
-  // parallax + back-to-top + cookie
+  // parallax + back-to-top + cookie + nav scroll
+  var nav = document.querySelector('.site-nav');
   var heroContent = document.querySelector('.hero__content');
   var heroPhoto = document.querySelector('.scene__photo img');
   var backToTop = document.getElementById('back-to-top');
@@ -1152,6 +1158,7 @@ h1, h2, h3, h4, h5 {
     if (heroContent) heroContent.style.transform = 'translateY(' + (scrolled * 0.03) + 'px)';
     if (heroPhoto) heroPhoto.style.transform = 'scale(' + (1.06 + scrolled * 0.00005) + ')';
     if (backToTop) backToTop.classList.toggle('is-visible', scrolled > 400);
+    if (nav) nav.classList.toggle('is-scrolled', scrolled > 50);
   });
   if (backToTop) backToTop.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
 

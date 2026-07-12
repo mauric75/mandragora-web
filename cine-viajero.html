@@ -98,10 +98,15 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
   padding: 1.5rem var(--gutter); font-family: var(--f-mark);
   font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--c-cream); mix-blend-mode: difference;
-  transition: padding 0.4s var(--ease);
+  transition: padding 0.4s var(--ease), background 0.4s var(--ease);
+}
+.site-nav.is-scrolled {
+  background: color-mix(in srgb, var(--c-bg) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 [data-theme="dark"] .site-nav {
-  mix-blend-mode: difference; color: var(--c-cream);
+  color: var(--c-cream);
 }
 .site-nav__logo { height: 36px; width: auto; display: block; }
 .site-nav__logo-dark { display: none; }
@@ -479,6 +484,12 @@ to   { opacity: 1; transform: translateY(0); }
     });
   });
 
+  
+  // nav scroll blur
+  var nav = document.querySelector('.site-nav');
+  window.addEventListener('scroll', function(){
+    if (nav) nav.classList.toggle('is-scrolled', window.pageYOffset > 50);
+  });
   // back to top
   var btt = document.getElementById('back-to-top');
   window.addEventListener('scroll', function(){
