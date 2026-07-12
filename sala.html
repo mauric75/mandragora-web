@@ -184,7 +184,7 @@ h1, h2, h3, h4 {
   max-width: 1100px; margin: 0 auto; padding: 0 var(--gutter) 4rem;
 }
 .feature-image img {
-  width: 100%; aspect-ratio: 16/7; object-fit: cover;
+  width: 100%; max-height: 60vh; object-fit: cover;
   border: 1px solid var(--c-gold-faint);
   filter: sepia(0.15) saturate(0.9) contrast(1.04);
 }
@@ -198,7 +198,7 @@ h1, h2, h3, h4 {
 .gallery img {
   width: 100%; aspect-ratio: 4/3; object-fit: cover;
   border: 1px solid var(--c-gold-faint);
-  filter: sepia(0.2) saturate(0.85) contrast(1.04);
+  filter: contrast(1.02) brightness(0.96);
   transition: transform 0.5s var(--ease);
 }
 .gallery img:hover { transform: scale(1.03); }
