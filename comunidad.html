@@ -12,6 +12,11 @@
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
 
+<div class="lightbox" id="lightbox">
+  <button class="lightbox__close" id="lightbox-close">✕</button>
+  <img src="" alt="" id="lightbox-img">
+</div>
+
 <script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -364,6 +369,11 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 <button class="back-to-top" id="back-to-top" aria-label="Volver arriba">↑</button>
 </footer>
 
+<div class="lightbox" id="lightbox">
+  <button class="lightbox__close" id="lightbox-close">✕</button>
+  <img src="" alt="" id="lightbox-img">
+</div>
+
 <script>
 (function(){
   "use strict";
@@ -412,6 +422,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 
   // lightbox
   var lightbox = document.getElementById('lightbox');
+  if (!lightbox) return;
   var lightboxImg = document.getElementById('lightbox-img');
   var clickableImgs = document.querySelectorAll('.room__media img, .feature-image img, .section-hero img, .gallery img, .casa-strip img, .obra-card__image img, .docente-card__photo img, .split__image img');
   clickableImgs.forEach(function(img){
