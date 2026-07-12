@@ -91,3 +91,15 @@ git push
 ```
 
 Vercel y GitHub Pages se actualizan solos.
+
+---
+
+## 📞 Contacto
+
+- **Dirección:** Javier Barrios Amorín 1312, Montevideo
+- **Teléfono:** 097 052 948
+- **WhatsApp:** 598 97 052 948
+- **Email:** info@mandragora.uy
+- **Instagram:** @mandragoracasa
+- **Facebook:** mandragoracasacultural
+- **Google Maps:** https://maps.app.goo.gl/pZUTAHcNrtp7gPkEA
