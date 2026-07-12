@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reservas — Mandrágora</title>
+<meta name="description" content="Reservá la sala de Mandrágora o inscribite a talleres.">
+<link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --c-bg:#f8f4ed; --c-bg-soft:#f0ebe0; --c-gold:#b8892e; --c-gold-bright:#CE9A47;
+  --c-gold-dim:rgba(184,137,46,0.25); --c-gold-faint:rgba(184,137,46,0.10);
+  --c-cream:#1a1512; --c-cream-dim:rgba(26,21,18,0.65); --c-cream-faint:rgba(26,21,18,0.18);
+  --c-border:rgba(26,21,18,0.07);
+  --c-green:#3a7a4a;
+  --f-display:'Cormorant Garamond',Georgia,serif;
+  --f-mark:'Cinzel',Georgia,serif;
+  --f-body:'Jost',system-ui,sans-serif;
+  --gutter:clamp(1.5rem,5vw,5rem);
+  --ease:cubic-bezier(0.22,1,0.36,1);
+}
+[data-theme="dark"] {
+  --c-bg:#05070a; --c-bg-soft:#0c1012; --c-gold:#CE9A47; --c-gold-bright:#e0b85a;
+  --c-gold-dim:rgba(206,154,71,0.30); --c-gold-faint:rgba(206,154,71,0.12);
+  --c-cream:#f3ece0; --c-cream-dim:rgba(243,236,224,0.65); --c-cream-faint:rgba(243,236,224,0.22);
+  --c-border:rgba(243,236,224,0.07);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--c-bg);-webkit-font-smoothing:antialiased}
+body{font-family:var(--f-body);color:var(--c-cream);background:var(--c-bg);line-height:1.65;transition:background 0.4s var(--ease),color 0.3s var(--ease)}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:var(--f-display);font-weight:500;letter-spacing:0.01em;line-height:1.1}
+img{max-width:100%;display:block}
+
+.grain{position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");background-repeat:repeat}
+[data-theme="dark"] .grain{mix-blend-mode:overlay;opacity:0.04}
+
+.site-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.5rem var(--gutter);font-family:var(--f-mark);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;transition:padding 0.4s var(--ease)}
+[data-theme="dark"] .site-nav{mix-blend-mode:difference;color:var(--c-cream)}
+.site-nav__logo{height:36px;width:auto;display:block}
+.site-nav__logo-dark{display:none}
+[data-theme="dark"] .site-nav__logo-light{display:none}
+[data-theme="dark"] .site-nav__logo-dark{display:block}
+.theme-toggle{background:none;border:1px solid currentColor;cursor:pointer;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:0.9rem;line-height:1;padding:0;opacity:0.7;transition:opacity 0.3s,transform 0.4s var(--ease)}
+.theme-toggle:hover{opacity:1;transform:rotate(15deg)}
+.theme-toggle:active{transform:rotate(180deg)}
+@media(max-width:600px){.site-nav__logo{height:28px}}
+
+.page-header{padding:8rem var(--gutter) 2rem;text-align:center}
+.page-header h1{font-size:clamp(2.6rem,6vw,4.8rem)}
+
+.reservar{max-width:700px;margin:0 auto;padding:0 var(--gutter) 5rem}
+
+.step{display:none}
+.step.active{display:block}
+
+.step-title{font-family:var(--f-display);font-size:1.4rem;margin-bottom:1.5rem}
+
+/* Calendar */
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:2rem}
+.calendar__header{text-align:center;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--c-gold);padding:0.5rem 0}
+.calendar__day{aspect-ratio:1;display:grid;place-items:center;font-size:0.95rem;cursor:pointer;border-radius:50%;transition:background 0.2s,color 0.2s}
+.calendar__day:hover{background:var(--c-gold-dim)}
+.calendar__day.selected{background:var(--c-gold);color:var(--c-bg);font-weight:600}
+.calendar__day.empty{pointer-events:none}
+.calendar__nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.calendar__nav button{background:none;border:1px solid var(--c-border);color:var(--c-cream);padding:0.4em 1em;cursor:pointer;font-size:0.85rem;border-radius:2px;font-family:inherit}
+.calendar__nav span{font-family:var(--f-display);font-size:1.2rem}
+.calendar__nav select{background:var(--c-bg-soft);border:1px solid var(--c-border);color:var(--c-cream);padding:0.3em 0.5em;font-family:inherit;font-size:0.85rem;border-radius:2px}
+
+/* Options grid */
+.options{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:500px){.options{grid-template-columns:1fr 1fr}}
+.option-card{padding:1.5rem;border:1px solid var(--c-border);border-radius:2px;cursor:pointer;transition:border-color 0.3s,transform 0.3s var(--ease);text-align:center}
+.option-card:hover{border-color:var(--c-gold-dim);transform:translateY(-2px)}
+.option-card.selected{border-color:var(--c-gold);background:var(--c-gold-faint)}
+.option-card__title{font-family:var(--f-display);font-size:1.3rem;margin-bottom:0.3rem}
+.option-card__price{font-size:0.85rem;color:var(--c-cream-dim)}
+
+/* Form */
+.form-group{margin-bottom:1.2rem}
+.form-group label{display:block;font-size:0.8rem;letter-spacing:0.05em;margin-bottom:0.3rem;color:var(--c-cream-dim)}
+.form-group input,.form-group textarea{width:100%;padding:0.8rem;background:var(--c-bg-soft);border:1px solid var(--c-border);color:var(--c-cream);font-family:inherit;font-size:1rem;border-radius:2px}
+.form-group textarea{resize:vertical;min-height:80px}
+
+.btn{font-family:var(--f-body);font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.9em 1.7em;border-radius:2px;border:none;cursor:pointer;display:inline-flex;align-items:center;transition:transform 0.4s var(--ease),background 0.4s}
+.btn--gold{background:var(--c-gold);color:var(--c-bg)}
+.btn--gold:hover{background:var(--c-gold-bright);transform:translateY(-1px)}
+.btn--ghost{background:transparent;border:1px solid var(--c-cream-faint);color:var(--c-cream)}
+.btn--ghost:hover{border-color:var(--c-cream)}
+.btn--block{width:100%;justify-content:center}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+
+.step-actions{display:flex;gap:1rem;margin-top:2rem}
+#status{text-align:center;margin-top:1rem;font-size:0.9rem;color:var(--c-cream-dim)}
+.success-box{text-align:center;padding:3rem 1rem}
+.success-box .icon{font-size:3rem;margin-bottom:1rem}
+.success-box p{margin:0.5rem 0;color:var(--c-cream-dim)}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="site-nav">
+  <a href="index.html" class="site-nav__mark">
+    <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-light">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-dark">
+  </a>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">☀</button>
+</header>
+
+<section class="page-header">
+  <h1>Reservas</h1>
+</section>
+
+<section class="reservar" id="app">
+  <!-- STEP 1: Service -->
+  <div class="step active" id="step-1">
+    <p class="step-title">¿Qué querés reservar?</p>
+    <div class="options" id="service-options">
+      <div class="option-card" data-service="sala" data-price="5000">
+        <div class="option-card__title">Sala</div>
+        <div class="option-card__price">desde $5.000</div>
+      </div>
+      <div class="option-card" data-service="taller" data-price="2500">
+        <div class="option-card__title">Inscripción a taller</div>
+        <div class="option-card__price">desde $2.500</div>
+      </div>
+      <div class="option-card" data-service="entrada" data-price="400">
+        <div class="option-card__title">Entrada a función</div>
+        <div class="option-card__price">$400</div>
+      </div>
+      <div class="option-card" data-service="otro" data-price="0">
+        <div class="option-card__title">Otra consulta</div>
+        <div class="option-card__price">a convenir</div>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn--gold btn--block" id="next-1" disabled>Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Date -->
+  <div class="step" id="step-2">
+    <p class="step-title">Elegí la fecha</p>
+    <div class="calendar__nav">
+      <button id="prev-month">←</button>
+      <span id="month-label"></span>
+      <button id="next-month">→</button>
+    </div>
+    <div class="calendar" id="calendar"></div>
+    <div class="step-actions">
+      <button class="btn btn--ghost" id="back-2">← Atrás</button>
+      <button class="btn btn--gold" id="next-2" disabled>Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Contact -->
+  <div class="step" id="step-3">
+    <p class="step-title">Tus datos</p>
+    <div class="form-group">
+      <label>Nombre</label>
+      <input type="text" id="nombre" placeholder="Tu nombre completo" required>
+    </div>
+    <div class="form-group">
+      <label>WhatsApp</label>
+      <input type="tel" id="whatsapp" placeholder="09X XXX XXX" required>
+    </div>
+    <div class="form-group">
+      <label>Email (opcional)</label>
+      <input type="email" id="email" placeholder="tu@email.com">
+    </div>
+    <div class="form-group">
+      <label>Mensaje (opcional)</label>
+      <textarea id="mensaje" placeholder="Contanos qué necesitás..."></textarea>
+    </div>
+    <div id="status"></div>
+    <div class="step-actions">
+      <button class="btn btn--ghost" id="back-3">← Atrás</button>
+      <button class="btn btn--gold" id="next-3">Enviar reserva por WhatsApp →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Success -->
+  <div class="step" id="step-4">
+    <div class="success-box">
+      <div class="icon">✓</div>
+      <h2>¡Reserva enviada!</h2>
+      <p>Te llevamos a WhatsApp para confirmar los detalles.</p>
+      <p style="margin-top:1.5rem"><a href="index.html" style="color:var(--c-gold)">← Volver al inicio</a></p>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  "use strict";
+
+  // Theme
+  var toggle = document.getElementById('theme-toggle');
+  var html = document.documentElement;
+  var saved = localStorage.getItem('mandragora-theme');
+  if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; }
+  toggle.addEventListener('click', function(){
+    var isDark = html.getAttribute('data-theme') === 'dark';
+    if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '☀'; localStorage.setItem('mandragora-theme','light'); }
+    else { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; localStorage.setItem('mandragora-theme','dark'); }
+  });
+
+  // State
+  var state = { service: null, price: null, date: null, month: null, year: null };
+
+  // Step navigation
+  var steps = ['step-1','step-2','step-3','step-4'];
+  function showStep(id) {
+    steps.forEach(function(s){ document.getElementById(s).classList.remove('active'); });
+    document.getElementById('step-' + id).classList.add('active');
+  }
+
+  // STEP 1: Service selection
+  var serviceCards = document.querySelectorAll('.option-card');
+  var next1 = document.getElementById('next-1');
+  serviceCards.forEach(function(card){
+    card.addEventListener('click', function(){
+      serviceCards.forEach(function(c){ c.classList.remove('selected'); });
+      card.classList.add('selected');
+      state.service = card.dataset.service;
+      state.price = card.dataset.price;
+      next1.disabled = false;
+    });
+  });
+  next1.addEventListener('click', function(){ showStep(2); buildCalendar(); });
+
+  // STEP 2: Calendar
+  var currentMonth, currentYear;
+  function buildCalendar() {
+    var now = new Date();
+    if (!state.month) { currentMonth = now.getMonth(); currentYear = now.getFullYear(); }
+    else { currentMonth = state.month; currentYear = state.year; }
+
+    var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
+    var days = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+    document.getElementById('month-label').textContent = months[currentMonth] + ' ' + currentYear;
+
+    var cal = document.getElementById('calendar');
+    cal.innerHTML = '';
+    days.forEach(function(d){ cal.innerHTML += '<div class="calendar__header">'+d+'</div>'; });
+
+    var firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    var daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    for (var i = 0; i < firstDay; i++) { cal.innerHTML += '<div class="calendar__day empty"></div>'; }
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dateObj = new Date(currentYear, currentMonth, d);
+      var cls = 'calendar__day';
+      if (dateObj < today) cls += ' empty';
+      if (state.date && dateObj.toDateString() === state.date.toDateString()) cls += ' selected';
+      var div = '<div class="'+cls+'" data-date="'+dateObj.toISOString()+'">'+d+'</div>';
+      cal.innerHTML += div;
+    }
+
+    // Click handlers
+    cal.querySelectorAll('.calendar__day:not(.empty)').forEach(function(day){
+      day.addEventListener('click', function(){
+        cal.querySelectorAll('.calendar__day').forEach(function(d){ d.classList.remove('selected'); });
+        day.classList.add('selected');
+        state.date = new Date(day.dataset.date);
+        state.month = currentMonth; state.year = currentYear;
+        document.getElementById('next-2').disabled = false;
+      });
+    });
+
+    document.getElementById('next-2').disabled = !state.date || (state.date && state.date.toDateString() !== new Date(currentYear,currentMonth,1).toDateString() ? !cal.querySelector('.selected') : !state.date);
+  }
+
+  document.getElementById('prev-month').addEventListener('click', function(){
+    if (!state.month) { state.month = new Date().getMonth(); state.year = new Date().getFullYear(); }
+    state.month--; if (state.month < 0) { state.month = 11; state.year--; }
+    currentMonth = state.month; currentYear = state.year;
+    buildCalendar();
+  });
+  document.getElementById('next-month').addEventListener('click', function(){
+    if (!state.month) { state.month = new Date().getMonth(); state.year = new Date().getFullYear(); }
+    state.month++; if (state.month > 11) { state.month = 0; state.year++; }
+    currentMonth = state.month; currentYear = state.year;
+    buildCalendar();
+  });
+  document.getElementById('back-2').addEventListener('click', function(){ showStep(1); });
+
+  // STEP 3: Contact + WhatsApp
+  document.getElementById('back-3').addEventListener('click', function(){ showStep(2); });
+  document.getElementById('next-3').addEventListener('click', function(){
+    var nombre = document.getElementById('nombre').value.trim();
+    var whatsapp = document.getElementById('whatsapp').value.trim();
+    if (!nombre || !whatsapp) {
+      document.getElementById('status').textContent = 'Completá nombre y WhatsApp';
+      return;
+    }
+
+    var fecha = state.date ? state.date.toLocaleDateString('es-UY', {weekday:'long',day:'numeric',month:'long',year:'numeric'}) : 'a confirmar';
+    var servicios = { sala:'Reserva de sala', taller:'Inscripción a taller', entrada:'Entrada a función', otro:'Consulta' };
+    var servicio = servicios[state.service] || state.service;
+    var email = document.getElementById('email').value.trim();
+    var mensaje = document.getElementById('mensaje').value.trim();
+
+    var msg = 'Hola, soy ' + nombre + '.%0A%0A'
+      + 'Solicito: ' + servicio + '%0A'
+      + 'Fecha: ' + fecha + '%0A'
+      + (email ? 'Email: ' + email + '%0A' : '')
+      + (mensaje ? 'Mensaje: ' + mensaje + '%0A' : '')
+      + '%0AGracias!';
+
+    // Save to localStorage as backup (Supabase optional)
+    var reservas = JSON.parse(localStorage.getItem('mandragora-reservas') || '[]');
+    reservas.push({ servicio:state.service, fecha:state.date.toISOString(), nombre, whatsapp, email, mensaje, creado:new Date().toISOString() });
+    localStorage.setItem('mandragora-reservas', JSON.stringify(reservas));
+
+    // Try Supabase if configured
+    var SUPABASE_URL = localStorage.getItem('sb-url') || '';
+    var SUPABASE_KEY = localStorage.getItem('sb-key') || '';
+    if (SUPABASE_URL && SUPABASE_KEY) {
+      var sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      sb.from('reservas').insert([{
+        servicio: state.service, fecha: state.date.toISOString().split('T')[0],
+        nombre: nombre, whatsapp: whatsapp, email: email, mensaje: mensaje
+      }]).then(function(r){
+        if (r.error) console.warn('Supabase error:', r.error);
+      });
+    }
+
+    showStep(4);
+    setTimeout(function(){
+      window.open('https://wa.me/59897052948?text=' + msg, '_blank');
+    }, 600);
+  });
+})();
+</script>
+</body>
+</html>
