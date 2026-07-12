@@ -55,6 +55,15 @@ html { scroll-behavior: smooth; background: var(--c-bg); -webkit-font-smoothing:
 body {
   font-family: var(--f-body); color: var(--c-cream);
   background: var(--c-bg); line-height: 1.65; overflow-x: hidden;
+.feature-image {
+  max-width: 1100px; margin: 0 auto; padding: 0 var(--gutter) 3rem;
+}
+.feature-image img {
+  width: 100%; aspect-ratio: 16/7; object-fit: cover;
+  border: 1px solid var(--c-gold-faint);
+  filter: sepia(0.2) saturate(0.85) contrast(1.04);
+}
+
   transition: background 0.4s var(--ease), color 0.3s var(--ease);
 }
 
@@ -364,6 +373,12 @@ h1, h2, h3, h4 {
     Teatro uruguayo con voz propia.
   </p>
 </section>
+
+<section class="feature-image reveal">
+  <img src="assets/images/compania.jpg" alt="Mandrágora" loading="lazy">
+</section>
+
+
 
 <!-- ============ INTRO ============ -->
 <section class="intro-block reveal">

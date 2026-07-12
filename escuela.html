@@ -229,6 +229,15 @@ h1, h2, h3, h4 {
 }
 .intro-block p + p { margin-top: 1.2rem; }
 
+.feature-image {
+  max-width: 1100px; margin: 0 auto; padding: 0 var(--gutter) 3rem;
+}
+.feature-image img {
+  width: 100%; aspect-ratio: 16/7; object-fit: cover;
+  border: 1px solid var(--c-gold-faint);
+  filter: sepia(0.2) saturate(0.85) contrast(1.04);
+}
+
 /* ============================================================
    DISCIPLINAS
    ============================================================ */
@@ -432,6 +441,10 @@ h1, h2, h3, h4 {
   <p class="page-header__lede">
     Un lugar para equivocarse en voz alta, sostenido por gente que también se equivocó antes.
   </p>
+</section>
+
+<section class="feature-image reveal">
+  <img src="assets/images/escuela.jpg" alt="Clase en la escuela de Mandrágora" loading="lazy">
 </section>
 
 <!-- ============ INTRO ============ -->
