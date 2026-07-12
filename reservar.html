@@ -356,61 +356,52 @@ img{max-width:100%;display:block}
   setupSubOptions('taller-opciones-list', 'next-taller', 'back-taller');
 
   // STEP 2: Calendar
-  var currentMonth, currentYear;
   function buildCalendar() {
     var now = new Date();
-    if (!state.month) { currentMonth = now.getMonth(); currentYear = now.getFullYear(); }
-    else { currentMonth = state.month; currentYear = state.year; }
+    if (state.month == null) { state.month = now.getMonth(); state.year = now.getFullYear(); }
 
     var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
     var days = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-    document.getElementById('month-label').textContent = months[currentMonth] + ' ' + currentYear;
+    document.getElementById('month-label').textContent = months[state.month] + ' ' + state.year;
 
     var cal = document.getElementById('calendar');
     cal.innerHTML = '';
     days.forEach(function(d){ cal.innerHTML += '<div class="calendar__header">'+d+'</div>'; });
 
-    var firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    var daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    var firstDay = new Date(state.year, state.month, 1).getDay();
+    var daysInMonth = new Date(state.year, state.month + 1, 0).getDate();
     var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     for (var i = 0; i < firstDay; i++) { cal.innerHTML += '<div class="calendar__day empty"></div>'; }
     for (var d = 1; d <= daysInMonth; d++) {
-      var dateObj = new Date(currentYear, currentMonth, d);
+      var dateObj = new Date(state.year, state.month, d);
       var cls = 'calendar__day';
       if (dateObj < today) cls += ' empty';
       if (state.date && dateObj.toDateString() === state.date.toDateString()) cls += ' selected';
-      var div = '<div class="'+cls+'" data-date="'+dateObj.toISOString()+'">'+d+'</div>';
-      cal.innerHTML += div;
+      cal.innerHTML += '<div class="'+cls+'" data-date="'+dateObj.toISOString()+'">'+d+'</div>';
     }
 
-    // Click handlers
+    // Click: select date + enable next
     cal.querySelectorAll('.calendar__day:not(.empty)').forEach(function(day){
       day.addEventListener('click', function(){
-        cal.querySelectorAll('.calendar__day').forEach(function(d){ d.classList.remove('selected'); });
+        cal.querySelectorAll('.calendar__day').forEach(function(dd){ dd.classList.remove('selected'); });
         day.classList.add('selected');
         state.date = new Date(day.dataset.date);
-        state.month = currentMonth; state.year = currentYear;
         document.getElementById('next-2').disabled = false;
       });
     });
-
-    document.getElementById('next-2').disabled = !state.date || (state.date && state.date.toDateString() !== new Date(currentYear,currentMonth,1).toDateString() ? !cal.querySelector('.selected') : !state.date);
   }
 
   document.getElementById('prev-month').addEventListener('click', function(){
-    if (!state.month) { state.month = new Date().getMonth(); state.year = new Date().getFullYear(); }
     state.month--; if (state.month < 0) { state.month = 11; state.year--; }
-    currentMonth = state.month; currentYear = state.year;
     buildCalendar();
   });
   document.getElementById('next-month').addEventListener('click', function(){
-    if (!state.month) { state.month = new Date().getMonth(); state.year = new Date().getFullYear(); }
     state.month++; if (state.month > 11) { state.month = 0; state.year++; }
-    currentMonth = state.month; currentYear = state.year;
     buildCalendar();
   });
   document.getElementById('back-2').addEventListener('click', function(){ showStep(1); });
+  document.getElementById('next-2').addEventListener('click', function(){ showStep(3); });
 
   // STEP 3: Contact + WhatsApp
   document.getElementById('back-3').addEventListener('click', function(){ showStep(2); });
