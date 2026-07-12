@@ -215,6 +215,19 @@ h1, h2, h3, h4, h5 {
 }
 .theme-toggle:hover { opacity: 1; transform: rotate(15deg); }
 .theme-toggle:active { transform: rotate(180deg); }
+
+/* back to top */
+.back-to-top {
+  position: fixed; bottom: 2rem; right: 1.5rem; z-index: 90;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--c-bg-soft); border: 1px solid var(--c-gold-faint);
+  color: var(--c-cream-dim); cursor: pointer;
+  display: grid; place-items: center; font-size: 1.1rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease), border-color 0.3s;
+}
+.back-to-top.is-visible { opacity: 1; pointer-events: auto; }
+.back-to-top:hover { border-color: var(--c-gold); transform: translateY(-2px); }
 .nav-instagram {
   display: grid; place-items: center; opacity: 0.7; transition: opacity 0.3s;
 }
@@ -938,6 +951,8 @@ h1, h2, h3, h4, h5 {
   <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora</p>
 </footer>
 
+<button class="back-to-top" id="back-to-top" aria-label="Volver arriba">↑</button>
+
 <!-- ============ SCROLL REVEAL ============ -->
 <script>
 (function(){
@@ -1012,11 +1027,18 @@ h1, h2, h3, h4, h5 {
   // parallax hero on scroll
   var heroContent = document.querySelector('.hero__content');
   var heroPhoto = document.querySelector('.scene__photo img');
+  var backToTop = document.getElementById('back-to-top');
   window.addEventListener('scroll', function(){
     var scrolled = window.pageYOffset;
     if (heroContent) heroContent.style.transform = 'translateY(' + (scrolled * 0.03) + 'px)';
     if (heroPhoto) heroPhoto.style.transform = 'scale(' + (1.06 + scrolled * 0.00005) + ')';
+    if (backToTop) {
+      backToTop.classList.toggle('is-visible', scrolled > 400);
+    }
   });
+  if (backToTop) {
+    backToTop.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  }
 })();
 </script>
 
