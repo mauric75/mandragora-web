@@ -126,13 +126,13 @@ img{max-width:100%;display:block}
   <div class="step active" id="step-1">
     <p class="step-title">¿Qué querés reservar?</p>
     <div class="options" id="service-options">
-      <div class="option-card" data-service="sala" data-price="5000">
-        <div class="option-card__title">Sala</div>
+      <div class="option-card" data-service="sala" data-next="sala-opciones">
+        <div class="option-card__title">Sala / Evento</div>
         <div class="option-card__price">desde $5.000</div>
       </div>
-      <div class="option-card" data-service="taller" data-price="2500">
+      <div class="option-card" data-service="taller" data-next="taller-opciones">
         <div class="option-card__title">Inscripción a taller</div>
-        <div class="option-card__price">desde $2.500</div>
+        <div class="option-card__price">elegí docente y disciplina</div>
       </div>
       <div class="option-card" data-service="entrada" data-price="400">
         <div class="option-card__title">Entrada a función</div>
@@ -145,6 +145,52 @@ img{max-width:100%;display:block}
     </div>
     <div class="step-actions">
       <button class="btn btn--gold btn--block" id="next-1" disabled>Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 1.5a: SALA options -->
+  <div class="step" id="step-sala-opciones">
+    <p class="step-title">¿Qué tipo de evento?</p>
+    <div class="options" id="sala-opciones-list">
+      <div class="option-card" data-sub="teatro" data-price="5000">
+        <div class="option-card__title">Teatro / Función</div><div class="option-card__price">$5.000</div>
+      </div>
+      <div class="option-card" data-sub="congreso" data-price="8000">
+        <div class="option-card__title">Congreso / Conferencia</div><div class="option-card__price">$8.000</div>
+      </div>
+      <div class="option-card" data-sub="corporativo" data-price="10000">
+        <div class="option-card__title">Evento corporativo</div><div class="option-card__price">$10.000</div>
+      </div>
+      <div class="option-card" data-sub="otro-evento" data-price="0">
+        <div class="option-card__title">Otro evento</div><div class="option-card__price">a convenir</div>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn--ghost" id="back-sala">← Atrás</button>
+      <button class="btn btn--gold btn--block" id="next-sala" disabled>Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- STEP 1.5b: TALLER options (docentes) -->
+  <div class="step" id="step-taller-opciones">
+    <p class="step-title">Elegí docente y disciplina</p>
+    <div class="options" id="taller-opciones-list">
+      <div class="option-card" data-sub="actuacion" data-price="2500">
+        <div class="option-card__title">Docente de Actuación</div><div class="option-card__price">Actuación · Dirección · $2.500</div>
+      </div>
+      <div class="option-card" data-sub="clown" data-price="2500">
+        <div class="option-card__title">Docente de Clown</div><div class="option-card__price">Clown · Voz · $2.500</div>
+      </div>
+      <div class="option-card" data-sub="dramaturgia" data-price="2500">
+        <div class="option-card__title">Docente de Dramaturgia</div><div class="option-card__price">Dramaturgia · Escritura · $2.500</div>
+      </div>
+      <div class="option-card" data-sub="otro-taller" data-price="0">
+        <div class="option-card__title">Consultar por otro taller</div><div class="option-card__price">a convenir</div>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn--ghost" id="back-taller">← Atrás</button>
+      <button class="btn btn--gold btn--block" id="next-taller" disabled>Siguiente →</button>
     </div>
   </div>
 
@@ -216,28 +262,58 @@ img{max-width:100%;display:block}
   });
 
   // State
-  var state = { service: null, price: null, date: null, month: null, year: null };
+  var state = { service: null, sub: null, price: null, date: null, month: null, year: null };
 
   // Step navigation
-  var steps = ['step-1','step-2','step-3','step-4'];
   function showStep(id) {
-    steps.forEach(function(s){ document.getElementById(s).classList.remove('active'); });
-    document.getElementById('step-' + id).classList.add('active');
+    document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('active'); });
+    var el = document.getElementById('step-' + id);
+    if (el) el.classList.add('active');
   }
 
   // STEP 1: Service selection
-  var serviceCards = document.querySelectorAll('.option-card');
+  var serviceCards = document.querySelectorAll('#service-options .option-card');
   var next1 = document.getElementById('next-1');
   serviceCards.forEach(function(card){
     card.addEventListener('click', function(){
       serviceCards.forEach(function(c){ c.classList.remove('selected'); });
       card.classList.add('selected');
       state.service = card.dataset.service;
+      state.sub = null;
       state.price = card.dataset.price;
+      if (card.dataset.next) {
+        next1.textContent = 'Elegir →';
+      } else {
+        next1.textContent = 'Siguiente →';
+      }
       next1.disabled = false;
     });
   });
-  next1.addEventListener('click', function(){ showStep(2); buildCalendar(); });
+  next1.addEventListener('click', function(){
+    if (state.service === 'sala') showStep('sala-opciones');
+    else if (state.service === 'taller') showStep('taller-opciones');
+    else showStep(2);
+    if (state.service !== 'sala' && state.service !== 'taller') buildCalendar();
+  });
+
+  // STEP 1.5a: Sala sub-options
+  function setupSubOptions(listId, nextId, backId) {
+    var cards = document.querySelectorAll('#' + listId + ' .option-card');
+    var next = document.getElementById(nextId);
+    cards.forEach(function(card){
+      card.addEventListener('click', function(){
+        cards.forEach(function(c){ c.classList.remove('selected'); });
+        card.classList.add('selected');
+        state.sub = card.dataset.sub;
+        state.price = card.dataset.price;
+        next.disabled = false;
+      });
+    });
+    next.addEventListener('click', function(){ showStep(2); buildCalendar(); });
+    document.getElementById(backId).addEventListener('click', function(){ showStep(1); });
+  }
+  setupSubOptions('sala-opciones-list', 'next-sala', 'back-sala');
+  setupSubOptions('taller-opciones-list', 'next-taller', 'back-taller');
 
   // STEP 2: Calendar
   var currentMonth, currentYear;
@@ -309,11 +385,16 @@ img{max-width:100%;display:block}
     var fecha = state.date ? state.date.toLocaleDateString('es-UY', {weekday:'long',day:'numeric',month:'long',year:'numeric'}) : 'a confirmar';
     var servicios = { sala:'Reserva de sala', taller:'Inscripción a taller', entrada:'Entrada a función', otro:'Consulta' };
     var servicio = servicios[state.service] || state.service;
+    var subLabels = {
+      teatro:'Teatro / Función', congreso:'Congreso / Conferencia', corporativo:'Evento corporativo', 'otro-evento':'Evento',
+      actuacion:'Docente de Actuación', clown:'Docente de Clown', dramaturgia:'Docente de Dramaturgia', 'otro-taller':'Taller'
+    };
+    var detalle = state.sub ? ' (' + (subLabels[state.sub] || state.sub) + ')' : '';
     var email = document.getElementById('email').value.trim();
     var mensaje = document.getElementById('mensaje').value.trim();
 
     var msg = 'Hola, soy ' + nombre + '.%0A%0A'
-      + 'Solicito: ' + servicio + '%0A'
+      + 'Solicito: ' + servicio + detalle + '%0A'
       + 'Fecha: ' + fecha + '%0A'
       + (email ? 'Email: ' + email + '%0A' : '')
       + (mensaje ? 'Mensaje: ' + mensaje + '%0A' : '')
