@@ -663,9 +663,12 @@ h1, h2, h3, h4, h5 {
 .inside-intro.is-visible .inside-intro__lede   { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
 
 .room .room__media,
-.room .room__body { opacity: 0; transform: translateY(26px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+.room .room__body { opacity: 0; transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+.room .room__media { transform: translateY(26px); }
+.room .room__body  { transform: translateX(30px); }
+.room--alt .room__body { transform: translateX(-30px); }
 .room.is-visible .room__media { opacity: 1; transform: translateY(0); }
-.room.is-visible .room__body  { opacity: 1; transform: translateY(0); transition-delay: 0.12s; }
+.room.is-visible .room__body  { opacity: 1; transform: translateX(0); transition-delay: 0.15s; }
 
 .agenda-card { opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
 .agenda-card.is-visible:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0s; }
@@ -1000,6 +1003,14 @@ h1, h2, h3, h4, h5 {
       mobileMenu.classList.remove('is-open');
       hamburger.setAttribute('aria-expanded', 'false');
     });
+  });
+  // parallax hero on scroll
+  var heroContent = document.querySelector('.hero__content');
+  var heroPhoto = document.querySelector('.scene__photo img');
+  window.addEventListener('scroll', function(){
+    var scrolled = window.pageYOffset;
+    if (heroContent) heroContent.style.transform = 'translateY(' + (scrolled * 0.03) + 'px)';
+    if (heroPhoto) heroPhoto.style.transform = 'scale(' + (1.06 + scrolled * 0.00005) + ')';
   });
 })();
 </script>
