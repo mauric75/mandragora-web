@@ -298,10 +298,10 @@ h1, h2, h3, h4, h5 {
   background: #1a0a0a;
   transition: transform 1s cubic-bezier(0.7,0,0.3,1);
 }
-.curtain__left  { transform: translateX(0); }
-.curtain__right { transform: translateX(0); }
-.curtain.is-closed .curtain__left  { transform: translateX(-100%); }
-.curtain.is-closed .curtain__right { transform: translateX(100%); }
+.curtain__left  { transform: translateX(-100%); }
+.curtain__right { transform: translateX(100%); }
+.curtain.is-closed .curtain__left  { transform: translateX(0); }
+.curtain.is-closed .curtain__right { transform: translateX(0); }
 .nav-instagram {
   display: grid; place-items: center; opacity: 0.7; transition: opacity 0.3s;
 }
