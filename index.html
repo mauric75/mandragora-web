@@ -82,6 +82,14 @@ body {
 img { max-width: 100%; display: block; }
 a  { color: inherit; text-decoration: none; }
 
+img[loading="lazy"] {
+  filter: blur(8px);
+  transition: filter 0.6s var(--ease);
+}
+img[loading="lazy"].loaded {
+  filter: blur(0);
+}
+
 h1, h2, h3, h4, h5 {
   font-family: var(--f-display);
   font-weight: 500;
@@ -228,6 +236,23 @@ h1, h2, h3, h4, h5 {
 }
 .back-to-top.is-visible { opacity: 1; pointer-events: auto; }
 .back-to-top:hover { border-color: var(--c-gold); transform: translateY(-2px); }
+
+/* cookie banner */
+.cookie-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 9998;
+  background: var(--c-bg-soft); border-top: 1px solid var(--c-border);
+  padding: 0.9rem var(--gutter); font-size: 0.8rem;
+  display: flex; align-items: center; justify-content: center; gap: 1.5rem;
+  flex-wrap: wrap; text-align: center;
+  color: var(--c-cream-dim);
+  display: none;
+}
+.cookie-banner.is-visible { display: flex; }
+.cookie-banner button {
+  background: var(--c-gold); color: var(--c-bg); border: none;
+  padding: 0.4em 1.2em; border-radius: 2px; cursor: pointer;
+  font-family: var(--f-body); font-size: 0.75rem; letter-spacing: 0.05em;
+}
 .nav-instagram {
   display: grid; place-items: center; opacity: 0.7; transition: opacity 0.3s;
 }
@@ -955,10 +980,21 @@ h1, h2, h3, h4, h5 {
 
 <button class="back-to-top" id="back-to-top" aria-label="Volver arriba">↑</button>
 
+<div class="cookie-banner" id="cookie-banner">
+  <span>Usamos cookies solo para recordar tu tema (claro/oscuro). Nada más.</span>
+  <button id="cookie-ok">Entendido</button>
+</div>
+
 <!-- ============ SCROLL REVEAL ============ -->
 <script>
 (function(){
   "use strict";
+
+  // blur-up lazy images
+  document.querySelectorAll('img[loading="lazy"]').forEach(function(img){
+    if (img.complete) { img.classList.add('loaded'); }
+    else { img.addEventListener('load', function(){ img.classList.add('loaded'); }); }
+  });
 
   // Current year
   var y = document.getElementById('current-year');
@@ -1000,6 +1036,23 @@ h1, h2, h3, h4, h5 {
     });
   }
 
+  // parallax + back-to-top + cookie
+  var heroContent = document.querySelector('.hero__content');
+  var heroPhoto = document.querySelector('.scene__photo img');
+  var backToTop = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function(){
+    var scrolled = window.pageYOffset;
+    if (heroContent) heroContent.style.transform = 'translateY(' + (scrolled * 0.03) + 'px)';
+    if (heroPhoto) heroPhoto.style.transform = 'scale(' + (1.06 + scrolled * 0.00005) + ')';
+    if (backToTop) backToTop.classList.toggle('is-visible', scrolled > 400);
+  });
+  if (backToTop) backToTop.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  var cookieBanner = document.getElementById('cookie-banner');
+  if (cookieBanner && !localStorage.getItem('cookies-ok')) cookieBanner.classList.add('is-visible');
+  var cookieOk = document.getElementById('cookie-ok');
+  if (cookieOk) cookieOk.addEventListener('click', function(){ cookieBanner.classList.remove('is-visible'); localStorage.setItem('cookies-ok','1'); });
+
   // theme toggle
   var toggle = document.getElementById('theme-toggle');
   var html = document.documentElement;
@@ -1027,20 +1080,6 @@ h1, h2, h3, h4, h5 {
     });
   });
   // parallax hero on scroll
-  var heroContent = document.querySelector('.hero__content');
-  var heroPhoto = document.querySelector('.scene__photo img');
-  var backToTop = document.getElementById('back-to-top');
-  window.addEventListener('scroll', function(){
-    var scrolled = window.pageYOffset;
-    if (heroContent) heroContent.style.transform = 'translateY(' + (scrolled * 0.03) + 'px)';
-    if (heroPhoto) heroPhoto.style.transform = 'scale(' + (1.06 + scrolled * 0.00005) + ')';
-    if (backToTop) {
-      backToTop.classList.toggle('is-visible', scrolled > 400);
-    }
-  });
-  if (backToTop) {
-    backToTop.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
-  }
 })();
 </script>
 
