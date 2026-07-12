@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cine Viajero — Mandrágora</title>
+<link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
+<meta name="description" content="Festival de cine itinerante de Mandrágora. Una vez al año, la casa se llena de pantallas, proyectores y gente que viaja para ver una película.">
+
+<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --c-bg:        #f8f4ed;
+  --c-bg-soft:   #f0ebe0;
+  --c-blue:      #1D3D91;
+  --c-green:     #8ABE28;
+  --c-gold:      #b8892e;
+  --c-gold-bright:#CE9A47;
+  --c-gold-dim:   rgba(184, 137, 46, 0.25);
+  --c-gold-faint: rgba(184, 137, 46, 0.10);
+  --c-cream:     #1a1512;
+  --c-cream-dim: rgba(26, 21, 18, 0.65);
+  --c-cream-faint:rgba(26, 21, 18, 0.18);
+  --c-border:    rgba(26, 21, 18, 0.07);
+
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-mark:    'Cinzel', Georgia, serif;
+  --f-body:    'Jost', system-ui, -apple-system, sans-serif;
+
+  --gutter:    clamp(1.5rem, 5vw, 5rem);
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-theme="dark"] {
+  --c-bg:        #05070a;
+  --c-bg-soft:   #0c1012;
+  --c-gold:      #CE9A47;
+  --c-gold-bright:#e0b85a;
+  --c-gold-dim:   rgba(206, 154, 71, 0.30);
+  --c-gold-faint: rgba(206, 154, 71, 0.12);
+  --c-cream:     #f3ece0;
+  --c-cream-dim: rgba(243, 236, 224, 0.65);
+  --c-cream-faint:rgba(243, 236, 224, 0.22);
+  --c-border:    rgba(243, 236, 224, 0.07);
+}
+
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; background: var(--c-bg); -webkit-font-smoothing: antialiased; }
+body { font-family: var(--f-body); color: var(--c-cream); background: var(--c-bg); line-height: 1.65; overflow-x: hidden; }
+img { max-width: 100%; display: block; }
+a  { color: inherit; text-decoration: none; }
+h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.01em; line-height: 1.1; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+.grain {
+  position: fixed; inset: 0; z-index: 999; pointer-events: none;
+  opacity: 0.04; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-repeat: repeat;
+}
+[data-theme="dark"] .grain {
+  mix-blend-mode: overlay; opacity: 0.04;
+}
+
+.btn {
+  font-family: var(--f-body); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.9em 1.7em; border-radius: 2px; border: 1px solid transparent;
+  display: inline-flex; align-items: center; cursor: pointer;
+  transition: transform 0.4s var(--ease), background 0.4s, border-color 0.4s;
+}
+.btn--gold { background: var(--c-gold); color: var(--c-bg); border-color: var(--c-gold); }
+.btn--gold:hover { background: var(--c-gold-bright); transform: translateY(-1px); }
+.btn--ghost { border-color: var(--c-cream-faint); color: var(--c-cream); }
+.btn--ghost:hover { border-color: var(--c-cream); transform: translateY(-1px); }
+
+/* nav */
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.5rem var(--gutter); font-family: var(--f-mark);
+  font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c-cream); mix-blend-mode: difference;
+  transition: padding 0.4s var(--ease);
+}
+[data-theme="dark"] .site-nav {
+  mix-blend-mode: difference; color: var(--c-cream);
+}
+.site-nav__logo { height: 36px; width: auto; display: block; }
+.site-nav__logo-dark { display: none; }
+[data-theme="dark"] .site-nav__logo-light { display: none; }
+[data-theme="dark"] .site-nav__logo-dark { display: block; }
+.theme-toggle {
+  background: none; border: 1px solid currentColor; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; color: inherit;
+  font-size: 0.9rem; line-height: 1; padding: 0;
+  opacity: 0.7; transition: opacity 0.3s;
+}
+.theme-toggle:hover { opacity: 1; }
+.site-nav__links { display: none; gap: 2rem; font-family: var(--f-body); letter-spacing: 0.08em; font-size: 0.74rem; }
+.site-nav__links a { opacity: 0.72; transition: opacity 0.3s var(--ease); }
+.site-nav__links a:hover { opacity: 1; }
+.site-nav__links a.is-active { opacity: 1; color: var(--c-gold); }
+.site-nav__cta { font-family: var(--f-body); font-size: 0.7rem; letter-spacing: 0.1em; border: 1px solid currentColor; padding: 0.45em 1em; border-radius: 2px; }
+@media (min-width: 880px) { .site-nav__links { display: flex; } }
+@media (max-width: 600px) { .site-nav__logo { height: 28px; } }
+
+/* page header */
+.page-header {
+  padding: 10rem var(--gutter) 5rem; max-width: 880px; margin: 0 auto; text-align: center;
+}
+.page-header__kicker {
+  font-family: var(--f-mark); font-size: 0.68rem; letter-spacing: 0.26em;
+  text-transform: uppercase; color: var(--c-gold); margin-bottom: 1.2rem;
+}
+.page-header h1 {
+  font-size: clamp(2.6rem, 6vw, 4.8rem); font-weight: 500;
+  line-height: 1.05; margin-bottom: 1.4rem;
+}
+.page-header__lede {
+  font-family: var(--f-display); font-style: italic;
+  font-size: clamp(1rem, 1.8vw, 1.2rem); color: var(--c-cream-dim);
+  max-width: 48ch; margin: 0 auto; line-height: 1.55;
+}
+
+/* intro */
+.intro-block {
+  max-width: 780px; margin: 0 auto; padding: 0 var(--gutter) 4rem;
+}
+.intro-block p { font-size: 1rem; line-height: 1.8; color: var(--c-cream-dim); }
+.intro-block p + p { margin-top: 1.2rem; }
+
+/* ============================================================
+   DOS CARAS (festival + itinerante)
+   ============================================================ */
+.split {
+  padding: 3rem var(--gutter) 5rem;
+  border-top: 1px solid var(--c-border);
+}
+.split__item {
+  display: grid; grid-template-columns: 1fr;
+  max-width: 1100px; margin: 0 auto 3rem;
+  background: var(--c-bg-soft);
+  border: 1px solid var(--c-border);
+}
+@media (min-width: 800px) { .split__item { grid-template-columns: 1.3fr 1fr; } }
+.split__item:last-child { margin-bottom: 0; }
+
+.split__image {
+  aspect-ratio: 3/2; overflow: hidden;
+}
+.split__image img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: sepia(0.25) saturate(0.8) contrast(1.05) brightness(0.9);
+  transform: scale(1.03);
+  transition: transform 1.5s var(--ease);
+}
+.split__item:hover .split__image img { transform: scale(1.06); }
+
+.split__body {
+  padding: 2.5rem; display: flex; flex-direction: column; justify-content: center;
+}
+.split__tag {
+  font-family: var(--f-mark); font-size: 0.64rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--c-gold); margin-bottom: 1rem;
+}
+.split__body h3 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: 1rem; line-height: 1.15;
+}
+.split__body p {
+  font-size: 0.95rem; line-height: 1.7;
+  color: var(--c-cream-dim); margin-bottom: 0.6rem;
+}
+
+/* feature image */
+.feature-image {
+  max-width: 1100px; margin: 0 auto; padding: 0 var(--gutter) 4rem;
+}
+.feature-image img {
+  width: 100%; aspect-ratio: 16/7; object-fit: cover;
+  border: 1px solid var(--c-gold-faint);
+  filter: sepia(0.3) saturate(0.85) contrast(1.06) brightness(0.9);
+}
+
+/* ============================================================
+   COLABORAR
+   ============================================================ */
+.colaborar {
+  padding: 5rem var(--gutter); text-align: center;
+  border-top: 1px solid var(--c-border);
+  background: var(--c-bg-soft);
+}
+.colaborar__kicker {
+  font-family: var(--f-mark); font-size: 0.68rem; letter-spacing: 0.26em;
+  text-transform: uppercase; color: var(--c-gold); margin-bottom: 1rem;
+}
+.colaborar h2 {
+  font-size: clamp(1.9rem, 4.2vw, 2.8rem);
+  font-weight: 400; margin-bottom: 1rem;
+}
+.colaborar p {
+  font-size: 1rem; color: var(--c-cream-dim);
+  max-width: 48ch; margin: 0 auto 2rem; line-height: 1.7;
+}
+.colaborar__actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+/* footer */
+.site-footer {
+  padding: 5rem var(--gutter) 2.5rem; text-align: center;
+  background: var(--c-bg); border-top: 1px solid var(--c-border);
+}
+.site-footer__logo { height: 56px; width: auto; margin: 0 auto 1rem; display: block; }
+.site-footer__line { color: var(--c-cream-dim); margin-bottom: 1rem; font-size: 0.95rem; }
+.site-footer__links { display: flex; justify-content: center; gap: 1.8rem; font-size: 0.78rem; letter-spacing: 0.06em; margin-bottom: 2rem; flex-wrap: wrap; }
+.site-footer__links a { opacity: 0.65; transition: opacity 0.3s; }
+.site-footer__links a:hover { opacity: 1; }
+.site-footer__legal { font-size: 0.7rem; color: var(--c-cream-faint); }
+
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="site-nav">
+  <a href="index.html" class="site-nav__mark">
+    <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-light">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-dark">
+  </a>
+  <nav class="site-nav__links">
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html" class="is-active">Cine Viajero</a>
+    <a href="index.html#agenda">Agenda</a>
+  </nav>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">☀</button>
+</header>
+
+<section class="page-header">
+  <p class="page-header__kicker">Habitación IV</p>
+  <h1>Cine Viajero</h1>
+  <p class="page-header__lede">
+    Una vez al año, Mandrágora se llena de pantallas, proyectores prestados
+    y gente que viajó solo para ver una película, una vez.
+  </p>
+</section>
+
+<!-- ============ FEATURE IMAGE ============ -->
+<section class="feature-image reveal">
+  <img src="assets/images/festival.jpg" alt="Proyección del Cine Viajero en Mandrágora" loading="lazy">
+</section>
+
+<section class="intro-block reveal">
+  <p>
+    El Cine Viajero nació de una idea simple: sacar el cine de las salas comerciales
+    y llevarlo a donde la gente está. Es un festival nómade que durante el año recorre
+    distintos puntos del país, y una vez al año vuelve a casa para una edición especial
+    en Mandrágora.
+  </p>
+  <p>
+    No competimos, no hay alfombra roja. Hay una película, una pantalla, butacas
+    prestadas y la convicción de que ver cine juntos —en el mismo lugar, al mismo
+    tiempo— sigue siendo una experiencia irreemplazable.
+  </p>
+</section>
+
+<section class="split">
+  <article class="split__item reveal">
+    <div class="split__image">
+      <img src="assets/images/festival.jpg" alt="Proyección del Cine Viajero en Mandrágora" loading="lazy">
+    </div>
+    <div class="split__body">
+      <div class="split__tag">El festival</div>
+      <h3>Edición anual en casa</h3>
+      <p>Una vez al año, Mandrágora se transforma en un cine de verdad. Múltiples pantallas, programación curada, cineastas invitados y un patio que se llena de gente hablando de películas hasta tarde.</p>
+      <p>La próxima edición está en preparación. Si tenés una película que querés mostrar, escribinos.</p>
+    </div>
+  </article>
+
+  <article class="split__item reveal">
+    <div class="split__image">
+      <img src="assets/images/comunidad.jpg" alt="Comunidad de Mandrágora" loading="lazy">
+    </div>
+    <div class="split__body">
+      <div class="split__tag">Itinerancia</div>
+      <h3>El cine sale de gira</h3>
+      <p>Durante el año, llevamos el proyector a otros lados: escuelas rurales, plazas, clubes de barrio, centros culturales del interior.</p>
+      <p>Si querés que el Cine Viajero llegue a tu localidad, ponete en contacto. Buscamos socios —empresas, instituciones, colectivos— que quieran hacer posible una función donde nunca hubo una.</p>
+    </div>
+  </article>
+</section>
+
+<section class="colaborar reveal" id="colaborar">
+  <p class="colaborar__kicker">Sumate</p>
+  <h2>¿Querés que el Cine Viajero llegue a tu ciudad?</h2>
+  <p>
+    Buscamos empresas e instituciones que quieran asociarse para llevar cine a donde no llega.
+    También recibimos películas para programar en la próxima edición.
+  </p>
+  <div class="colaborar__actions">
+    <a href="mailto:info@mandragora.uy?subject=Cine%20Viajero" class="btn btn--gold">Escribinos</a>
+    <a href="index.html" class="btn btn--ghost">Volver al inicio</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-footer__logo">
+  <p class="site-footer__line">Casa de teatro, escuela y comunidad.</p>
+  <nav class="site-footer__links">
+    <a href="index.html">Inicio</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+  </nav>
+  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById('current-year').textContent = new Date().getFullYear();
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) entry.target.classList.add('is-visible');
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
+
+  // theme toggle
+  var toggle = document.getElementById('theme-toggle');
+  var html = document.documentElement;
+  var saved = localStorage.getItem('mandragora-theme');
+  if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; }
+  toggle.addEventListener('click', function(){
+    var isDark = html.getAttribute('data-theme') === 'dark';
+    if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '☀'; localStorage.setItem('mandragora-theme','light'); }
+    else { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; localStorage.setItem('mandragora-theme','dark'); }
+  });
+})();
+</script>
+</body>
+</html>

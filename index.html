@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mandrágora — Donde la magia ocurre</title>
+<meta name="description" content="Mandrágora: escuela de artes, sala de teatro, compañía teatral y cine viajero. Un lugar con vida propia.">
+<link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
+
+<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   MANDRÁGORA — Design System & Global Styles
+   ============================================================ */
+:root {
+  /* === LIGHT INSTITUCIONAL — limpio, elegante, profesional === */
+  --c-bg:        #f8f4ed;
+  --c-bg-soft:   #f0ebe0;
+  --c-blue:      #1D3D91;
+  --c-green:     #8ABE28;
+  --c-gold:      #b8892e;
+  --c-gold-bright:#CE9A47;
+  --c-gold-dim:   rgba(184, 137, 46, 0.25);
+  --c-gold-faint: rgba(184, 137, 46, 0.10);
+  --c-ink:       #1a1512;
+  --c-ink-dim:   rgba(26, 21, 18, 0.65);
+  --c-ink-faint: rgba(26, 21, 18, 0.22);
+  --c-cream:     #1a1512;
+  --c-cream-dim: rgba(26, 21, 18, 0.65);
+  --c-cream-faint:rgba(26, 21, 18, 0.18);
+
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-mark:    'Cinzel', Georgia, serif;
+  --f-body:    'Jost', system-ui, -apple-system, sans-serif;
+
+  --gutter:    clamp(1.5rem, 5vw, 5rem);
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* === DARK THEME === */
+[data-theme="dark"] {
+  --c-bg:        #05070a;
+  --c-bg-soft:   #0c1012;
+  --c-gold:      #CE9A47;
+  --c-gold-bright:#e0b85a;
+  --c-gold-dim:   rgba(206, 154, 71, 0.30);
+  --c-gold-faint: rgba(206, 154, 71, 0.12);
+  --c-ink:       #f3ece0;
+  --c-ink-dim:   rgba(243, 236, 224, 0.65);
+  --c-ink-faint: rgba(243, 236, 224, 0.22);
+  --c-cream:     #f3ece0;
+  --c-cream-dim: rgba(243, 236, 224, 0.65);
+  --c-cream-faint:rgba(243, 236, 224, 0.22);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  background: var(--c-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--f-body);
+  color: var(--c-cream);
+  background: var(--c-bg);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+a  { color: inherit; text-decoration: none; }
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--f-display);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---- film grain ---- */
+.grain {
+  position: fixed; inset: 0; z-index: 999;
+  pointer-events: none; opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-repeat: repeat;
+}
+[data-theme="dark"] .grain {
+  mix-blend-mode: overlay; opacity: 0.04;
+}
+
+/* ---- buttons ---- */
+.btn {
+  font-family: var(--f-body);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.9em 1.7em;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.4s var(--ease), background 0.4s, border-color 0.4s, color 0.4s;
+  cursor: pointer;
+}
+.btn--gold {
+  background: var(--c-gold);
+  color: var(--c-bg);
+  border-color: var(--c-gold);
+}
+.btn--gold:hover { background: var(--c-gold-bright); transform: translateY(-1px); }
+.btn--ghost {
+  border-color: var(--c-ink-faint);
+  color: var(--c-ink);
+}
+.btn--ghost:hover { border-color: var(--c-ink); transform: translateY(-1px); }
+
+/* ---- keyframes ---- */
+@keyframes kenburns {
+  0%   { transform: scale(1.06) translate(0, 0); }
+  100% { transform: scale(1.13) translate(-1%, -0.6%); }
+}
+@keyframes rise-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes door-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 0.85; }
+}
+@keyframes drift-a {
+  0%   { transform: translate(0,0) scale(1); opacity: 0.1; }
+  50%  { transform: translate(-3%,-6%) scale(1.08); opacity: 0.18; }
+  100% { transform: translate(2%,-3%) scale(1); opacity: 0.1; }
+}
+@keyframes drift-b {
+  0%   { transform: translate(0,0) scale(1); opacity: 0.09; }
+  50%  { transform: translate(4%,-10%) scale(1.06); opacity: 0.2; }
+  100% { transform: translate(-2%,-4%) scale(1); opacity: 0.09; }
+}
+@keyframes drift-c {
+  0%   { transform: translate(0,0) scale(1); opacity: 0.06; }
+  50%  { transform: translate(-2%,-12%) scale(1.12); opacity: 0.16; }
+  100% { transform: translate(3%,-5%) scale(1); opacity: 0.06; }
+}
+@keyframes cue-line {
+  0%   { top: -100%; }
+  55%  { top: 100%; }
+  100% { top: 100%; }
+}
+@keyframes fade-up {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.5rem var(--gutter);
+  font-family: var(--f-mark);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+  transition: padding 0.4s var(--ease);
+}
+[data-theme="dark"] .site-nav {
+  mix-blend-mode: difference; color: var(--c-cream);
+}
+.site-nav__links {
+  display: none; gap: 2rem;
+  font-family: var(--f-body);
+  letter-spacing: 0.08em;
+  font-size: 0.74rem;
+}
+.site-nav__links a { opacity: 0.72; transition: opacity 0.3s var(--ease); }
+.site-nav__links a:hover { opacity: 1; }
+.site-nav__logo { height: 36px; width: auto; display: block; }
+.site-nav__logo-dark { display: none; }
+[data-theme="dark"] .site-nav__logo-light { display: none; }
+[data-theme="dark"] .site-nav__logo-dark { display: block; }
+.site-nav__cta {
+  font-family: var(--f-body); font-size: 0.7rem; letter-spacing: 0.1em;
+  border: 1px solid currentColor; padding: 0.45em 1em; border-radius: 2px;
+}
+.theme-toggle {
+  background: none; border: 1px solid currentColor; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; color: inherit;
+  font-size: 0.9rem; line-height: 1; padding: 0;
+  opacity: 0.7; transition: opacity 0.3s;
+}
+.theme-toggle:hover { opacity: 1; }
+.nav-instagram {
+  display: grid; place-items: center; opacity: 0.7; transition: opacity 0.3s;
+}
+.nav-instagram:hover { opacity: 1; }
+@media (min-width: 880px) { .site-nav__links { display: flex; } }
+@media (max-width: 600px) { .site-nav__logo { height: 28px; } }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative; height: 100vh; min-height: 640px;
+  width: 100%; overflow: hidden; background: var(--c-bg);
+}
+
+/* scene (60% right side) */
+.hero__scene {
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 1;
+}
+.scene__photo {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 62%;
+  overflow: hidden; background: var(--c-bg);
+}
+.scene__photo img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 40% 24%;
+  filter: saturate(0.88) contrast(1.06);
+  animation: kenburns 55s ease-in-out infinite alternate;
+}
+.scene__photo-fade {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    var(--c-bg) 0%,
+    color-mix(in srgb, var(--c-bg) 82%, transparent) 8%,
+    color-mix(in srgb, var(--c-bg) 30%, transparent) 24%,
+    color-mix(in srgb, var(--c-bg) 6%, transparent) 40%,
+    transparent 58%
+  );
+}
+.scene__floorfade {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(0deg, color-mix(in srgb, var(--c-bg) 94%, transparent) 0%, transparent 32%);
+}
+
+/* glow behind figure */
+.scene__glow {
+  position: absolute; left: 43%; top: 38%; width: 40%; height: 48%;
+  transform: translate(-50%,0);
+  background: radial-gradient(ellipse 54% 58% at 50% 44%, rgba(224,184,90,0.34), rgba(206,154,71,0.06) 48%, transparent 72%);
+  filter: blur(20px); mix-blend-mode: screen;
+  animation: door-pulse 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* smoke layers */
+.scene__smoke {
+  position: absolute; z-index: 4; pointer-events: none;
+  border-radius: 50%; filter: blur(28px); mix-blend-mode: screen;
+}
+.smoke--a {
+  width: 28vw; height: 28vw; left: 54%; bottom: -6%;
+  background: radial-gradient(circle, rgba(220,200,170,0.50), transparent 66%);
+  animation: drift-a 26s ease-in-out infinite;
+}
+.smoke--b {
+  width: 20vw; height: 20vw; left: 66%; bottom: -2%;
+  background: radial-gradient(circle, rgba(29,61,145,0.18), transparent 68%);
+  animation: drift-b 32s ease-in-out infinite;
+}
+.smoke--c {
+  width: 15vw; height: 15vw; left: 58%; bottom: 6%;
+  background: radial-gradient(circle, rgba(190,195,190,0.28), transparent 68%);
+  animation: drift-c 38s ease-in-out infinite;
+}
+
+/* vignette */
+.scene__vignette {
+  position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  background: radial-gradient(ellipse 82% 82% at 64% 46%, transparent 46%, color-mix(in srgb, var(--c-bg) 55%, transparent) 100%);
+  box-shadow: inset 0 0 16vw 3vw color-mix(in srgb, var(--c-bg) 60%, transparent);
+}
+
+/* content (left side) */
+.hero__content {
+  position: relative; z-index: 10; height: 100%;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 1rem; padding: 0 var(--gutter); max-width: 560px;
+}
+.hero__eyebrow {
+  font-family: var(--f-mark); font-size: 0.68rem;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--c-gold);
+  opacity: 0; transform: translateY(14px);
+  animation: rise-in 1.1s var(--ease) 0.25s forwards;
+}
+.hero__title {
+  font-size: clamp(3rem, 8vw, 5.8rem); line-height: 0.94;
+  color: var(--c-cream);
+  text-shadow: 0 4px 48px rgba(0,0,0,0.65);
+  opacity: 0; transform: translateY(20px);
+  animation: rise-in 1.3s var(--ease) 0.45s forwards;
+}
+.hero__lede {
+  font-family: var(--f-display); font-style: italic;
+  font-size: clamp(1rem, 1.9vw, 1.28rem); line-height: 1.45;
+  color: var(--c-cream-dim); max-width: 30ch;
+  opacity: 0; transform: translateY(16px);
+  animation: rise-in 1.2s var(--ease) 0.75s forwards;
+}
+.hero__actions {
+  display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.4rem;
+  opacity: 0; transform: translateY(14px);
+  animation: rise-in 1.2s var(--ease) 1.05s forwards;
+}
+
+/* scroll cue */
+.hero__scroll-cue {
+  position: absolute; z-index: 10; left: var(--gutter); bottom: 2.2rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  background: none; border: none; cursor: pointer;
+  color: var(--c-cream-dim); font-family: var(--f-body);
+  font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
+  opacity: 0;
+  animation: rise-in 1s var(--ease) 1.5s forwards;
+}
+.hero__scroll-cue span { font-size: 0.66rem; }
+.hero__scroll-cue i {
+  width: 1px; height: 30px; display: block; position: relative; overflow: hidden;
+  background: linear-gradient(to bottom, var(--c-gold), transparent);
+}
+.hero__scroll-cue i::after {
+  content: ''; position: absolute; left: 0; top: -100%;
+  width: 100%; height: 100%; background: var(--c-gold-bright);
+  animation: cue-line 2.4s ease-in-out infinite;
+}
+
+/* hero responsive */
+@media (max-width: 880px) {
+  .hero { min-height: 100svh; }
+  .scene__photo { width: 100%; height: 55%; }
+  .scene__photo img { object-position: 42% 40%; }
+  .scene__photo-fade {
+    background: linear-gradient(0deg,
+      rgba(5,7,10,1) 0%,
+      rgba(5,7,10,0.72) 12%,
+      rgba(5,7,10,0.14) 38%,
+      transparent 62%
+    );
+  }
+  .scene__glow { top: 28%; left: 50%; width: 58%; height: 48%; }
+  .hero__content { justify-content: flex-end; padding-bottom: 6rem; max-width: 100%; }
+  .hero__title { font-size: clamp(2.8rem, 13vw, 4rem); }
+  .hero__scroll-cue { left: 50%; transform: translateX(-50%); bottom: 1.2rem; }
+}
+
+/* ============================================================
+   THRESHOLD
+   ============================================================ */
+.threshold {
+  position: relative; height: 22vh; min-height: 120px;
+  background: var(--c-bg); display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.threshold__light {
+  position: absolute; inset: -20%;
+  background: radial-gradient(ellipse 52% 62% at 50% 0%, rgba(224,184,90,0.18), transparent 62%);
+  filter: blur(10px);
+}
+.threshold__text {
+  position: relative; z-index: 2;
+  font-family: var(--f-display); font-style: italic;
+  font-size: clamp(1.1rem, 2.2vw, 1.55rem);
+  color: var(--c-cream-dim);
+}
+
+/* ============================================================
+   INSIDE INTRO
+   ============================================================ */
+.inside-intro {
+  max-width: 840px; margin: 0 auto;
+  padding: 3rem var(--gutter) 2.5rem; text-align: center;
+}
+.inside-intro__kicker {
+  font-family: var(--f-mark); font-size: 0.68rem;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--c-gold); margin-bottom: 1.2rem;
+}
+.inside-intro__title {
+  font-size: clamp(1.9rem, 4.2vw, 3.1rem); font-weight: 400;
+  line-height: 1.15; margin-bottom: 1.4rem;
+}
+.inside-intro__lede {
+  font-size: 1rem; line-height: 1.7; color: var(--c-cream-dim);
+  max-width: 52ch; margin: 0 auto;
+}
+
+/* ============================================================
+   ROOMS
+   ============================================================ */
+.rooms { display: flex; flex-direction: column; }
+
+.room {
+  display: grid; grid-template-columns: 1fr;
+  min-height: 68vh; padding: 4rem var(--gutter);
+  border-top: 1px solid rgba(26,21,18,0.08);
+  background: var(--c-bg-soft); gap: 2.2rem;
+}
+.room--alt { background: var(--c-bg); }
+
+.room__media {
+  position: relative; aspect-ratio: 4/3; overflow: hidden;
+  border: 1px solid rgba(26,21,18,0.12);
+}
+.room__media::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(248,244,237,0.03), rgba(26,21,18,0.35));
+  pointer-events: none;
+}
+.room__media img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: saturate(0.84) contrast(1.04) brightness(0.93);
+  transform: scale(1.03);
+  transition: transform 2s var(--ease);
+}
+.room:hover .room__media img { transform: scale(1.08); }
+
+.room__body {
+  max-width: 580px; align-self: center;
+}
+.room__index {
+  font-family: var(--f-mark); font-size: 0.66rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--c-gold); margin-bottom: 1.2rem;
+}
+.room__title {
+  font-size: clamp(2.2rem, 5.8vw, 3.8rem); line-height: 1;
+  margin-bottom: 1.2rem; color: var(--c-cream);
+}
+.room__text {
+  font-size: 0.98rem; line-height: 1.75; color: var(--c-cream-dim);
+  max-width: 48ch; margin-bottom: 1.6rem;
+}
+.room__link {
+  font-family: var(--f-body); font-size: 0.8rem; letter-spacing: 0.06em;
+  color: var(--c-gold-bright); border-bottom: 1px solid transparent;
+  transition: border-color 0.3s var(--ease);
+}
+.room__link:hover { border-color: var(--c-blue); color: var(--c-gold-bright); }
+
+@media (min-width: 880px) {
+  .room {
+    grid-template-columns: 1fr 1fr; align-items: center;
+    padding: 6rem var(--gutter); gap: 4.5rem;
+  }
+  .room--alt .room__media { order: 2; }
+  .room--alt .room__body  { order: 1; }
+  .room__media { aspect-ratio: 5/4; }
+}
+
+/* ============================================================
+   UBICACIÓN
+   ============================================================ */
+.ubicacion {
+  text-align: center; padding: 4rem var(--gutter);
+  border-top: 1px solid var(--c-border);
+}
+.ubicacion p {
+  font-family: var(--f-display); font-size: 1.1rem;
+  margin-bottom: 0.8rem; color: var(--c-cream-dim);
+}
+.ubicacion__tel {
+  font-family: var(--f-body) !important;
+  font-size: 0.9rem !important;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   LA CASA
+   ============================================================ */
+.casa-strip {
+  max-width: 1100px; margin: 0 auto;
+  padding: 4rem var(--gutter);
+  display: grid; grid-template-columns: 1fr;
+  gap: 2rem; align-items: center;
+  border-top: 1px solid var(--c-border);
+}
+@media (min-width: 700px) { .casa-strip { grid-template-columns: 1fr 1fr; } }
+.casa-strip img {
+  width: 100%; aspect-ratio: 4/3; object-fit: cover;
+  border: 1px solid var(--c-gold-faint);
+  filter: sepia(0.2) saturate(0.85) contrast(1.04);
+}
+.casa-strip__kicker {
+  font-family: var(--f-mark); font-size: 0.68rem;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--c-gold); margin-bottom: 1rem;
+}
+.casa-strip__text p {
+  font-size: 1rem; line-height: 1.7; color: var(--c-cream-dim);
+}
+
+/* ============================================================
+   AGENDA
+   ============================================================ */
+.agenda {
+  padding: 6rem var(--gutter); background: var(--c-bg);
+  border-top: 1px solid rgba(26,21,18,0.08);
+}
+.agenda__header {
+  text-align: center; margin-bottom: 3.5rem;
+}
+.agenda__kicker {
+  font-family: var(--f-mark); font-size: 0.68rem;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--c-gold); margin-bottom: 1rem;
+}
+.agenda__title {
+  font-size: clamp(1.9rem, 4.2vw, 3.1rem); font-weight: 400;
+  line-height: 1.15;
+}
+
+.agenda__grid {
+  display: grid; grid-template-columns: 1fr;
+  gap: 1.8rem; max-width: 1100px; margin: 0 auto;
+}
+@media (min-width: 700px) { .agenda__grid { grid-template-columns: repeat(3, 1fr); } }
+
+.agenda-card {
+  background: var(--c-bg-soft); border: 1px solid rgba(26,21,18,0.08);
+  padding: 2.2rem; border-radius: 2px;
+  transition: border-color 0.4s var(--ease);
+}
+.agenda-card:hover { border-color: var(--c-gold-dim); }
+
+.agenda-card__tag {
+  font-family: var(--f-mark); font-size: 0.62rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--c-gold); margin-bottom: 1.1rem;
+}
+.agenda-card__title {
+  font-size: 1.6rem; line-height: 1.2; margin-bottom: 0.7rem;
+}
+.agenda-card__desc {
+  font-size: 0.9rem; line-height: 1.65; color: var(--c-cream-dim);
+  margin-bottom: 1.4rem;
+}
+.agenda-card__date {
+  font-family: var(--f-body); font-size: 0.74rem;
+  letter-spacing: 0.06em; color: var(--c-cream-faint);
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+  padding: 5rem var(--gutter) 2.5rem; text-align: center;
+  background: var(--c-bg); border-top: 1px solid rgba(26,21,18,0.08);
+}
+.site-footer__logo { height: 56px; width: auto; margin: 0 auto 1rem; display: block; }
+.site-footer__line {
+  color: var(--c-cream-dim); margin-bottom: 1.8rem; font-size: 0.95rem;
+}
+.site-footer__social {
+  display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2.4rem;
+}
+.site-footer__social a {
+  width: 38px; height: 38px; display: grid; place-items: center;
+  border: 1px solid var(--c-cream-faint); border-radius: 50%;
+  color: var(--c-cream-dim); transition: border-color 0.3s, color 0.3s;
+}
+.site-footer__social a:hover { border-color: var(--c-gold); color: var(--c-gold); }
+.site-footer__social svg { width: 16px; height: 16px; }
+
+.site-footer__links {
+  display: flex; justify-content: center; gap: 1.8rem;
+  font-size: 0.78rem; letter-spacing: 0.06em; margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+.site-footer__links a { opacity: 0.65; transition: opacity 0.3s; }
+.site-footer__links a:hover { opacity: 1; }
+.site-footer__legal {
+  font-size: 0.7rem; color: var(--c-cream-faint);
+}
+
+/* ============================================================
+   SCROLL-DRIVEN REVEALS
+   ============================================================ */
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+.threshold .threshold__text {
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 1.1s var(--ease), transform 1.1s var(--ease);
+}
+.threshold.is-visible .threshold__text { opacity: 1; transform: translateY(0); }
+
+.inside-intro .inside-intro__kicker,
+.inside-intro .inside-intro__title,
+.inside-intro .inside-intro__lede { opacity: 0; transform: translateY(18px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.inside-intro.is-visible .inside-intro__kicker { opacity: 1; transform: translateY(0); transition-delay: 0s; }
+.inside-intro.is-visible .inside-intro__title  { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+.inside-intro.is-visible .inside-intro__lede   { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+
+.room .room__media,
+.room .room__body { opacity: 0; transform: translateY(26px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+.room.is-visible .room__media { opacity: 1; transform: translateY(0); }
+.room.is-visible .room__body  { opacity: 1; transform: translateY(0); transition-delay: 0.12s; }
+
+.agenda-card { opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.agenda-card.is-visible:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0s; }
+.agenda-card.is-visible:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+.agenda-card.is-visible:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ NAV ============ -->
+<header class="site-nav">
+  <a href="#hero" class="site-nav__mark">
+    <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-light">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-dark">
+  </a>
+  <nav class="site-nav__links">
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="agenda.html">Agenda</a>
+  </nav>
+  <a href="https://www.instagram.com/mandragoracasa/" target="_blank" rel="noopener" class="nav-instagram" aria-label="Instagram">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.5" fill="currentColor" stroke="none"/></svg>
+  </a>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">☀</button>
+</header>
+
+<!-- ============ HERO ============ -->
+<section id="hero" class="hero">
+  <div class="hero__scene">
+    <div class="scene__photo">
+      <img src="assets/images/hero-mandragora.jpg" alt="La mandrágora: raíces con forma humana bajo una luz cálida en el escenario">
+      <div class="scene__photo-fade" aria-hidden="true"></div>
+      <div class="scene__glow" aria-hidden="true"></div>
+    </div>
+    <div class="scene__floorfade" aria-hidden="true"></div>
+    <div class="scene__smoke smoke--a" aria-hidden="true"></div>
+    <div class="scene__smoke smoke--b" aria-hidden="true"></div>
+    <div class="scene__smoke smoke--c" aria-hidden="true"></div>
+    <div class="scene__vignette" aria-hidden="true"></div>
+  </div>
+
+  <div class="hero__content">
+    <p class="hero__eyebrow">TEATRO · ESCUELA DE ARTES</p>
+    <h1 class="hero__title">Mandrágora</h1>
+    <p class="hero__lede">
+      Una casa, no una institución.<br>
+      Donde la magia ocurre.
+    </p>
+    <div class="hero__actions">
+      <a href="escuela.html#inscripciones" class="btn btn--gold">Inscripciones</a>
+      <a href="agenda.html" class="btn btn--ghost">Agenda</a>
+      <a href="sala.html#reservar" class="btn btn--ghost">Reservar sala</a>
+    </div>
+  </div>
+
+  <a href="#threshold" class="hero__scroll-cue" aria-label="Entrar a Mandrágora">
+    <span>Entrar</span>
+    <i aria-hidden="true"></i>
+  </a>
+</section>
+
+<!-- ============ THRESHOLD ============ -->
+<section id="threshold" class="threshold">
+  <div class="threshold__light" aria-hidden="true"></div>
+  <p class="threshold__text">Atravesás la puerta.</p>
+</section>
+
+<!-- ============ INSIDE INTRO ============ -->
+<section class="inside-intro">
+  <p class="inside-intro__kicker">Adentro</p>
+  <h2 class="inside-intro__title">Lo que vive dentro de Mandrágora</h2>
+  <p class="inside-intro__lede">
+    Una casa antigua, reconvertida en territorio para el ensayo, el error, la función y el encuentro.
+    Cinco habitaciones, una sola respiración.
+  </p>
+</section>
+
+<!-- ============ ROOMS ============ -->
+<section class="rooms">
+
+  <!-- I · Escuela -->
+  <article id="escuela" class="room" data-room>
+    <div class="room__media">
+      <img src="assets/images/escuela.jpg" alt="Clase de actuación en la escuela de Mandrágora" loading="lazy">
+    </div>
+    <div class="room__body">
+      <div class="room__index">Habitación I</div>
+      <h3 class="room__title">Escuela<br>de Artes</h3>
+      <p class="room__text">
+        Talleres de actuación, clown, voz y dramaturgia. Un lugar para equivocarse en voz alta,
+        sostenido por docentes que también se equivocaron antes.
+      </p>
+      <a href="escuela.html" class="room__link">Ver talleres →</a>
+    </div>
+  </article>
+
+  <!-- II · Sala -->
+  <article id="sala" class="room room--alt" data-room>
+    <div class="room__media">
+      <img src="assets/images/sala.jpg" alt="Sala de teatro de Mandrágora" loading="lazy">
+    </div>
+    <div class="room__body">
+      <div class="room__index">Habitación II</div>
+      <h3 class="room__title">Sala<br>&amp; Eventos</h3>
+      <p class="room__text">
+        Un espacio íntimo y equipado donde la función empieza antes de que se apaguen las luces.
+        Disponible para programación propia, alquiler a compañías, congresos y eventos corporativos.
+      </p>
+      <a href="sala.html" class="room__link">Reservar sala →</a>
+    </div>
+  </article>
+
+  <!-- III · Compañía -->
+  <article id="compania" class="room" data-room>
+    <div class="room__media">
+      <img src="assets/images/compania.jpg" alt="Compañía teatral de Mandrágora en escena" loading="lazy">
+    </div>
+    <div class="room__body">
+      <div class="room__index">Habitación III</div>
+      <h3 class="room__title">Compañía<br>Teatral</h3>
+      <p class="room__text">
+        El cuerpo estable de Mandrágora. Crea, gira, vuelve a casa y enseña lo que aprendió afuera.
+        Teatro propio con voz uruguaya.
+      </p>
+      <a href="compania.html" class="room__link">Ver obras →</a>
+    </div>
+  </article>
+
+  <!-- IV · Cine Viajero -->
+  <article id="cine-viajero" class="room room--alt" data-room>
+    <div class="room__media">
+      <img src="assets/images/festival.jpg" alt="Proyección del Cine Viajero en Mandrágora" loading="lazy">
+    </div>
+    <div class="room__body">
+      <div class="room__index">Habitación IV</div>
+      <h3 class="room__title">Cine<br>Viajero</h3>
+      <p class="room__text">
+        Una vez al año, Mandrágora se llena de pantallas y proyectores. Gente que viajó solo para ver
+        una película, una vez. Programa itinerante que recorre el país.
+      </p>
+      <a href="cine-viajero.html" class="room__link">Ver programa →</a>
+    </div>
+  </article>
+
+  <!-- V · Comunidad -->
+  <article id="comunidad" class="room" data-room>
+    <div class="room__media">
+      <img src="assets/images/comunidad.jpg" alt="Comunidad de Mandrágora reunida" loading="lazy">
+    </div>
+    <div class="room__body">
+      <div class="room__index">Habitación V</div>
+      <h3 class="room__title">Comunidad</h3>
+      <p class="room__text">
+        Quienes vuelven. Egresados, vecinos, público fiel: la razón por la que las luces
+        se siguen prendiendo cada noche.
+      </p>
+      <a href="comunidad.html" class="room__link">Sumarme →</a>
+    </div>
+  </article>
+
+</section>
+
+<!-- ============ UBICACIÓN ============ -->
+<section class="ubicacion reveal" id="donde-estamos">
+  <p class="casa-strip__kicker">Dónde estamos</p>
+  <p>Javier Barrios Amorín 1312<br>Montevideo, Uruguay</p>
+  <p class="ubicacion__tel">097 052 948</p>
+  <a href="https://maps.app.goo.gl/pZUTAHcNrtp7gPkEA" target="_blank" rel="noopener" class="btn btn--ghost">Ver en Google Maps →</a>
+</section>
+
+<!-- ============ LA CASA ============ -->
+<section class="casa-strip reveal">
+  <img src="assets/images/fachada.jpg" alt="Fachada de Mandrágora" loading="lazy">
+  <div class="casa-strip__text">
+    <p class="casa-strip__kicker">La casa</p>
+    <p>Una casa antigua reconvertida en teatro, escuela y comunidad. <br>Montevideo, Uruguay.</p>
+  </div>
+</section>
+
+<!-- ============ AGENDA ============ -->
+<section id="agenda" class="agenda">
+  <div class="agenda__header">
+    <p class="agenda__kicker">Lo que se viene</p>
+    <h2 class="agenda__title">Próximas funciones</h2>
+  </div>
+
+  <div class="agenda__grid">
+    <article class="agenda-card reveal">
+      <div class="agenda-card__tag">Compañía</div>
+      <h3 class="agenda-card__title">Atrapada en la pantalla</h3>
+      <p class="agenda-card__desc">
+        Una aventura interactiva para infancias. Dos hermanos rescatan a su tía atrapada en un celular. Nominada a 3 premios Florencio.
+      </p>
+      <p class="agenda-card__date">Julio 2026 · Funciones los sábados</p>
+    </article>
+
+    <article class="agenda-card reveal">
+      <div class="agenda-card__tag">Compañía</div>
+      <h3 class="agenda-card__title">Con las manos atadas</h3>
+      <p class="agenda-card__desc">
+        La impotencia como punto de partida. Un ejercicio escénico sobre lo que no podemos
+        controlar y lo que elegimos soltar.
+      </p>
+      <p class="agenda-card__date">Agosto 2026</p>
+    </article>
+
+    <article class="agenda-card reveal">
+      <div class="agenda-card__tag">Compañía</div>
+      <h3 class="agenda-card__title">La inevitable crisis del actor</h3>
+      <p class="agenda-card__desc">
+        Detrás del personaje hay una persona. Detrás de la persona, una pregunta que
+        no se deja de hacer. Un biodrama sobre el oficio.
+      </p>
+      <p class="agenda-card__date">Setiembre 2026</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer" id="inscripciones">
+  <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-footer__logo">
+  <p class="site-footer__line">Casa de teatro, escuela y comunidad.</p>
+
+  <div class="site-footer__social">
+    <a href="https://www.instagram.com/mandragoracasa/" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.5" fill="currentColor" stroke="none"/></svg>
+    </a>
+    <a href="https://www.facebook.com/mandragoracasacultural/" target="_blank" rel="noopener" aria-label="Facebook">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+    </a>
+    <a href="https://www.youtube.com/watch?v=dYD7jiqehDo" target="_blank" rel="noopener" aria-label="YouTube">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9.3"/><path d="M7 9.6c3.4-1 7-0.6 10 1" stroke-linecap="round"/><path d="M7.7 12.4c2.9-0.8 5.9-0.5 8.4 0.9" stroke-linecap="round"/><path d="M8.4 15.1c2.3-0.6 4.7-0.4 6.7 0.7" stroke-linecap="round"/></svg>
+    </a>
+  </div>
+
+  <nav class="site-footer__links">
+    <a href="index.html">Inicio</a>
+    <a href="agenda.html">Agenda</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+  </nav>
+
+  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora</p>
+</footer>
+
+<!-- ============ SCROLL REVEAL ============ -->
+<script>
+(function(){
+  "use strict";
+
+  // Current year
+  var y = document.getElementById('current-year');
+  if (y) y.textContent = new Date().getFullYear();
+
+  // Intersection Observer for scroll reveals
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+      }
+    });
+  }, { threshold: 0.18, rootMargin: '0px 0px -40px 0px' });
+
+  // Observe threshold
+  var threshold = document.querySelector('.threshold');
+  if (threshold) observer.observe(threshold);
+
+  // Observe inside-intro
+  var inside = document.querySelector('.inside-intro');
+  if (inside) observer.observe(inside);
+
+  // Observe rooms
+  document.querySelectorAll('[data-room]').forEach(function(r){ observer.observe(r); });
+
+  // Observe agenda cards
+  document.querySelectorAll('.agenda-card').forEach(function(c){ observer.observe(c); });
+
+  // Observe reveals
+  document.querySelectorAll('.reveal').forEach(function(r){ observer.observe(r); });
+
+  // Smooth scroll for scroll cue
+  var cue = document.querySelector('.hero__scroll-cue');
+  if (cue) {
+    cue.addEventListener('click', function(e){
+      e.preventDefault();
+      var target = document.querySelector('#threshold');
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  // theme toggle
+  var toggle = document.getElementById('theme-toggle');
+  var html = document.documentElement;
+  var saved = localStorage.getItem('mandragora-theme');
+  if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; }
+  toggle.addEventListener('click', function(){
+    var isDark = html.getAttribute('data-theme') === 'dark';
+    if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '☀'; localStorage.setItem('mandragora-theme','light'); }
+    else { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; localStorage.setItem('mandragora-theme','dark'); }
+  });
+})();
+</script>
+
+</body>
+</html>

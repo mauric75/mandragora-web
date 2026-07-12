@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comunidad — Mandrágora</title>
+<meta name="description" content="La comunidad de Mandrágora. Egresados, vecinos, público fiel: la razón por la que las luces se siguen prendiendo cada noche.">
+<link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
+
+<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --c-bg:        #f8f4ed;
+  --c-bg-soft:   #f0ebe0;
+  --c-blue:      #1D3D91;
+  --c-green:     #8ABE28;
+  --c-gold:      #b8892e;
+  --c-gold-bright:#CE9A47;
+  --c-gold-dim:   rgba(184, 137, 46, 0.25);
+  --c-gold-faint: rgba(184, 137, 46, 0.10);
+  --c-cream:     #1a1512;
+  --c-cream-dim: rgba(26, 21, 18, 0.65);
+  --c-cream-faint:rgba(26, 21, 18, 0.18);
+  --c-border:    rgba(26, 21, 18, 0.07);
+
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-mark:    'Cinzel', Georgia, serif;
+  --f-body:    'Jost', system-ui, -apple-system, sans-serif;
+
+  --gutter:    clamp(1.5rem, 5vw, 5rem);
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme="dark"] {
+  --c-bg:        #05070a;
+  --c-bg-soft:   #0c1012;
+  --c-gold:      #CE9A47;
+  --c-gold-bright:#e0b85a;
+  --c-gold-dim:   rgba(206, 154, 71, 0.30);
+  --c-gold-faint: rgba(206, 154, 71, 0.12);
+  --c-cream:     #f3ece0;
+  --c-cream-dim: rgba(243, 236, 224, 0.65);
+  --c-cream-faint:rgba(243, 236, 224, 0.22);
+  --c-border:    rgba(243, 236, 224, 0.07);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; background: var(--c-bg); -webkit-font-smoothing: antialiased; }
+body { font-family: var(--f-body); color: var(--c-cream); background: var(--c-bg); line-height: 1.65; overflow-x: hidden; }
+img { max-width: 100%; display: block; }
+a  { color: inherit; text-decoration: none; }
+h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.01em; line-height: 1.1; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+.grain {
+  position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-repeat: repeat;
+}
+[data-theme="dark"] .grain { mix-blend-mode: overlay; opacity: 0.04; }
+
+.btn {
+  font-family: var(--f-body); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.9em 1.7em; border-radius: 2px; border: 1px solid transparent;
+  display: inline-flex; align-items: center; cursor: pointer;
+  transition: transform 0.4s var(--ease), background 0.4s, border-color 0.4s;
+}
+.btn--gold { background: var(--c-gold); color: var(--c-bg); border-color: var(--c-gold); }
+.btn--gold:hover { background: var(--c-gold-bright); transform: translateY(-1px); }
+.btn--ghost { border-color: var(--c-cream-faint); color: var(--c-cream); }
+.btn--ghost:hover { border-color: var(--c-cream); transform: translateY(-1px); }
+
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.5rem var(--gutter); font-family: var(--f-mark);
+  font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c-ink);
+  transition: padding 0.4s var(--ease);
+}
+[data-theme="dark"] .site-nav { mix-blend-mode: difference; color: var(--c-cream); }
+.site-nav__logo { height: 36px; width: auto; display: block; }
+.site-nav__logo-dark { display: none; }
+[data-theme="dark"] .site-nav__logo-light { display: none; }
+[data-theme="dark"] .site-nav__logo-dark { display: block; }
+.site-nav__links { display: none; gap: 2rem; font-family: var(--f-body); letter-spacing: 0.08em; font-size: 0.74rem; }
+.site-nav__links a { opacity: 0.72; transition: opacity 0.3s var(--ease); }
+.site-nav__links a:hover { opacity: 1; }
+.site-nav__links a.is-active { opacity: 1; color: var(--c-gold); }
+.theme-toggle {
+  background: none; border: 1px solid currentColor; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; color: inherit;
+  font-size: 0.9rem; line-height: 1; padding: 0;
+  opacity: 0.7; transition: opacity 0.3s;
+}
+.theme-toggle:hover { opacity: 1; }
+@media (min-width: 880px) { .site-nav__links { display: flex; } }
+@media (max-width: 600px) { .site-nav__logo { height: 28px; } }
+
+.page-header { padding: 10rem var(--gutter) 5rem; max-width: 880px; margin: 0 auto; text-align: center; }
+.page-header__kicker { font-family: var(--f-mark); font-size: 0.68rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--c-gold); margin-bottom: 1.2rem; }
+.page-header h1 { font-size: clamp(2.6rem, 6vw, 4.8rem); font-weight: 500; line-height: 1.05; margin-bottom: 1.4rem; }
+.page-header__lede { font-family: var(--f-display); font-style: italic; font-size: clamp(1rem, 1.8vw, 1.2rem); color: var(--c-cream-dim); max-width: 48ch; margin: 0 auto; line-height: 1.55; }
+
+.intro-block { max-width: 780px; margin: 0 auto; padding: 0 var(--gutter) 4rem; }
+.intro-block p { font-size: 1rem; line-height: 1.8; color: var(--c-cream-dim); }
+.intro-block p + p { margin-top: 1.2rem; }
+
+/* valores */
+.valores { padding: 4rem var(--gutter); border-top: 1px solid var(--c-border); background: var(--c-bg-soft); }
+.valores__header { text-align: center; margin-bottom: 3rem; }
+.valores__kicker { font-family: var(--f-mark); font-size: 0.68rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--c-gold); margin-bottom: 1rem; }
+.valores__title { font-size: clamp(1.9rem, 4.2vw, 3rem); font-weight: 400; }
+.valores__grid { display: grid; grid-template-columns: 1fr; gap: 1.6rem; max-width: 900px; margin: 0 auto; }
+@media (min-width: 700px) { .valores__grid { grid-template-columns: repeat(3, 1fr); } }
+.valor-card { text-align: center; padding: 1.5rem; }
+.valor-card__num { font-family: var(--f-mark); font-size: 0.7rem; letter-spacing: 0.2em; color: var(--c-gold); margin-bottom: 1rem; }
+.valor-card h3 { font-size: 1.3rem; margin-bottom: 0.6rem; }
+.valor-card p { font-size: 0.9rem; line-height: 1.6; color: var(--c-cream-dim); }
+
+/* cta */
+.cta-block { padding: 6rem var(--gutter); text-align: center; border-top: 1px solid var(--c-border); }
+.cta-block h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+.cta-block p { font-size: 1rem; color: var(--c-cream-dim); max-width: 44ch; margin: 0 auto 2rem; }
+.cta-block__actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+.site-footer { padding: 5rem var(--gutter) 2.5rem; text-align: center; background: var(--c-bg); border-top: 1px solid var(--c-border); }
+.site-footer__logo { height: 56px; width: auto; margin: 0 auto 1rem; display: block; }
+.site-footer__line { color: var(--c-cream-dim); margin-bottom: 1rem; font-size: 0.95rem; }
+.site-footer__links { display: flex; justify-content: center; gap: 1.8rem; font-size: 0.78rem; letter-spacing: 0.06em; margin-bottom: 2rem; flex-wrap: wrap; }
+.site-footer__links a { opacity: 0.65; transition: opacity 0.3s; }
+.site-footer__links a:hover { opacity: 1; }
+.site-footer__legal { font-size: 0.7rem; color: var(--c-cream-faint); }
+
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="site-nav">
+  <a href="index.html" class="site-nav__mark">
+    <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-light">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-dark">
+  </a>
+  <nav class="site-nav__links">
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="agenda.html">Agenda</a>
+    <a href="comunidad.html" class="is-active">Comunidad</a>
+  </nav>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">☀</button>
+</header>
+
+<section class="page-header reveal">
+  <p class="page-header__kicker">Habitación V</p>
+  <h1>Comunidad</h1>
+  <p class="page-header__lede">
+    Quienes vuelven. Egresados, vecinos, público fiel: la razón por la que las luces se siguen prendiendo cada noche.
+  </p>
+</section>
+
+<section class="intro-block reveal">
+  <p>
+    Mandrágora no es solo un edificio. Es la gente que lo habita, lo cuida, lo llena de sentido.
+    Desde los vecinos del barrio que se asoman a ver qué hay esta noche, hasta los egresados
+    de la escuela que vuelven como docentes o como público. Desde los chicos que vieron su
+    primera obra acá hasta las empresas que eligen este espacio para sus eventos.
+  </p>
+  <p>
+    La comunidad de Mandrágora es abierta, diversa y en crecimiento. No pedimos carnet de
+    socio ni experiencia previa. Solo ganas de ser parte.
+  </p>
+</section>
+
+<section class="valores">
+  <div class="valores__header reveal">
+    <p class="valores__kicker">Lo que nos mueve</p>
+    <h2 class="valores__title">Nuestros valores</h2>
+  </div>
+  <div class="valores__grid">
+    <div class="valor-card reveal">
+      <div class="valor-card__num">01</div>
+      <h3>Compromiso social</h3>
+      <p>Creemos que el arte transforma comunidades. Por eso abrimos la casa a lo que importa.</p>
+    </div>
+    <div class="valor-card reveal">
+      <div class="valor-card__num">02</div>
+      <h3>Profesionalismo</h3>
+      <p>Hacemos las cosas en serio. Con estándares altos, con responsabilidad, con amor al oficio.</p>
+    </div>
+    <div class="valor-card reveal">
+      <div class="valor-card__num">03</div>
+      <h3>Encuentro</h3>
+      <p>El teatro es de las últimas experiencias analógicas que nos quedan. Cuerpos en el mismo lugar, al mismo tiempo.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-block reveal">
+  <h2>¿Querés ser parte?</h2>
+  <p>
+    Vení a una función, anotate en un taller, traé tu evento, sumate como voluntario.
+    La casa está abierta.
+  </p>
+  <div class="cta-block__actions">
+    <a href="agenda.html" class="btn btn--gold">Ver agenda</a>
+    <a href="escuela.html" class="btn btn--ghost">Talleres</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-footer__logo">
+  <p class="site-footer__line">Casa de teatro, escuela y comunidad.</p>
+  <nav class="site-footer__links">
+    <a href="index.html">Inicio</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+  </nav>
+  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById('current-year').textContent = new Date().getFullYear();
+
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) entry.target.classList.add('is-visible');
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
+
+  var toggle = document.getElementById('theme-toggle');
+  var html = document.documentElement;
+  var saved = localStorage.getItem('mandragora-theme');
+  if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; }
+  toggle.addEventListener('click', function(){
+    var isDark = html.getAttribute('data-theme') === 'dark';
+    if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '\u2600'; localStorage.setItem('mandragora-theme','light'); }
+    else { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; localStorage.setItem('mandragora-theme','dark'); }
+  });
+})();
+</script>
+</body>
+</html>

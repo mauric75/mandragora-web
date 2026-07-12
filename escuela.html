@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escuela de Artes — Mandrágora</title>
+<link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
+<meta name="description" content="Talleres de actuación, clown, voz y dramaturgia en Mandrágora. Formación artística con docentes profesionales.">
+
+<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   DESIGN SYSTEM (shared with landing)
+   ============================================================ */
+:root {
+  /* light default */
+  --c-bg:        #f8f4ed;
+  --c-bg-soft:   #f0ebe0;
+  --c-blue:      #1D3D91;
+  --c-green:     #8ABE28;
+  --c-gold:      #b8892e;
+  --c-gold-bright:#CE9A47;
+  --c-gold-dim:   rgba(184, 137, 46, 0.25);
+  --c-gold-faint: rgba(184, 137, 46, 0.10);
+  --c-ink:       #1a1512;
+  --c-ink-dim:   rgba(26, 21, 18, 0.65);
+  --c-ink-faint: rgba(26, 21, 18, 0.18);
+  --c-cream:     #1a1512;
+  --c-cream-dim: rgba(26, 21, 18, 0.65);
+  --c-cream-faint:rgba(26, 21, 18, 0.18);
+
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-mark:    'Cinzel', Georgia, serif;
+  --f-body:    'Jost', system-ui, -apple-system, sans-serif;
+
+  --gutter:    clamp(1.5rem, 5vw, 5rem);
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme="dark"] {
+  --c-bg:        #05070a;
+  --c-bg-soft:   #0c1012;
+  --c-gold:      #CE9A47;
+  --c-gold-bright:#e0b85a;
+  --c-gold-dim:   rgba(206, 154, 71, 0.30);
+  --c-gold-faint: rgba(206, 154, 71, 0.12);
+  --c-ink:       #f3ece0;
+  --c-ink-dim:   rgba(243, 236, 224, 0.65);
+  --c-ink-faint: rgba(243, 236, 224, 0.22);
+  --c-cream:     #f3ece0;
+  --c-cream-dim: rgba(243, 236, 224, 0.65);
+  --c-cream-faint:rgba(243, 236, 224, 0.22);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  background: var(--c-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--f-body);
+  color: var(--c-cream);
+  background: var(--c-bg);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+a  { color: inherit; text-decoration: none; }
+
+h1, h2, h3, h4 {
+  font-family: var(--f-display);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---- grain ---- */
+.grain {
+  position: fixed; inset: 0; z-index: 999;
+  pointer-events: none; opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-repeat: repeat;
+}
+
+/* ---- buttons ---- */
+.btn {
+  font-family: var(--f-body);
+  font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.9em 1.7em; border-radius: 2px;
+  border: 1px solid transparent;
+  display: inline-flex; align-items: center;
+  transition: transform 0.4s var(--ease), background 0.4s, border-color 0.4s, color 0.4s;
+  cursor: pointer;
+}
+.btn--gold {
+  background: var(--c-gold); color: var(--c-bg); border-color: var(--c-gold);
+}
+.btn--gold:hover { background: var(--c-gold-bright); transform: translateY(-1px); }
+.btn--ghost {
+  border-color: var(--c-cream-faint); color: var(--c-cream);
+}
+.btn--ghost:hover { border-color: var(--c-cream); transform: translateY(-1px); }
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.5rem var(--gutter);
+  font-family: var(--f-mark);
+  font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c-cream);
+  mix-blend-mode: difference;
+  transition: padding 0.4s var(--ease);
+}
+.site-nav__logo { height: 36px; width: auto; display: block; }
+.site-nav__logo-dark { display: none; }
+[data-theme="dark"] .site-nav__logo-light { display: none; }
+[data-theme="dark"] .site-nav__logo-dark { display: block; }
+
+/* theme toggle */
+.theme-toggle {
+  background: none; border: 1px solid currentColor; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; color: inherit;
+  font-size: 0.85rem; line-height: 1; padding: 0;
+  opacity: 0.7; transition: opacity 0.3s;
+}
+.theme-toggle:hover { opacity: 1; }
+.site-nav__links {
+  display: none; gap: 2rem;
+  font-family: var(--f-body); letter-spacing: 0.08em; font-size: 0.74rem;
+}
+.site-nav__links a { opacity: 0.72; transition: opacity 0.3s var(--ease); }
+.site-nav__links a:hover { opacity: 1; }
+.site-nav__links a.is-active { opacity: 1; color: var(--c-gold); }
+.site-nav__cta {
+  font-family: var(--f-body); font-size: 0.7rem; letter-spacing: 0.1em;
+  border: 1px solid currentColor; padding: 0.45em 1em; border-radius: 2px;
+}
+@media (min-width: 880px) { .site-nav__links { display: flex; } }
+@media (max-width: 600px) { .site-nav__logo { height: 28px; } }
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+.page-header {
+  padding: 10rem var(--gutter) 5rem;
+  max-width: 880px; margin: 0 auto;
+  text-align: center;
+}
+.page-header__kicker {
+  font-family: var(--f-mark); font-size: 0.68rem;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--c-gold); margin-bottom: 1.2rem;
+}
+.page-header h1 {
+  font-size: clamp(2.6rem, 6vw, 4.8rem);
+  font-weight: 500; line-height: 1.05;
+  margin-bottom: 1.4rem;
+}
+.page-header__lede {
+  font-family: var(--f-display); font-style: italic;
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  color: var(--c-cream-dim); max-width: 48ch;
+  margin: 0 auto; line-height: 1.55;
+}
+
+/* ============================================================
+   INTRO BLOCK
+   ============================================================ */
+.intro-block {
+  max-width: 780px; margin: 0 auto;
+  padding: 0 var(--gutter) 4rem;
+}
+.intro-block p {
+  font-size: 1rem; line-height: 1.8;
+  color: var(--c-cream-dim);
+}
+.intro-block p + p { margin-top: 1.2rem; }
+
+/* ============================================================
+   DISCIPLINAS
+   ============================================================ */
+.disciplinas {
+  padding: 2rem var(--gutter) 5rem;
+  border-top: 1px solid rgba(243,236,224,0.07);
+}
+.disciplinas__header {
+  text-align: center; margin-bottom: 3rem;
+}
+.disciplinas__kicker {
+  font-family: var(--f-mark); font-size: 0.68rem;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--c-gold); margin-bottom: 1rem;
+}
+.disciplinas__title {
+  font-size: clamp(1.9rem, 4.2vw, 3rem);
+  font-weight: 400;
+}
+
+.disciplinas__grid {
+  display: grid; grid-template-columns: 1fr;
+  gap: 1.6rem; max-width: 1100px; margin: 0 auto;
+}
+@media (min-width: 600px) { .disciplinas__grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 900px) { .disciplinas__grid { grid-template-columns: repeat(4, 1fr); } }
+
+.disciplina-card {
+  background: var(--c-bg-soft);
+  border: 1px solid rgba(243,236,224,0.06);
+  padding: 2.2rem 1.8rem; border-radius: 2px;
+  transition: border-color 0.4s var(--ease);
+}
+.disciplina-card:hover { border-color: var(--c-gold-dim); }
+.disciplina-card__icon {
+  font-family: var(--f-mark); font-size: 0.7rem;
+  letter-spacing: 0.2em; color: var(--c-gold);
+  margin-bottom: 1.4rem; text-transform: uppercase;
+}
+.disciplina-card h3 {
+  font-size: 1.6rem; margin-bottom: 0.8rem;
+}
+.disciplina-card p {
+  font-size: 0.9rem; line-height: 1.65;
+  color: var(--c-cream-dim);
+}
+
+/* ============================================================
+   DOCENTES
+   ============================================================ */
+.docentes {
+  padding: 5rem var(--gutter);
+  border-top: 1px solid rgba(243,236,224,0.07);
+  background: var(--c-bg-soft);
+}
+.docentes__header {
+  text-align: center; margin-bottom: 3.5rem;
+}
+.docentes__kicker {
+  font-family: var(--f-mark); font-size: 0.68rem;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--c-gold); margin-bottom: 1rem;
+}
+.docentes__title {
+  font-size: clamp(1.9rem, 4.2vw, 3rem);
+  font-weight: 400; margin-bottom: 1rem;
+}
+.docentes__sub {
+  font-size: 1rem; color: var(--c-cream-dim);
+  max-width: 48ch; margin: 0 auto;
+}
+
+.docentes__grid {
+  display: grid; grid-template-columns: 1fr;
+  gap: 2rem; max-width: 1000px; margin: 0 auto;
+}
+@media (min-width: 600px) { .docentes__grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 900px) { .docentes__grid { grid-template-columns: repeat(3, 1fr); } }
+
+.docente-card {
+  background: var(--c-bg);
+  border: 1px solid rgba(243,236,224,0.06);
+  border-radius: 2px; overflow: hidden;
+  transition: border-color 0.4s var(--ease);
+}
+.docente-card:hover { border-color: var(--c-gold-dim); }
+.docente-card__photo {
+  aspect-ratio: 3/4; background: var(--c-bg-soft);
+  display: grid; place-items: center;
+  color: var(--c-cream-faint); font-size: 0.8rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.docente-card__photo img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.docente-card__body { padding: 1.6rem; }
+.docente-card__body h4 {
+  font-size: 1.3rem; margin-bottom: 0.3rem;
+}
+.docente-card__rol {
+  font-family: var(--f-mark); font-size: 0.62rem;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c-gold); margin-bottom: 0.8rem;
+}
+.docente-card__body p {
+  font-size: 0.85rem; line-height: 1.6;
+  color: var(--c-cream-dim);
+}
+
+/* ============================================================
+   INSCRIPCIONES CTA
+   ============================================================ */
+.cta-block {
+  padding: 6rem var(--gutter);
+  text-align: center;
+  border-top: 1px solid rgba(243,236,224,0.07);
+}
+.cta-block h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 1rem;
+}
+.cta-block p {
+  font-size: 1rem; color: var(--c-cream-dim);
+  max-width: 44ch; margin: 0 auto 2rem;
+}
+.cta-block__actions {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+  padding: 5rem var(--gutter) 2.5rem; text-align: center;
+  background: var(--c-bg); border-top: 1px solid rgba(243,236,224,0.07);
+}
+.site-footer__logo { height: 56px; width: auto; margin: 0 auto 1rem; display: block; }
+.site-footer__line { color: var(--c-cream-dim); margin-bottom: 1rem; font-size: 0.95rem; }
+.site-footer__links {
+  display: flex; justify-content: center; gap: 1.8rem;
+  font-size: 0.78rem; letter-spacing: 0.06em; margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.site-footer__links a { opacity: 0.65; transition: opacity 0.3s; }
+.site-footer__links a:hover { opacity: 1; }
+.site-footer__legal { font-size: 0.7rem; color: var(--c-cream-faint); }
+
+/* ---- reveal ---- */
+.reveal {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ NAV ============ -->
+<header class="site-nav">
+  <a href="index.html" class="site-nav__mark">
+    <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-light">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-dark">
+  </a>
+  <nav class="site-nav__links">
+    <a href="escuela.html" class="is-active">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="index.html#agenda">Agenda</a>
+  </nav>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">☀</button>
+</header>
+
+<!-- ============ PAGE HEADER ============ -->
+<section class="page-header">
+  <p class="page-header__kicker">Habitación I</p>
+  <h1>Escuela de Artes</h1>
+  <p class="page-header__lede">
+    Un lugar para equivocarse en voz alta, sostenido por gente que también se equivocó antes.
+  </p>
+</section>
+
+<!-- ============ INTRO ============ -->
+<section class="intro-block reveal">
+  <p>
+    La escuela de Mandrágora no es una institución académica tradicional. Es un espacio
+    donde el aprendizaje ocurre en el hacer: arriba del escenario, en el ensayo, en el error.
+    Creemos que la formación artística es un camino de ida y vuelta entre quien enseña
+    y quien aprende.
+  </p>
+  <p>
+    Nuestros docentes son artistas en actividad. Gente que está en escena, que crea,
+    que gira. Eso garantiza que lo que pasa en el aula está conectado con lo que pasa
+    en el teatro real.
+  </p>
+</section>
+
+<!-- ============ DISCIPLINAS ============ -->
+<section class="disciplinas">
+  <div class="disciplinas__header reveal">
+    <p class="disciplinas__kicker">Áreas de formación</p>
+    <h2 class="disciplinas__title">Disciplinas</h2>
+  </div>
+
+  <div class="disciplinas__grid">
+    <article class="disciplina-card reveal">
+      <div class="disciplina-card__icon">01</div>
+      <h3>Actuación</h3>
+      <p>Técnica, escena, improvisación y construcción de personaje. Para quienes quieren estar en el escenario.</p>
+    </article>
+    <article class="disciplina-card reveal">
+      <div class="disciplina-card__icon">02</div>
+      <h3>Clown</h3>
+      <p>El arte de la torpeza, la sinceridad y el ridículo como herramienta escénica.</p>
+    </article>
+    <article class="disciplina-card reveal">
+      <div class="disciplina-card__icon">03</div>
+      <h3>Voz</h3>
+      <p>Técnica vocal, proyección, dicción y exploración sonora para la escena.</p>
+    </article>
+    <article class="disciplina-card reveal">
+      <div class="disciplina-card__icon">04</div>
+      <h3>Dramaturgia</h3>
+      <p>Escritura teatral, estructura dramática y creación de textos para la escena.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ DOCENTES ============ -->
+<section class="docentes" id="docentes">
+  <div class="docentes__header reveal">
+    <p class="docentes__kicker">Quiénes enseñan</p>
+    <h2 class="docentes__title">Docentes</h2>
+    <p class="docentes__sub">
+      Artistas en actividad que comparten su oficio. Pablo está preparando las fotos y bios de cada docente.
+    </p>
+  </div>
+
+  <div class="docentes__grid">
+    <!-- Placeholder cards — contenido real pendiente de Pablo -->
+    <article class="docente-card reveal">
+      <div class="docente-card__photo">
+        <span>Foto pendiente</span>
+      </div>
+      <div class="docente-card__body">
+        <h4>Nombre Docente</h4>
+        <p class="docente-card__rol">Actuación · Dirección</p>
+        <p>Bio pendiente. Pablo enviará la información de cada docente.</p>
+      </div>
+    </article>
+
+    <article class="docente-card reveal">
+      <div class="docente-card__photo">
+        <span>Foto pendiente</span>
+      </div>
+      <div class="docente-card__body">
+        <h4>Nombre Docente</h4>
+        <p class="docente-card__rol">Clown · Voz</p>
+        <p>Bio pendiente. Pablo enviará la información de cada docente.</p>
+      </div>
+    </article>
+
+    <article class="docente-card reveal">
+      <div class="docente-card__photo">
+        <span>Foto pendiente</span>
+      </div>
+      <div class="docente-card__body">
+        <h4>Nombre Docente</h4>
+        <p class="docente-card__rol">Dramaturgia</p>
+        <p>Bio pendiente. Pablo enviará la información de cada docente.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ INSCRIPCIONES CTA ============ -->
+<section class="cta-block reveal" id="inscripciones">
+  <h2>¿Querés formarte con nosotros?</h2>
+  <p>
+    Escribinos para conocer los talleres disponibles, horarios y aranceles.
+    Las inscripciones están abiertas durante todo el año.
+  </p>
+  <div class="cta-block__actions">
+    <a href="mailto:info@mandragora.uy" class="btn btn--gold">Escribinos</a>
+    <a href="index.html" class="btn btn--ghost">Volver al inicio</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-footer__logo">
+  <p class="site-footer__line">Casa de teatro, escuela y comunidad.</p>
+  <nav class="site-footer__links">
+    <a href="index.html">Inicio</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+  </nav>
+  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById('current-year').textContent = new Date().getFullYear();
+
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) entry.target.classList.add('is-visible');
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
+
+  // theme toggle
+  var toggle = document.getElementById('theme-toggle');
+  var html = document.documentElement;
+  var saved = localStorage.getItem('mandragora-theme');
+  if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; }
+  toggle.addEventListener('click', function(){
+    var isDark = html.getAttribute('data-theme') === 'dark';
+    if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '☀'; localStorage.setItem('mandragora-theme','light'); }
+    else { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; localStorage.setItem('mandragora-theme','dark'); }
+  });
+})();
+</script>
+
+</body>
+</html>

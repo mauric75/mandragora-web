@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda — Mandrágora</title>
+<link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
+<meta name="description" content="Cartelera de Mandrágora. Funciones, talleres, proyecciones y eventos. Toda la programación de la casa.">
+
+<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --c-bg:        #f8f4ed;
+  --c-bg-soft:   #f0ebe0;
+  --c-blue:      #1D3D91;
+  --c-green:     #8ABE28;
+  --c-gold:      #b8892e;
+  --c-gold-bright:#CE9A47;
+  --c-gold-dim:   rgba(184, 137, 46, 0.25);
+  --c-gold-faint: rgba(184, 137, 46, 0.10);
+  --c-cream:     #1a1512;
+  --c-cream-dim: rgba(26, 21, 18, 0.65);
+  --c-cream-faint:rgba(26, 21, 18, 0.18);
+  --c-border:    rgba(26, 21, 18, 0.07);
+
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-mark:    'Cinzel', Georgia, serif;
+  --f-body:    'Jost', system-ui, -apple-system, sans-serif;
+
+  --gutter:    clamp(1.5rem, 5vw, 5rem);
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-theme="dark"] {
+  --c-bg:        #05070a;
+  --c-bg-soft:   #0c1012;
+  --c-gold:      #CE9A47;
+  --c-gold-bright:#e0b85a;
+  --c-gold-dim:   rgba(206, 154, 71, 0.30);
+  --c-gold-faint: rgba(206, 154, 71, 0.12);
+  --c-cream:     #f3ece0;
+  --c-cream-dim: rgba(243, 236, 224, 0.65);
+  --c-cream-faint:rgba(243, 236, 224, 0.22);
+  --c-border:    rgba(243, 236, 224, 0.07);
+}
+
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; background: var(--c-bg); -webkit-font-smoothing: antialiased; }
+body { font-family: var(--f-body); color: var(--c-cream); background: var(--c-bg); line-height: 1.65; overflow-x: hidden; }
+img { max-width: 100%; display: block; }
+a  { color: inherit; text-decoration: none; }
+h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.01em; line-height: 1.1; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+.grain {
+  position: fixed; inset: 0; z-index: 999; pointer-events: none;
+  opacity: 0.04; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-repeat: repeat;
+}
+[data-theme="dark"] .grain {
+  mix-blend-mode: overlay; opacity: 0.04;
+}
+
+.btn {
+  font-family: var(--f-body); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.9em 1.7em; border-radius: 2px; border: 1px solid transparent;
+  display: inline-flex; align-items: center; cursor: pointer;
+  transition: transform 0.4s var(--ease), background 0.4s, border-color 0.4s;
+}
+.btn--gold { background: var(--c-gold); color: var(--c-bg); border-color: var(--c-gold); }
+.btn--gold:hover { background: var(--c-gold-bright); transform: translateY(-1px); }
+.btn--ghost { border-color: var(--c-cream-faint); color: var(--c-cream); }
+.btn--ghost:hover { border-color: var(--c-cream); transform: translateY(-1px); }
+
+/* nav */
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.5rem var(--gutter); font-family: var(--f-mark);
+  font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c-cream); mix-blend-mode: difference;
+  transition: padding 0.4s var(--ease);
+}
+[data-theme="dark"] .site-nav {
+  mix-blend-mode: difference; color: var(--c-cream);
+}
+.site-nav__logo { height: 36px; width: auto; display: block; }
+.site-nav__logo-dark { display: none; }
+[data-theme="dark"] .site-nav__logo-light { display: none; }
+[data-theme="dark"] .site-nav__logo-dark { display: block; }
+.theme-toggle {
+  background: none; border: 1px solid currentColor; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; color: inherit;
+  font-size: 0.9rem; line-height: 1; padding: 0;
+  opacity: 0.7; transition: opacity 0.3s;
+}
+.theme-toggle:hover { opacity: 1; }
+.site-nav__links { display: none; gap: 2rem; font-family: var(--f-body); letter-spacing: 0.08em; font-size: 0.74rem; }
+.site-nav__links a { opacity: 0.72; transition: opacity 0.3s var(--ease); }
+.site-nav__links a:hover { opacity: 1; }
+.site-nav__links a.is-active { opacity: 1; color: var(--c-gold); }
+.site-nav__cta { font-family: var(--f-body); font-size: 0.7rem; letter-spacing: 0.1em; border: 1px solid currentColor; padding: 0.45em 1em; border-radius: 2px; }
+@media (min-width: 880px) { .site-nav__links { display: flex; } }
+@media (max-width: 600px) { .site-nav__logo { height: 28px; } }
+
+/* page header */
+.page-header {
+  padding: 10rem var(--gutter) 4rem; max-width: 880px; margin: 0 auto; text-align: center;
+}
+.page-header__kicker {
+  font-family: var(--f-mark); font-size: 0.68rem; letter-spacing: 0.26em;
+  text-transform: uppercase; color: var(--c-gold); margin-bottom: 1.2rem;
+}
+.page-header h1 { font-size: clamp(2.6rem, 6vw, 4.8rem); font-weight: 500; line-height: 1.05; }
+
+/* ============================================================
+   MONTH SECTION
+   ============================================================ */
+.month {
+  padding: 3rem var(--gutter) 4rem;
+  border-top: 1px solid var(--c-border);
+}
+.month__header {
+  max-width: 1100px; margin: 0 auto 2.5rem;
+  display: flex; align-items: baseline; gap: 1rem;
+}
+.month__name {
+  font-family: var(--f-mark); font-size: 0.7rem;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--c-gold);
+}
+.month__year {
+  font-size: 0.7rem; color: var(--c-cream-faint);
+  letter-spacing: 0.15em; text-transform: uppercase;
+}
+
+.event-list {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; flex-direction: column;
+}
+
+.event-item {
+  display: grid; grid-template-columns: 1fr;
+  border-top: 1px solid var(--c-border);
+  padding: 2rem 0; gap: 1.8rem;
+  transition: background 0.3s var(--ease);
+}
+.event-item:last-child { border-bottom: 1px solid var(--c-border); }
+.event-item:hover { background: rgba(206,154,71,0.03); }
+@media (min-width: 750px) {
+  .event-item { grid-template-columns: 130px 1fr auto; align-items: start; padding: 2.2rem 0; gap: 2.5rem; }
+}
+
+.event-date {
+  font-family: var(--f-body);
+}
+.event-date__day {
+  font-size: 2.6rem; font-weight: 300; line-height: 1;
+  color: var(--c-cream); display: block;
+}
+.event-date__rest {
+  font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--c-gold);
+}
+
+.event-info h3 { font-size: 1.4rem; margin-bottom: 0.4rem; }
+.event-info__type {
+  font-family: var(--f-mark); font-size: 0.62rem;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--c-cream-faint); margin-bottom: 0.8rem;
+}
+.event-info p { font-size: 0.9rem; line-height: 1.6; color: var(--c-cream-dim); max-width: 48ch; }
+
+.event-action {
+  display: flex; align-items: center;
+}
+.event-action .btn { font-size: 0.7rem; padding: 0.6em 1.2em; }
+
+/* ============================================================
+   NO EVENTS
+   ============================================================ */
+.empty-month {
+  max-width: 1100px; margin: 0 auto; padding: 3rem 0;
+  text-align: center; color: var(--c-cream-faint);
+}
+.empty-month p {
+  font-family: var(--f-display); font-style: italic;
+  font-size: 1.1rem; line-height: 1.6;
+}
+
+/* footer */
+.site-footer {
+  padding: 5rem var(--gutter) 2.5rem; text-align: center;
+  background: var(--c-bg); border-top: 1px solid var(--c-border);
+}
+.site-footer__logo { height: 56px; width: auto; margin: 0 auto 1rem; display: block; }
+.site-footer__line { color: var(--c-cream-dim); margin-bottom: 1rem; font-size: 0.95rem; }
+.site-footer__links { display: flex; justify-content: center; gap: 1.8rem; font-size: 0.78rem; letter-spacing: 0.06em; margin-bottom: 2rem; flex-wrap: wrap; }
+.site-footer__links a { opacity: 0.65; transition: opacity 0.3s; }
+.site-footer__links a:hover { opacity: 1; }
+.site-footer__legal { font-size: 0.7rem; color: var(--c-cream-faint); }
+
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="site-nav">
+  <a href="index.html" class="site-nav__mark">
+    <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-light">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-dark">
+  </a>
+  <nav class="site-nav__links">
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="agenda.html" class="is-active">Agenda</a>
+  </nav>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">☀</button>
+</header>
+
+<section class="page-header reveal">
+  <p class="page-header__kicker">Cartelera</p>
+  <h1>Agenda</h1>
+</section>
+
+<!-- ============ JULIO 2026 ============ -->
+<section class="month reveal">
+  <div class="month__header">
+    <span class="month__name">Julio</span>
+    <span class="month__year">2026</span>
+  </div>
+
+  <div class="event-list">
+    <article class="event-item">
+      <div class="event-date">
+        <span class="event-date__day">05</span>
+        <span class="event-date__rest">Sáb</span>
+      </div>
+      <div class="event-info">
+        <h3>Atrapada en la pantalla</h3>
+        <p class="event-info__type">Teatro · Compañía Mandrágora · +5 años</p>
+        <p>Canopus y Galatea rescatan a su tía atrapada en un celular. Interactiva, divertida y nominada a 3 Florencio.</p>
+      </div>
+      <div class="event-action">
+        <a href="#" class="btn btn--ghost">Entradas</a>
+      </div>
+    </article>
+
+    <article class="event-item">
+      <div class="event-date">
+        <span class="event-date__day">12</span>
+        <span class="event-date__rest">Sáb</span>
+      </div>
+      <div class="event-info">
+        <h3>Atrapada en la pantalla</h3>
+        <p class="event-info__type">Teatro · Compañía Mandrágora</p>
+        <p>Segunda función del mes. Una obra sobre los vínculos mediados por la tecnología.</p>
+      </div>
+      <div class="event-action">
+        <a href="#" class="btn btn--ghost">Entradas</a>
+      </div>
+    </article>
+
+    <article class="event-item">
+      <div class="event-date">
+        <span class="event-date__day">19</span>
+        <span class="event-date__rest">Sáb</span>
+      </div>
+      <div class="event-info">
+        <h3>Atrapada en la pantalla</h3>
+        <p class="event-info__type">Teatro · Compañía Mandrágora</p>
+        <p>Última función del mes. Una obra sobre los vínculos mediados por la tecnología.</p>
+      </div>
+      <div class="event-action">
+        <a href="#" class="btn btn--ghost">Entradas</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ AGOSTO 2026 ============ -->
+<section class="month reveal">
+  <div class="month__header">
+    <span class="month__name">Agosto</span>
+    <span class="month__year">2026</span>
+  </div>
+
+  <div class="event-list">
+    <article class="event-item">
+      <div class="event-date">
+        <span class="event-date__day">09</span>
+        <span class="event-date__rest">Sáb</span>
+      </div>
+      <div class="event-info">
+        <h3>Con las manos atadas</h3>
+        <p class="event-info__type">Estreno · Compañía Mandrágora</p>
+        <p>La impotencia como punto de partida. Un ejercicio escénico sobre lo que no podemos controlar y lo que elegimos soltar.</p>
+      </div>
+      <div class="event-action">
+        <a href="#" class="btn btn--gold">Estreno</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ SETIEMBRE 2026 ============ -->
+<section class="month reveal">
+  <div class="month__header">
+    <span class="month__name">Setiembre</span>
+    <span class="month__year">2026</span>
+  </div>
+
+  <div class="event-list">
+    <article class="event-item">
+      <div class="event-date">
+        <span class="event-date__day">13</span>
+        <span class="event-date__rest">Sáb</span>
+      </div>
+      <div class="event-info">
+        <h3>La inevitable crisis del actor</h3>
+        <p class="event-info__type">Estreno · Compañía Mandrágora</p>
+        <p>Detrás del personaje hay una persona. Detrás de la persona, una pregunta que no se deja de hacer. Un biodrama sobre el oficio.</p>
+      </div>
+      <div class="event-action">
+        <a href="#" class="btn btn--gold">Estreno</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<footer class="site-footer" id="contacto">
+  <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-footer__logo">
+  <p class="site-footer__line">Casa de teatro, escuela y comunidad.</p>
+  <nav class="site-footer__links">
+    <a href="index.html">Inicio</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+  </nav>
+  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById('current-year').textContent = new Date().getFullYear();
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) entry.target.classList.add('is-visible');
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
+
+  // theme toggle
+  var toggle = document.getElementById('theme-toggle');
+  var html = document.documentElement;
+  var saved = localStorage.getItem('mandragora-theme');
+  if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; }
+  toggle.addEventListener('click', function(){
+    var isDark = html.getAttribute('data-theme') === 'dark';
+    if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '☀'; localStorage.setItem('mandragora-theme','light'); }
+    else { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; localStorage.setItem('mandragora-theme','dark'); }
+  });
+})();
+</script>
+</body>
+</html>
