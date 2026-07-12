@@ -112,6 +112,36 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 .site-nav__cta { font-family: var(--f-body); font-size: 0.7rem; letter-spacing: 0.1em; border: 1px solid currentColor; padding: 0.45em 1em; border-radius: 2px; }
 @media (min-width: 880px) { .site-nav__links { display: flex; } }
 @media (max-width: 600px) { .site-nav__logo { height: 28px; } }
+/* hamburger */
+.hamburger {
+  display: flex; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px;
+  z-index: 101;
+}
+.hamburger span {
+  display: block; width: 24px; height: 1.5px;
+  background: currentColor; transition: transform 0.3s var(--ease), opacity 0.2s;
+}
+.hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.is-open span:nth-child(2) { opacity: 0; }
+.hamburger.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+@media (min-width: 881px) { .hamburger { display: none; } }
+
+/* mobile menu */
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 99;
+  background: var(--c-bg); display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s var(--ease);
+}
+.mobile-menu.is-open { opacity: 1; pointer-events: auto; }
+.mobile-menu a {
+  font-family: var(--f-display); font-size: 1.6rem;
+  color: var(--c-cream-dim); transition: color 0.3s;
+}
+.mobile-menu a:hover { color: var(--c-gold); }
+
 
 /* page header */
 .page-header {
@@ -231,6 +261,19 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
     <a href="agenda.html" class="is-active">Agenda</a>
   </nav>
   <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">☀</button>
+
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Inicio</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="agenda.html">Agenda</a>
+  </nav>
 </header>
 
 <section class="page-header reveal">
@@ -376,6 +419,22 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
     var isDark = html.getAttribute('data-theme') === 'dark';
     if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '☀'; localStorage.setItem('mandragora-theme','light'); }
     else { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; localStorage.setItem('mandragora-theme','dark'); }
+  });
+
+  // hamburger
+  var hamburger = document.getElementById('hamburger');
+  var mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', function(){
+    var open = hamburger.classList.toggle('is-open');
+    mobileMenu.classList.toggle('is-open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  mobileMenu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      hamburger.classList.remove('is-open');
+      mobileMenu.classList.remove('is-open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    });
   });
 })();
 </script>
