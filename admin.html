@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Mandrágora</title>
+<style>
+:root { --c-bg:#f8f4ed; --c-cream:#1a1512; --c-gold:#b8892e; --c-red:#c0432a; }
+body { background:var(--c-bg); color:var(--c-cream); font-family:system-ui,sans-serif; margin:0; padding:2rem; }
+h1 { font-size:1.5rem; margin-bottom:1.5rem; }
+.login { max-width:400px; margin:4rem auto; text-align:center; }
+.login input { width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ddd; border-radius:4px; font-size:1rem; }
+.login button { width:100%; padding:0.8rem; background:var(--c-gold); color:#fff; border:none; border-radius:4px; font-size:1rem; cursor:pointer; }
+table { width:100%; border-collapse:collapse; margin-top:1rem; }
+th,td { padding:0.6rem; text-align:left; border-bottom:1px solid #ddd; font-size:0.9rem; }
+th { font-weight:600; color:var(--c-gold); text-transform:uppercase; letter-spacing:0.05em; font-size:0.75rem; }
+.actions { margin-bottom:1rem; display:flex; gap:0.5rem; }
+.actions button { padding:0.4em 1em; border-radius:4px; cursor:pointer; border:1px solid #ddd; background:#fff; font-size:0.85rem; }
+.actions button.active { background:var(--c-gold); color:#fff; border-color:var(--c-gold); }
+.no-data { text-align:center; padding:3rem; opacity:0.5; }
+a.back { color:var(--c-gold); font-size:0.85rem; }
+</style>
+</head>
+<body>
+<div class="login" id="login-box">
+  <h1>Admin · Mandrágora</h1>
+  <input type="password" id="password" placeholder="Contraseña" autofocus>
+  <button id="login-btn">Entrar</button>
+  <div id="login-msg" style="margin-top:0.5rem;font-size:0.85rem;color:var(--c-red)"></div>
+  <a href="index.html" class="back">← Volver al inicio</a>
+</div>
+
+<div id="dashboard" style="display:none">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+    <h1 style="margin:0">Reservas</h1>
+    <a href="index.html" class="back">← Salir</a>
+  </div>
+  <div class="actions">
+    <button class="active" data-filter="all">Todas</button>
+    <button data-filter="sala">Sala</button>
+    <button data-filter="taller">Talleres</button>
+    <button data-filter="entrada">Entradas</button>
+    <button data-filter="otro">Consultas</button>
+  </div>
+  <div id="reservas-table"></div>
+  <div class="no-data" id="no-data">No hay reservas todavía.</div>
+</div>
+
+<script>
+(function(){
+  var PASSWORD = 'mandragora2026';
+  var reservas = JSON.parse(localStorage.getItem('mandragora-reservas') || '[]');
+
+  document.getElementById('login-btn').addEventListener('click',function(){
+    if(document.getElementById('password').value === PASSWORD){
+      document.getElementById('login-box').style.display='none';
+      document.getElementById('dashboard').style.display='block';
+      renderReservas('all');
+    } else {
+      document.getElementById('login-msg').textContent='Contraseña incorrecta';
+    }
+  });
+
+  function renderReservas(filter){
+    var filtered = filter==='all' ? reservas : reservas.filter(function(r){return r.servicio===filter;});
+    var table = document.getElementById('reservas-table');
+    var noData = document.getElementById('no-data');
+    if(!filtered.length){ table.innerHTML=''; noData.style.display='block'; return; }
+    noData.style.display='none';
+    var labels = {sala:'Reserva de sala',taller:'Inscripción a taller',entrada:'Entrada',otro:'Consulta'};
+    var html = '<table><thead><tr><th>Fecha</th><th>Tipo</th><th>Nombre</th><th>WhatsApp</th><th>Email</th><th>Mensaje</th></tr></thead><tbody>';
+    filtered.forEach(function(r){
+      html += '<tr><td>'+new Date(r.fecha).toLocaleDateString('es-UY')+'</td>'
+        +'<td>'+(labels[r.servicio]||r.servicio)+'</td>'
+        +'<td>'+r.nombre+'</td>'
+        +'<td>'+r.whatsapp+'</td>'
+        +'<td>'+(r.email||'')+'</td>'
+        +'<td>'+(r.mensaje||'')+'</td></tr>';
+    });
+    html += '</tbody></table>';
+    table.innerHTML = html;
+  }
+
+  document.querySelectorAll('.actions button').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.actions button').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      renderReservas(btn.dataset.filter);
+    });
+  });
+})();
+</script>
+</body>
+</html>
