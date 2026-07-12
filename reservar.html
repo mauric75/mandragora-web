@@ -175,13 +175,13 @@ img{max-width:100%;display:block}
   <div class="step" id="step-taller-opciones">
     <p class="step-title">Elegí docente y disciplina</p>
     <div class="options" id="taller-opciones-list">
-      <div class="option-card" data-sub="actuacion" data-price="2500">
+      <div class="option-card" data-sub="actuacion" data-price="2500" data-wa="598XXXXXXXX">
         <div class="option-card__title">Docente de Actuación</div><div class="option-card__price">Actuación · Dirección · $2.500</div>
       </div>
-      <div class="option-card" data-sub="clown" data-price="2500">
+      <div class="option-card" data-sub="clown" data-price="2500" data-wa="598XXXXXXXX">
         <div class="option-card__title">Docente de Clown</div><div class="option-card__price">Clown · Voz · $2.500</div>
       </div>
-      <div class="option-card" data-sub="dramaturgia" data-price="2500">
+      <div class="option-card" data-sub="dramaturgia" data-price="2500" data-wa="598XXXXXXXX">
         <div class="option-card__title">Docente de Dramaturgia</div><div class="option-card__price">Dramaturgia · Escritura · $2.500</div>
       </div>
       <div class="option-card" data-sub="otro-taller" data-price="0">
@@ -262,7 +262,7 @@ img{max-width:100%;display:block}
   });
 
   // State
-  var state = { service: null, sub: null, price: null, date: null, month: null, year: null };
+  var state = { service: null, sub: null, price: null, wa: null, date: null, month: null, year: null };
 
   // Step navigation
   function showStep(id) {
@@ -306,6 +306,7 @@ img{max-width:100%;display:block}
         card.classList.add('selected');
         state.sub = card.dataset.sub;
         state.price = card.dataset.price;
+        state.wa = card.dataset.wa || null;
         next.disabled = false;
       });
     });
@@ -418,9 +419,10 @@ img{max-width:100%;display:block}
       });
     }
 
+    var waNumber = state.wa || '59897052948'; // general Mandrágora number as fallback
     showStep(4);
     setTimeout(function(){
-      window.open('https://wa.me/59897052948?text=' + msg, '_blank');
+      window.open('https://wa.me/' + waNumber + '?text=' + msg, '_blank');
     }, 600);
   });
 })();
