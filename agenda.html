@@ -50,7 +50,8 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; background: var(--c-bg); -webkit-font-smoothing: antialiased; }
-body { font-family: var(--f-body); color: var(--c-cream); background: var(--c-bg); line-height: 1.65; overflow-x: hidden; }
+body { font-family: var(--f-body); color: var(--c-cream); background: var(--c-bg); line-height: 1.65; overflow-x: hidden;
+  transition: background 0.4s var(--ease), color 0.3s var(--ease); }
 img { max-width: 100%; display: block; }
 a  { color: inherit; text-decoration: none; }
 h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.01em; line-height: 1.1; }
@@ -102,9 +103,10 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
   width: 34px; height: 34px; border-radius: 50%;
   display: grid; place-items: center; color: inherit;
   font-size: 0.9rem; line-height: 1; padding: 0;
-  opacity: 0.7; transition: opacity 0.3s;
+  opacity: 0.7; transition: opacity 0.3s, transform 0.4s var(--ease);
 }
-.theme-toggle:hover { opacity: 1; }
+.theme-toggle:hover { opacity: 1; transform: rotate(15deg); }
+.theme-toggle:active { transform: rotate(180deg); }
 .site-nav__links { display: none; gap: 2rem; font-family: var(--f-body); letter-spacing: 0.08em; font-size: 0.74rem; }
 .site-nav__links a { opacity: 0.72; transition: opacity 0.3s var(--ease); }
 .site-nav__links a:hover { opacity: 1; }
