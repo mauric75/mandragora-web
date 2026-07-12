@@ -271,12 +271,13 @@ h1, h2, h3, h4 {
 @media (min-width: 900px) { .disciplinas__grid { grid-template-columns: repeat(4, 1fr); } }
 
 .disciplina-card {
+  transition: transform 0.3s var(--ease), border-color 0.4s var(--ease), box-shadow 0.3s var(--ease);
   background: var(--c-bg-soft);
   border: 1px solid rgba(243,236,224,0.06);
   padding: 2.2rem 1.8rem; border-radius: 2px;
   transition: border-color 0.4s var(--ease);
 }
-.disciplina-card:hover { border-color: var(--c-gold-dim); }
+.disciplina-card:hover { border-color: var(--c-gold-dim); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
 .disciplina-card__icon {
   font-family: var(--f-mark); font-size: 0.7rem;
   letter-spacing: 0.2em; color: var(--c-gold);
@@ -323,12 +324,13 @@ h1, h2, h3, h4 {
 @media (min-width: 900px) { .docentes__grid { grid-template-columns: repeat(3, 1fr); } }
 
 .docente-card {
+  transition: transform 0.3s var(--ease), border-color 0.4s var(--ease), box-shadow 0.3s var(--ease);
   background: var(--c-bg);
   border: 1px solid rgba(243,236,224,0.06);
   border-radius: 2px; overflow: hidden;
   transition: border-color 0.4s var(--ease);
 }
-.docente-card:hover { border-color: var(--c-gold-dim); }
+.docente-card:hover { border-color: var(--c-gold-dim); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
 .docente-card__photo {
   aspect-ratio: 3/4; background: var(--c-bg);
   display: grid; place-items: center;
@@ -404,6 +406,20 @@ h1, h2, h3, h4 {
   transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
 }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+/* back to top */
+.back-to-top {
+  position: fixed; bottom: 2rem; right: 1.5rem; z-index: 90;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--c-bg-soft); border: 1px solid var(--c-gold-faint);
+  color: var(--c-cream-dim); cursor: pointer;
+  display: grid; place-items: center; font-size: 1.1rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease), border-color 0.3s;
+}
+.back-to-top.is-visible { opacity: 1; pointer-events: auto; }
+.back-to-top:hover { border-color: var(--c-gold); transform: translateY(-2px); }
+
 </style>
 </head>
 <body>
@@ -570,6 +586,7 @@ h1, h2, h3, h4 {
     <a href="cine-viajero.html">Cine Viajero</a>
   </nav>
   <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora</p>
+<button class="back-to-top" id="back-to-top" aria-label="Volver arriba">↑</button>
 </footer>
 
 <script>
@@ -611,6 +628,13 @@ h1, h2, h3, h4 {
       hamburger.setAttribute('aria-expanded', 'false');
     });
   });
+
+  // back to top
+  var btt = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function(){
+    if (btt) btt.classList.toggle('is-visible', window.pageYOffset > 400);
+  });
+  if (btt) btt.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
 })();
 </script>
 
