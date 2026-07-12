@@ -32,10 +32,11 @@ body { background: var(--c-bg); color: var(--c-cream); font-family: var(--f-body
     <label for="concepto">Concepto</label>
     <select id="concepto" required>
       <option value="">Seleccioná...</option>
-      <option value="Inscripción a taller" data-price="2500">Inscripción a taller — $2.500</option>
-      <option value="Reserva de sala" data-price="5000">Reserva de sala — $5.000</option>
-      <option value="Entrada a función" data-price="400">Entrada a función — $400</option>
-      <option value="Donación" data-price="500">Donación — $500</option>
+      <option value="Inscripción a taller" data-price="2500" data-type="pago">Inscripción a taller — $2.500</option>
+      <option value="Reserva de sala" data-price="5000" data-type="pago">Reserva de sala — $5.000</option>
+      <option value="Entrada a función" data-price="400" data-type="pago">Entrada a función — $400</option>
+      <option value="Membresía mensual" data-price="500" data-type="suscripcion">Membresía mensual — $500/mes</option>
+      <option value="Donación" data-price="500" data-type="pago">Donación — $500</option>
     </select>
     <label for="email">Email</label>
     <input type="email" id="email" placeholder="tu@email.com" required>
@@ -59,10 +60,12 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
   const option = select.options[select.selectedIndex];
   const title = option.value;
   const price = option.dataset.price;
+  const type = option.dataset.type;
   const email = document.getElementById('email').value;
+  const endpoint = type === 'suscripcion' ? '/api/crear-suscripcion' : '/api/crear-preferencia';
 
   try {
-    const res = await fetch(API, {
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, price: Number(price), quantity: 1, email }),
@@ -70,9 +73,13 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
     const data = await res.json();
 
     if (data.id) {
+      // Pago único: abrir Brick
       const mp = new MercadoPago('TEST-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', { locale: 'es-UY' });
       mp.checkout({ preference: { id: data.id }, render: { container: '.checkout', label: 'Pagar' } });
       document.getElementById('checkout-form').style.display = 'none';
+    } else if (data.init_point) {
+      // Suscripción: redirigir a MercadoPago
+      window.location.href = data.init_point;
     } else {
       status.textContent = 'Error: ' + (data.error || 'No se pudo crear el pago');
       btn.disabled = false;
