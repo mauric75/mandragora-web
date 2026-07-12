@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mandrágora — Donde la magia ocurre</title>
+<link rel="manifest" href="/manifest.json">
 <meta name="description" content="Mandrágora: escuela de artes, sala de teatro, compañía teatral y cine viajero. Un lugar con vida propia.">
 <meta property="og:title" content="Mandrágora — Donde la magia ocurre">
 <meta property="og:description" content="TEATRO · ESCUELA DE ARTES. Una casa, no una institución. Montevideo, Uruguay.">
@@ -1215,6 +1216,9 @@ h1, h2, h3, h4, h5 {
     });
   });
   // parallax hero on scroll
+
+  // PWA
+  if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
 })();
 </script>
 

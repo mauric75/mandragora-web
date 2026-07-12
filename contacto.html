@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contacto — Mandrágora</title>
+<link rel="manifest" href="/manifest.json">
 <meta name="description" content="Contactá a Mandrágora. Teléfono, dirección, email y redes sociales. Reservá la sala, inscribite a talleres, proponé tu evento.">
 <meta property="og:title" content="Contacto — Mandrágora">
 <meta property="og:description" content="Reservá la sala, inscribite a talleres, proponé tu evento. Escribinos.">
@@ -304,6 +305,9 @@ to   { opacity: 1; transform: translateY(0); }
   document.getElementById('lightbox-close').addEventListener('click', function(){ lightbox.classList.remove('is-open'); });
   lightbox.addEventListener('click', function(e){ if (e.target === lightbox) lightbox.classList.remove('is-open'); });
 
+
+  // PWA
+  if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
 })();
 </script>
 

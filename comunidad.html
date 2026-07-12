@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Comunidad — Mandrágora</title>
+<link rel="manifest" href="/manifest.json">
 <meta name="description" content="La comunidad de Mandrágora. Egresados, vecinos, público fiel: la razón por la que las luces se siguen prendiendo cada noche.">
 <meta property="og:title" content="Comunidad — Mandrágora">
 <meta property="og:description" content="Egresados, vecinos, público fiel. La razón por la que las luces se siguen prendiendo.">
@@ -434,6 +435,9 @@ to   { opacity: 1; transform: translateY(0); }
   document.getElementById('lightbox-close').addEventListener('click', function(){ lightbox.classList.remove('is-open'); });
   lightbox.addEventListener('click', function(e){ if (e.target === lightbox) lightbox.classList.remove('is-open'); });
 
+
+  // PWA
+  if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
 })();
 </script>
 

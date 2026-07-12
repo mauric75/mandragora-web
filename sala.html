@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sala & Eventos — Mandrágora</title>
+<link rel="manifest" href="/manifest.json">
 <meta property="og:title" content="Sala & Eventos — Mandrágora">
 <meta property="og:description" content="Alquilá la sala para teatro, congresos y eventos corporativos. 500 personas, totalmente equipada.">
 <meta property="og:image" content="https://mauric75.github.io/mandragora-web/assets/images/sala.jpg">
@@ -651,6 +652,9 @@ to   { opacity: 1; transform: translateY(0); }
   document.getElementById('lightbox-close').addEventListener('click', function(){ lightbox.classList.remove('is-open'); });
   lightbox.addEventListener('click', function(e){ if (e.target === lightbox) lightbox.classList.remove('is-open'); });
 
+
+  // PWA
+  if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
 })();
 </script>
 

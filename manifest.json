@@ -1,0 +1,14 @@
+{
+  "name": "Mandrágora — Teatro & Escuela de Artes",
+  "short_name": "Mandrágora",
+  "description": "TEATRO · ESCUELA DE ARTES. Donde la magia ocurre.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f4ed",
+  "theme_color": "#CE9A47",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "assets/brand-logos/iso.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/brand-logos/iso.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
