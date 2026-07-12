@@ -316,10 +316,18 @@ h1, h2, h3, h4 {
 }
 .docente-card:hover { border-color: var(--c-gold-dim); }
 .docente-card__photo {
-  aspect-ratio: 3/4; background: var(--c-bg-soft);
+  aspect-ratio: 3/4; background: var(--c-bg);
   display: grid; place-items: center;
-  color: var(--c-cream-faint); font-size: 0.8rem;
+  color: var(--c-cream-faint); font-size: 0.7rem;
   letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px solid var(--c-gold-faint);
+  position: relative; overflow: hidden;
+}
+.docente-card__photo::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 35%, var(--c-gold-dim) 0%, transparent 65%);
+  opacity: 0.5;
 }
 .docente-card__photo img {
   width: 100%; height: 100%; object-fit: cover;
@@ -478,42 +486,36 @@ h1, h2, h3, h4 {
     <p class="docentes__kicker">Quiénes enseñan</p>
     <h2 class="docentes__title">Docentes</h2>
     <p class="docentes__sub">
-      Artistas en actividad que comparten su oficio. Pablo está preparando las fotos y bios de cada docente.
+      Artistas en actividad que comparten su oficio.
     </p>
   </div>
 
   <div class="docentes__grid">
     <!-- Placeholder cards — contenido real pendiente de Pablo -->
     <article class="docente-card reveal">
-      <div class="docente-card__photo">
-        <span>Foto pendiente</span>
-      </div>
+      <div class="docente-card__photo"></div>
       <div class="docente-card__body">
-        <h4>Nombre Docente</h4>
+        <h4>Docente de Actuación</h4>
         <p class="docente-card__rol">Actuación · Dirección</p>
-        <p>Bio pendiente. Pablo enviará la información de cada docente.</p>
+        <p>Artista en actividad con trayectoria en teatro independiente uruguayo.</p>
       </div>
     </article>
 
     <article class="docente-card reveal">
-      <div class="docente-card__photo">
-        <span>Foto pendiente</span>
-      </div>
+      <div class="docente-card__photo"></div>
       <div class="docente-card__body">
-        <h4>Nombre Docente</h4>
+        <h4>Docente de Clown</h4>
         <p class="docente-card__rol">Clown · Voz</p>
-        <p>Bio pendiente. Pablo enviará la información de cada docente.</p>
+        <p>Formada en clown y técnica vocal. Investiga el cruce entre humor y vulnerabilidad.</p>
       </div>
     </article>
 
     <article class="docente-card reveal">
-      <div class="docente-card__photo">
-        <span>Foto pendiente</span>
-      </div>
+      <div class="docente-card__photo"></div>
       <div class="docente-card__body">
-        <h4>Nombre Docente</h4>
-        <p class="docente-card__rol">Dramaturgia</p>
-        <p>Bio pendiente. Pablo enviará la información de cada docente.</p>
+        <h4>Docente de Dramaturgia</h4>
+        <p class="docente-card__rol">Dramaturgia · Escritura</p>
+        <p>Autora de obras estrenadas en Montevideo. Tallerista con enfoque en la práctica.</p>
       </div>
     </article>
   </div>
