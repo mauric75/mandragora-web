@@ -881,6 +881,22 @@ h1, h2, h3, h4, h5 {
 .agenda-card.is-visible:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0s; }
 .agenda-card.is-visible:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
 .agenda-card.is-visible:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+
+/* MOBILE */
+@media(max-width:768px){
+  .hero__title{font-size:clamp(2.2rem,10vw,3.5rem)!important}
+  .hero__lede{font-size:0.95rem!important}
+  .hero__actions{flex-direction:column;width:100%}
+  .hero__actions .btn{width:100%;justify-content:center}
+  .room{grid-template-columns:1fr!important;min-height:auto;padding:3rem 1.5rem}
+  .room__title{font-size:clamp(1.6rem,8vw,2.4rem)!important}
+  .agenda__grid,.testimonios__grid{grid-template-columns:1fr!important}
+  .prensa__logos{flex-direction:column;gap:1rem}
+  .casa-strip{grid-template-columns:1fr!important}
+  .site-footer__links{flex-direction:column;align-items:center;gap:0.8rem}
+  .whatsapp-float{bottom:1rem;left:1rem}
+  .back-to-top{bottom:1rem;right:1rem}
+}
 </style>
 </head>
 <body>
