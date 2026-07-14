@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enviar notificación — Mandrágora</title>
+<style>
+:root { --c-bg:#f8f4ed; --c-cream:#1a1512; --c-gold:#b8892e; --c-red:#c0432a; --c-green:#2e7d32; }
+body { background:var(--c-bg); color:var(--c-cream); font-family:system-ui,sans-serif; margin:0; padding:2rem; }
+h1 { font-size:1.5rem; margin-bottom:1.5rem; }
+.box { max-width:420px; margin:2rem auto; }
+input, textarea { width:100%; padding:0.8rem; margin:0.4rem 0 1rem; border:1px solid #ddd; border-radius:4px; font-size:1rem; font-family:inherit; box-sizing:border-box; }
+textarea { resize:vertical; min-height:80px; }
+label { font-size:0.85rem; font-weight:600; opacity:0.75; }
+button { width:100%; padding:0.9rem; background:var(--c-gold); color:#fff; border:none; border-radius:4px; font-size:1rem; cursor:pointer; }
+button:disabled { opacity:0.6; cursor:default; }
+.msg { margin-top:1rem; font-size:0.9rem; text-align:center; }
+.msg.ok { color:var(--c-green); }
+.msg.error { color:var(--c-red); }
+a.back { color:var(--c-gold); font-size:0.85rem; display:block; margin-top:1.5rem; text-align:center; }
+</style>
+</head>
+<body>
+
+<div class="box" id="login-box">
+  <h1>Enviar notificación</h1>
+  <label>Clave de administrador</label>
+  <input type="password" id="secret" placeholder="Clave" autofocus>
+  <button id="login-btn">Entrar</button>
+  <div class="msg error" id="login-msg"></div>
+  <a href="index.html" class="back">← Volver al inicio</a>
+</div>
+
+<div class="box" id="form-box" style="display:none">
+  <h1>Enviar notificación</h1>
+  <label>Título</label>
+  <input type="text" id="title" placeholder="Ej: Nueva función" maxlength="60">
+  <label>Mensaje</label>
+  <textarea id="body" placeholder="Ej: Entradas ya disponibles para Atrapada en la pantalla" maxlength="200"></textarea>
+  <label>Link (opcional, a dónde va si tocan la notificación)</label>
+  <input type="text" id="url" placeholder="/agenda.html">
+  <button id="send-btn">Enviar a todos los suscriptos</button>
+  <div class="msg" id="send-msg"></div>
+  <a href="index.html" class="back">← Volver al inicio</a>
+</div>
+
+<script>
+(function () {
+  var loginBox = document.getElementById('login-box');
+  var formBox = document.getElementById('form-box');
+  var secretInput = document.getElementById('secret');
+  var loginBtn = document.getElementById('login-btn');
+  var loginMsg = document.getElementById('login-msg');
+  var sendBtn = document.getElementById('send-btn');
+  var sendMsg = document.getElementById('send-msg');
+  var secret = '';
+
+  loginBtn.addEventListener('click', function () {
+    secret = secretInput.value.trim();
+    if (!secret) {
+      loginMsg.textContent = 'Ingresá la clave.';
+      return;
+    }
+    loginBox.style.display = 'none';
+    formBox.style.display = 'block';
+  });
+
+  secretInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') loginBtn.click();
+  });
+
+  sendBtn.addEventListener('click', function () {
+    var title = document.getElementById('title').value.trim();
+    var body = document.getElementById('body').value.trim();
+    var url = document.getElementById('url').value.trim() || '/';
+
+    if (!title || !body) {
+      sendMsg.className = 'msg error';
+      sendMsg.textContent = 'Falta el título o el mensaje.';
+      return;
+    }
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Enviando…';
+    sendMsg.className = 'msg';
+    sendMsg.textContent = '';
+
+    fetch('/api/push-send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + secret,
+      },
+      body: JSON.stringify({ title: title, body: body, url: url }),
+    })
+      .then(function (res) { return res.json().then(function (data) { return { status: res.status, data: data }; }); })
+      .then(function (result) {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Enviar a todos los suscriptos';
+        if (result.status === 401) {
+          sendMsg.className = 'msg error';
+          sendMsg.textContent = 'Clave incorrecta.';
+          return;
+        }
+        if (result.data.error) {
+          sendMsg.className = 'msg error';
+          sendMsg.textContent = 'Error: ' + result.data.error;
+          return;
+        }
+        sendMsg.className = 'msg ok';
+        sendMsg.textContent = 'Enviado a ' + result.data.sent + ' de ' + result.data.total + ' suscriptos.';
+        document.getElementById('title').value = '';
+        document.getElementById('body').value = '';
+        document.getElementById('url').value = '';
+      })
+      .catch(function (err) {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Enviar a todos los suscriptos';
+        sendMsg.className = 'msg error';
+        sendMsg.textContent = 'Error de red: ' + err.message;
+      });
+  });
+})();
+</script>
+
+</body>
+</html>
