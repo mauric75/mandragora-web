@@ -27,6 +27,28 @@ body{font-family:var(--f-body);color:var(--c-cream);background:var(--c-bg);margi
 <div class="lightbox" id="lb"><button class="lightbox__close" id="lb-close">X</button><button class="lightbox__prev" id="lb-prev">←</button><button class="lightbox__next" id="lb-next">→</button><div class="lightbox__counter" id="lb-counter"></div><img src="" alt="" id="lb-img"></div>
 <footer class="site-footer"><img src="assets/brand-logos/logo-negro.png" alt="Mandragora" class="site-footer__logo"><p class="site-footer__legal">© 2026 Mandragora</p></footer>
 <script>
-(function(){var a=document.querySelectorAll(".masonry img"),l=document.getElementById("lb"),i=document.getElementById("lb-img"),n=0;a.forEach(function(x,p){x.addEventListener("click",function(){n=p;s();l.classList.add("is-open")})});function s(){i.src=a[n].src;document.getElementById("lb-counter").textContent=(n+1)+" de "+a.length}document.getElementById("lb-close").addEventListener("click",function(){l.classList.remove("is-open")});document.getElementById("lb-prev").addEventListener("click",function(){n=n>0?n-1:a.length-1;s()});document.getElementById("lb-next").addEventListener("click",function(){n=n<a.length-1?n+1:0;s()});l.addEventListener("click",function(e){if(e.target===l)l.classList.remove("is-open")});document.addEventListener("keydown",function(e){if(!l.classList.contains("is-open"))return;if(e.key==="Escape")l.classList.remove("is-open");if(e.key==="ArrowLeft"){n=n>0?n-1:a.length-1;s()}if(e.key==="ArrowRight"){n=n<a.length-1?n+1:0;s()}});var t=document.getElementById("theme-toggle"),h=document.documentElement,s=localStorage.getItem("mandragora-theme");if(s==="dark"){h.setAttribute("data-theme","dark");t.textContent="☾"}t.addEventListener("click",function(){var d=h.getAttribute("data-theme")==="dark";if(d){h.removeAttribute("data-theme");t.textContent="☀"}else{h.setAttribute("data-theme","dark");t.textContent="☾"}})})();
+(function(){
+  var imgs = document.querySelectorAll(".masonry img");
+  var lb = document.getElementById("lb");
+  var lbi = document.getElementById("lb-img");
+  var idx = 0;
+  function show(){ lbi.src = imgs[idx].src; document.getElementById("lb-counter").textContent = (idx+1) + " de " + imgs.length; }
+  imgs.forEach(function(img, i){
+    img.addEventListener("click", function(){ idx = i; show(); lb.classList.add("is-open"); });
+  });
+  document.getElementById("lb-close").onclick = function(){ lb.classList.remove("is-open"); };
+  document.getElementById("lb-prev").onclick = function(){ idx = idx>0 ? idx-1 : imgs.length-1; show(); };
+  document.getElementById("lb-next").onclick = function(){ idx = idx<imgs.length-1 ? idx+1 : 0; show(); };
+  lb.onclick = function(e){ if(e.target === lb) lb.classList.remove("is-open"); };
+  document.onkeydown = function(e){
+    if(!lb.classList.contains("is-open")) return;
+    if(e.key === "Escape") lb.classList.remove("is-open");
+    if(e.key === "ArrowLeft"){ idx = idx>0 ? idx-1 : imgs.length-1; show(); }
+    if(e.key === "ArrowRight"){ idx = idx<imgs.length-1 ? idx+1 : 0; show(); }
+  };
+  var t=document.getElementById("theme-toggle"),h=document.documentElement,s=localStorage.getItem("mandragora-theme");
+  if(s==="dark"){h.setAttribute("data-theme","dark");t.textContent="☾"}
+  t.onclick = function(){ var d=h.getAttribute("data-theme")==="dark"; if(d){h.removeAttribute("data-theme");t.textContent="☀"}else{h.setAttribute("data-theme","dark");t.textContent="☾"} };
+})();
 </script>
 </body></html>
