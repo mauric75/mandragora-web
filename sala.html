@@ -18,6 +18,7 @@
 <script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2" as="font" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
@@ -417,31 +418,34 @@ to   { opacity: 1; transform: translateY(0); }
 
 <!-- ============ NAV ============ -->
 <header class="site-nav">
-  <a href="index.html" class="site-nav__mark">
+  <a href="#hero" class="site-nav__mark">
     <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-light">
     <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-dark">
   </a>
   <nav class="site-nav__links">
-    <a href="index.html">Inicio</a>
     <a href="escuela.html">Escuela</a>
     <a href="sala.html" class="is-active">Sala</a>
     <a href="compania.html">Compañía</a>
     <a href="cine-viajero.html">Cine Viajero</a>
-    <a href="index.html#agenda">Agenda</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="agenda.html">Agenda</a>
   </nav>
+  <a href="https://www.instagram.com/mandragoracasa/" target="_blank" rel="noopener" class="nav-instagram" aria-label="Instagram">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.5" fill="currentColor" stroke="none"/></svg>
+  </a>
   <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">☀</button>
-
   <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
   <nav class="mobile-menu" id="mobile-menu">
     <a href="index.html">Inicio</a>
-    <a href="index.html">Inicio</a>
     <a href="escuela.html">Escuela</a>
-    <a href="sala.html">Sala</a>
+    <a href="sala.html" class="is-active">Sala</a>
     <a href="compania.html">Compañía</a>
     <a href="cine-viajero.html">Cine Viajero</a>
     <a href="comunidad.html">Comunidad</a>
+    <a href="contacto.html">Contacto</a>
     <a href="agenda.html">Agenda</a>
   </nav>
 </header>
