@@ -356,26 +356,15 @@ h1, h2, h3, h4 {
 @media (min-width: 900px) { .docentes__grid { grid-template-columns: repeat(3, 1fr); } }
 
 .docente-card {
+  background: var(--c-bg); border: 1px solid var(--c-border);
+  border-radius: 2px; overflow: hidden; text-align: center;
   transition: transform 0.3s var(--ease), border-color 0.4s var(--ease), box-shadow 0.3s var(--ease);
-  background: var(--c-bg);
-  border: 1px solid rgba(243,236,224,0.06);
-  border-radius: 2px; overflow: hidden;
-  transition: border-color 0.4s var(--ease);
 }
-.docente-card:hover { border-color: var(--c-gold-dim); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+.docente-card:hover { border-color: var(--c-gold-dim); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.10); }
 .docente-card__photo {
-  aspect-ratio: 3/4; background: var(--c-bg);
-  display: grid; place-items: center;
-  color: var(--c-cream-faint); font-size: 0.7rem;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  border: 1px solid var(--c-gold-faint);
-  position: relative; overflow: hidden;
-}
-.docente-card__photo::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 35%, var(--c-gold-dim) 0%, transparent 65%);
-  opacity: 0.5;
+  width: 120px; height: 120px; border-radius: 50%;
+  margin: 2rem auto 1rem; overflow: hidden;
+  border: 3px solid var(--c-gold); position: relative;
 }
 .docente-card__photo img {
   width: 100%; height: 100%; object-fit: cover;
@@ -388,6 +377,11 @@ h1, h2, h3, h4 {
   font-family: var(--f-mark); font-size: 0.62rem;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--c-gold); margin-bottom: 0.8rem;
+}
+.docente-card__quote {
+  font-family: var(--f-display); font-style: italic;
+  font-size: 0.9rem; line-height: 1.5;
+  color: var(--c-cream-dim); padding: 0 1rem 1.5rem;
 }
 .docente-card__body p {
   font-size: 0.85rem; line-height: 1.6;
@@ -617,7 +611,7 @@ h1, h2, h3, h4 {
       <div class="docente-card__body">
         <h4>Docente de Actuación</h4>
         <p class="docente-card__rol">Actuación · Dirección</p>
-        <p>Artista en actividad con trayectoria en teatro independiente uruguayo.</p>
+        <p class="docente-card__quote">El teatro es el lugar donde podemos equivocarnos en voz alta.</p>
       </div>
     </article>
 
@@ -628,7 +622,7 @@ h1, h2, h3, h4 {
       <div class="docente-card__body">
         <h4>Docente de Clown</h4>
         <p class="docente-card__rol">Clown · Voz</p>
-        <p>Formada en clown y técnica vocal. Investiga el cruce entre humor y vulnerabilidad.</p>
+        <p class="docente-card__quote">El clown no hace reir: se ríe con el otro.</p>
       </div>
     </article>
 
@@ -639,7 +633,7 @@ h1, h2, h3, h4 {
       <div class="docente-card__body">
         <h4>Docente de Dramaturgia</h4>
         <p class="docente-card__rol">Dramaturgia · Escritura</p>
-        <p>Autora de obras estrenadas en Montevideo. Tallerista con enfoque en la práctica.</p>
+        <p class="docente-card__quote">Escribir es escuchar lo que todavía no tiene palabras.</p>
       </div>
     </article>
   </div>
