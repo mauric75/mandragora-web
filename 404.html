@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>404 — Mandrágora</title>
+<meta name="description" content="Página no encontrada. El telón se cerró para esta dirección.">
+<link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
+<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:#f8f4ed; --c-gold:#b8892e; --c-cream:#1a1512; --c-dim:rgba(26,21,18,0.5);
+  --f-display:'Cormorant Garamond',Georgia,serif; --f-mark:'Cinzel',Georgia,serif;
+  --f-body:'Jost',system-ui,sans-serif;
+}
+[data-theme="dark"] {
+  --c-bg:#05070a; --c-gold:#CE9A47; --c-cream:#f3ece0; --c-dim:rgba(243,236,224,0.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);color:var(--c-cream);background:var(--c-bg);min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;transition:background 0.4s,color 0.4s}
+.card{max-width:500px;padding:3rem 2rem}
+.eyes{width:70px;height:auto;margin:0 auto 2rem;opacity:0.5;display:block}
+h1{font-family:var(--f-display);font-size:5rem;color:var(--c-gold);line-height:1;margin-bottom:1rem;font-weight:600}
+h2{font-family:var(--f-display);font-size:1.5rem;font-weight:400;margin-bottom:1.5rem;font-style:italic}
+p{color:var(--c-dim);line-height:1.6;margin-bottom:2rem;font-size:1rem}
+a{color:var(--c-gold);text-decoration:none;font-weight:600;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;transition:opacity 0.3s}
+a:hover{opacity:0.7}
+</style>
+</head>
+<body>
+<div class="card">
+  <img src="assets/brand-logos/iso.png" alt="" class="eyes" aria-hidden="true">
+  <h1>404</h1>
+  <h2>Esta página no está en escena</h2>
+  <p>El telón se cerró para esta dirección. Pero el teatro sigue abierto.</p>
+  <a href="index.html">← Volver a cartelera</a>
+</div>
+</body>
+</html>
