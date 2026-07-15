@@ -62,9 +62,14 @@ h1{font-family:var(--f-display);font-weight:600;line-height:1.1}
   transform:translateY(-4px);
   box-shadow:0 16px 48px rgba(0,0,0,0.12);
 }
+.reel-card__thumb{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0.5;transition:opacity 0.4s var(--ease);
+}
+.reel-card:hover .reel-card__thumb{opacity:0.7}
 .reel-card__play{
-  font-size:2.2rem;margin-bottom:1rem;line-height:1;display:block;
-  transition:transform 0.3s var(--ease);
+  position:relative;z-index:1;font-size:2.2rem;margin-bottom:1rem;line-height:1;display:block;
+  transition:transform 0.3s var(--ease);text-shadow:0 2px 12px rgba(0,0,0,0.5);
 }
 .reel-card:hover .reel-card__play{transform:scale(1.1)}
 .reel-card__title{
@@ -127,36 +132,42 @@ h1{font-family:var(--f-display);font-weight:600;line-height:1.1}
 
 <section class="reels-grid">
   <a href="https://www.instagram.com/reel/DXuOrZRAez2/" target="_blank" rel="noopener" class="reel-card" data-category="escuela">
+    <img src="assets/images/reels/reel-01.jpg" alt="" class="reel-card__thumb" onerror="this.style.display='none'">
     <span class="reel-card__play">▶</span>
     <div class="reel-card__title">Taller de Actuación</div>
     <div class="reel-card__desc">Ejercicios de escena con el elenco docente.</div>
     <div class="reel-card__ig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg> @mandragoracasa</div>
   </a>
   <a href="https://www.instagram.com/reel/DXZPj2PgWeE/" target="_blank" rel="noopener" class="reel-card" data-category="escuela">
+    <img src="assets/images/reels/reel-02.jpg" alt="" class="reel-card__thumb" onerror="this.style.display='none'">
     <span class="reel-card__play">▶</span>
     <div class="reel-card__title">Clase de Clown</div>
     <div class="reel-card__desc">El arte de la torpeza y la sinceridad.</div>
     <div class="reel-card__ig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg> @mandragoracasa</div>
   </a>
   <a href="https://www.instagram.com/reel/DXXI91XAU97/" target="_blank" rel="noopener" class="reel-card" data-category="compania">
+    <img src="assets/images/reels/reel-03.jpg" alt="" class="reel-card__thumb" onerror="this.style.display='none'">
     <span class="reel-card__play">▶</span>
     <div class="reel-card__title">Ensayo general</div>
     <div class="reel-card__desc">Preparando la próxima función en la sala.</div>
     <div class="reel-card__ig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg> @mandragoracasa</div>
   </a>
   <a href="https://www.instagram.com/reel/DXBCfMIDEch/" target="_blank" rel="noopener" class="reel-card" data-category="compania">
+    <img src="assets/images/reels/reel-04.jpg" alt="" class="reel-card__thumb" onerror="this.style.display='none'>
     <span class="reel-card__play">▶</span>
     <div class="reel-card__title">Detrás de escena</div>
     <div class="reel-card__desc">Lo que no se ve cuando se apagan las luces.</div>
     <div class="reel-card__ig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg> @mandragoracasa</div>
   </a>
   <a href="https://www.instagram.com/reel/DX-RP5qJt9G/" target="_blank" rel="noopener" class="reel-card" data-category="sala">
+    <img src="assets/images/reels/reel-05.jpg" alt="" class="reel-card__thumb" onerror="this.style.display='none'>
     <span class="reel-card__play">▶</span>
     <div class="reel-card__title">Teatro Mandrágora</div>
     <div class="reel-card__desc">La sala, el escenario, la magia.</div>
     <div class="reel-card__ig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg> @mandragoracasa</div>
   </a>
   <a href="https://www.instagram.com/reel/DaoJlNTNxFj/" target="_blank" rel="noopener" class="reel-card" data-category="sala">
+    <img src="assets/images/reels/reel-06.jpg" alt="" class="reel-card__thumb" onerror="this.style.display='none'>
     <span class="reel-card__play">▶</span>
     <div class="reel-card__title">Lo que se viene</div>
     <div class="reel-card__desc">Próximos estrenos en la sala.</div>
