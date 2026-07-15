@@ -6,7 +6,7 @@
 <title>Reels — Mandrágora</title>
 <meta name="description" content="Reels de Instagram de Mandrágora. Teatro, escuela y comunidad en video.">
 <link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
-<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
+<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t!=="light")document.documentElement.setAttribute("data-theme","dark");})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -49,8 +49,14 @@ h1{font-family:var(--f-display);font-weight:600;line-height:1.1}
   background:var(--c-bg-soft);border:1px solid var(--c-border);
   border-radius:2px;padding:2.5rem 2rem;text-align:center;
   transition:border-color 0.3s var(--ease),transform 0.3s var(--ease),box-shadow 0.3s var(--ease);
-  cursor:pointer;display:block;position:relative;
+  cursor:pointer;display:block;position:relative;overflow:hidden;
 }
+.reel-card::before{
+  content:'';position:absolute;inset:0;opacity:0;
+  background:radial-gradient(circle at center,var(--c-gold-dim),transparent 70%);
+  transition:opacity 0.4s var(--ease);
+}
+.reel-card:hover::before{opacity:1}
 .reel-card:hover{
   border-color:var(--c-gold);
   transform:translateY(-4px);
