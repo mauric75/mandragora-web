@@ -901,11 +901,6 @@ h1, h2, h3, h4, h5 {
 </head>
 <body>
 
-<div class="notif-banner" id="notif-banner">
-  🎭 Atrapada en la pantalla — sábados de julio · <a href="agenda.html">Ver agenda</a>
-  <button class="notif-banner__close" id="notif-close">✕</button>
-</div>
-
 <div class="grain" aria-hidden="true"></div>
 
 <!-- ============ NAV ============ -->
@@ -1160,11 +1155,14 @@ h1, h2, h3, h4, h5 {
 
   <nav class="site-footer__links">
     <a href="index.html">Inicio</a>
-    <a href="agenda.html">Agenda</a>
     <a href="escuela.html">Escuela</a>
     <a href="sala.html">Sala</a>
     <a href="compania.html">Compañía</a>
     <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="galeria.html">Galeria</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="agenda.html">Agenda</a>
   </nav>
 
   <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora</p>
@@ -1316,7 +1314,6 @@ h1, h2, h3, h4, h5 {
       hamburger.setAttribute('aria-expanded', 'false');
     });
   });
-  var b=document.getElementById("notif-banner");if(b&&!sessionStorage.getItem("notif-closed")){setTimeout(function(){b.classList.add("is-visible")},2000)}document.getElementById("notif-close").addEventListener("click",function(){b.classList.remove("is-visible");sessionStorage.setItem("notif-closed","1")});
 
   // parallax hero on scroll
 

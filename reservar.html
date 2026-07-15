@@ -67,6 +67,28 @@ img{max-width:100%;display:block}
 .theme-toggle{background:none;border:1px solid currentColor;cursor:pointer;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:0.9rem;line-height:1;padding:0;opacity:0.7;transition:opacity 0.3s,transform 0.4s var(--ease)}
 .theme-toggle:hover{opacity:1;transform:rotate(15deg)}
 .theme-toggle:active{transform:rotate(180deg)}
+.site-nav__links { display: none; gap: 2rem; font-family: var(--f-body); letter-spacing: 0.08em; font-size: 0.74rem; }
+.site-nav__links a { opacity: 0.72; transition: opacity 0.3s; }
+.site-nav__links a:hover { opacity: 1; }
+.site-nav__links a.is-active { opacity: 1; color: var(--c-gold); }
+.hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 101; opacity: 0.8; }
+.hamburger span { display: block; width: 24px; height: 1.5px; background: currentColor; transition: transform 0.3s, opacity 0.2s; }
+.hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.is-open span:nth-child(2) { opacity: 0; }
+.hamburger.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+.mobile-menu { position: fixed; inset: 0; z-index: 99; background: var(--c-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; pointer-events: none; transition: opacity 0.35s; }
+.mobile-menu.is-open { opacity: 1; pointer-events: auto; }
+.mobile-menu a { font-family: var(--f-display); font-size: 1.6rem; color: var(--c-cream); transition: color 0.3s; }
+.mobile-menu a:hover { color: var(--c-gold); }
+@media (min-width: 881px) { .hamburger { display: none; } }
+@media (min-width: 880px) { .site-nav__links { display: flex; } }
+.site-footer { padding: 5rem var(--gutter) 2.5rem; text-align: center; background: var(--c-bg); border-top: 1px solid var(--c-border); }
+.site-footer__logo { height: 56px; width: auto; margin: 0 auto 1rem; display: block; }
+.site-footer__line { color: var(--c-cream-dim); margin-bottom: 1rem; font-size: 0.95rem; }
+.site-footer__links { display: flex; justify-content: center; gap: 1.8rem; font-size: 0.78rem; letter-spacing: 0.06em; margin-bottom: 2rem; flex-wrap: wrap; }
+.site-footer__links a { opacity: 0.65; transition: opacity 0.3s; }
+.site-footer__links a:hover { opacity: 1; }
+.site-footer__legal { font-size: 0.7rem; color: var(--c-cream-faint); }
 @media(max-width:600px){.site-nav__logo{height:28px}}
 
 .page-header{padding:8rem var(--gutter) 2rem;text-align:center}
@@ -167,7 +189,31 @@ img{max-width:100%;display:block}
     <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-light">
     <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-dark">
   </a>
-  <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">☀</button>
+  <nav class="site-nav__links">
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="galeria.html">Galeria</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="agenda.html">Agenda</a>
+  </nav>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">☀</button>
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Inicio</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="galeria.html">Galeria</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="agenda.html">Agenda</a>
+  </nav>
 </header>
 
 <section class="page-header">
@@ -304,6 +350,23 @@ img{max-width:100%;display:block}
   <img src="" alt="" id="lightbox-img">
 </div>
 
+<footer class="site-footer">
+  <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-footer__logo">
+  <p class="site-footer__line">Casa de teatro, escuela y comunidad.</p>
+  <nav class="site-footer__links">
+    <a href="index.html">Inicio</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="galeria.html">Galeria</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="agenda.html">Agenda</a>
+  </nav>
+  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora</p>
+</footer>
+
 <script>
 (function(){
   "use strict";
@@ -317,6 +380,17 @@ img{max-width:100%;display:block}
     var isDark = html.getAttribute('data-theme') === 'dark';
     if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '☀'; localStorage.setItem('mandragora-theme','light'); }
     else { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; localStorage.setItem('mandragora-theme','dark'); }
+  });
+
+  var hamburger = document.getElementById('hamburger');
+  var mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', function(){
+    var open = hamburger.classList.toggle('is-open');
+    mobileMenu.classList.toggle('is-open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  mobileMenu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ hamburger.classList.remove('is-open'); mobileMenu.classList.remove('is-open'); hamburger.setAttribute('aria-expanded','false'); });
   });
 
   // State
@@ -492,6 +566,7 @@ img{max-width:100%;display:block}
 
 
   // PWA
+  document.getElementById('current-year').textContent = new Date().getFullYear();
   if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
 
   // nav scroll blur

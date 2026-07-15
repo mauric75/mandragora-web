@@ -6,12 +6,56 @@
 body{font-family:var(--f-body);color:var(--c-cream);background:var(--c-bg);margin:0;transition:background 0.4s var(--ease),color 0.3s var(--ease)}a{color:inherit;text-decoration:none}h1{font-family:var(--f-display);font-weight:600}
 .site-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.5rem var(--gutter);background:rgba(248,244,237,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-family:var(--f-mark);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--c-cream)}
 [data-theme="dark"] .site-nav{background:rgba(5,7,10,0.92)}.site-nav__logo{height:36px;width:auto}.site-nav__links{display:flex;gap:1.5rem;font-family:var(--f-body);letter-spacing:0.08em;font-size:0.74rem}.site-nav__links a{opacity:0.72;transition:opacity 0.3s}.site-nav__links a:hover{opacity:1;color:var(--c-gold)}.theme-toggle{background:none;border:1px solid currentColor;cursor:pointer;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:0.9rem;opacity:0.7;transition:opacity 0.3s,transform 0.4s var(--ease)}.theme-toggle:hover{opacity:1;transform:rotate(15deg)}@media(max-width:900px){.site-nav__links{display:none}}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;z-index:101;opacity:0.8}
+.hamburger span{display:block;width:24px;height:1.5px;background:currentColor;transition:transform 0.3s,opacity 0.2s}
+.hamburger.is-open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.is-open span:nth-child(2){opacity:0}
+.hamburger.is-open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{position:fixed;inset:0;z-index:99;background:var(--c-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;opacity:0;pointer-events:none;transition:opacity 0.35s}
+.mobile-menu.is-open{opacity:1;pointer-events:auto}
+.mobile-menu a{font-family:var(--f-display);font-size:1.6rem;color:var(--c-cream);transition:color 0.3s}
+.mobile-menu a:hover{color:var(--c-gold)}
+@media(max-width:900px){.hamburger{display:flex}}
 .page-header{padding:8rem var(--gutter) 2rem;text-align:center}.page-header h1{font-size:clamp(2.6rem,6vw,4.8rem);margin-bottom:0.5rem}.page-header p{color:var(--c-dim);font-size:0.9rem}
 .masonry{columns:3 240px;column-gap:0.75rem;max-width:1200px;margin:0 auto;padding:0 var(--gutter) 4rem}.masonry img{width:100%;margin-bottom:0.75rem;border-radius:2px;cursor:pointer;transition:transform 0.4s var(--ease),filter 0.4s;filter:contrast(1.02);display:block}.masonry img:hover{transform:scale(1.02);filter:contrast(1.06)}@media(max-width:600px){.masonry{columns:2 160px}}
 .lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.96);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s}.lightbox.is-open{opacity:1;pointer-events:auto}.lightbox img{max-width:94vw;max-height:88vh;object-fit:contain;border-radius:2px}.lightbox__close,.lightbox__prev,.lightbox__next{position:absolute;background:none;border:1px solid rgba(255,255,255,0.25);color:#fff;cursor:pointer;display:grid;place-items:center;transition:border-color 0.3s}.lightbox__close:hover,.lightbox__prev:hover,.lightbox__next:hover{border-color:#fff}.lightbox__close{top:1.5rem;right:1.5rem;width:40px;height:40px;border-radius:50%;font-size:1.3rem}.lightbox__prev{left:1rem;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;font-size:1.5rem}.lightbox__next{right:1rem;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;font-size:1.5rem}.lightbox__counter{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.5);font-size:0.8rem;letter-spacing:0.1em}
 .site-footer{padding:3rem var(--gutter) 2rem;text-align:center;border-top:1px solid var(--c-border)}.site-footer__logo{height:40px;width:auto;margin:0 auto 0.5rem;display:block}.site-footer__legal{font-size:0.7rem;color:var(--c-dim);margin-top:1rem}
+.site-footer__line{color:var(--c-cream-dim);margin-bottom:1rem;font-size:0.9rem}
+.site-footer__links{display:flex;justify-content:center;gap:1.5rem;font-size:0.75rem;letter-spacing:0.06em;margin-bottom:1.5rem;flex-wrap:wrap}
+.site-footer__links a{opacity:0.65;transition:opacity 0.3s}
+.site-footer__links a:hover{opacity:1}
 </style></head><body>
-<header class="site-nav"><a href="index.html"><img src="assets/brand-logos/logo-negro.png" alt="Mandragora" class="site-nav__logo"></a><nav class="site-nav__links"><a href="index.html">Inicio</a><a href="escuela.html">Escuela</a><a href="sala.html">Sala</a><a href="compania.html">Compania</a><a href="agenda.html">Agenda</a><a href="contacto.html">Contacto</a></nav><button class="theme-toggle" id="theme-toggle">☀</button></header>
+<header class="site-nav">
+  <a href="index.html" class="site-nav__mark">
+    <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-light">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-dark">
+  </a>
+  <nav class="site-nav__links">
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="galeria.html" class="is-active">Galeria</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="agenda.html">Agenda</a>
+  </nav>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">☀</button>
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Inicio</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="galeria.html">Galeria</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="agenda.html">Agenda</a>
+  </nav>
+</header>
 <section class="page-header"><h1>Galeria</h1><p>11 fotos</p></section>
 <section class="masonry"><img src="assets/images/compania.jpg" alt="" loading="lazy">
 <img src="assets/images/comunidad.jpg" alt="" loading="lazy">
@@ -25,7 +69,7 @@ body{font-family:var(--f-body);color:var(--c-cream);background:var(--c-bg);margi
 <img src="assets/images/obra-manos-atadas.jpg" alt="" loading="lazy">
 <img src="assets/images/sala.jpg" alt="" loading="lazy"></section>
 <div class="lightbox" id="lb"><button class="lightbox__close" id="lb-close">X</button><button class="lightbox__prev" id="lb-prev">←</button><button class="lightbox__next" id="lb-next">→</button><div class="lightbox__counter" id="lb-counter"></div><img src="" alt="" id="lb-img"></div>
-<footer class="site-footer"><img src="assets/brand-logos/logo-negro.png" alt="Mandragora" class="site-footer__logo"><p class="site-footer__legal">© 2026 Mandragora</p></footer>
+<footer class="site-footer"><img src="assets/brand-logos/logo-negro.png" alt="Mandragora" class="site-footer__logo"><p class="site-footer__line">Casa de teatro, escuela y comunidad.</p><nav class="site-footer__links"><a href="index.html">Inicio</a><a href="escuela.html">Escuela</a><a href="sala.html">Sala</a><a href="compania.html">Compañía</a><a href="cine-viajero.html">Cine Viajero</a><a href="comunidad.html">Comunidad</a><a href="galeria.html">Galeria</a><a href="contacto.html">Contacto</a><a href="agenda.html">Agenda</a></nav><p class="site-footer__legal">© 2026 Mandragora</p></footer>
 <script>
 (function(){
   var imgs = document.querySelectorAll(".masonry img");
@@ -49,6 +93,9 @@ body{font-family:var(--f-body);color:var(--c-cream);background:var(--c-bg);margi
   var t=document.getElementById("theme-toggle"),h=document.documentElement,s=localStorage.getItem("mandragora-theme");
   if(s==="dark"){h.setAttribute("data-theme","dark");t.textContent="☾"}
   t.onclick = function(){ var d=h.getAttribute("data-theme")==="dark"; if(d){h.removeAttribute("data-theme");t.textContent="☀"}else{h.setAttribute("data-theme","dark");t.textContent="☾"} };
+  var hamburger=document.getElementById("hamburger"),mobileMenu=document.getElementById("mobile-menu");
+  hamburger.addEventListener("click",function(){var open=hamburger.classList.toggle("is-open");mobileMenu.classList.toggle("is-open");hamburger.setAttribute("aria-expanded",open)});
+  mobileMenu.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){hamburger.classList.remove("is-open");mobileMenu.classList.remove("is-open");hamburger.setAttribute("aria-expanded","false")})});
 })();
 </script>
 </body></html>
