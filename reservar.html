@@ -82,6 +82,13 @@ img{max-width:100%;display:block}
 .mobile-menu a:hover { color: var(--c-gold); }
 @media (min-width: 881px) { .hamburger { display: none; } }
 @media (min-width: 880px) { .site-nav__links { display: flex; } }
+.site-footer { padding: 5rem var(--gutter) 2.5rem; text-align: center; background: var(--c-bg); border-top: 1px solid var(--c-border); }
+.site-footer__logo { height: 56px; width: auto; margin: 0 auto 1rem; display: block; }
+.site-footer__line { color: var(--c-cream-dim); margin-bottom: 1rem; font-size: 0.95rem; }
+.site-footer__links { display: flex; justify-content: center; gap: 1.8rem; font-size: 0.78rem; letter-spacing: 0.06em; margin-bottom: 2rem; flex-wrap: wrap; }
+.site-footer__links a { opacity: 0.65; transition: opacity 0.3s; }
+.site-footer__links a:hover { opacity: 1; }
+.site-footer__legal { font-size: 0.7rem; color: var(--c-cream-faint); }
 @media(max-width:600px){.site-nav__logo{height:28px}}
 
 .page-header{padding:8rem var(--gutter) 2rem;text-align:center}
@@ -343,6 +350,23 @@ img{max-width:100%;display:block}
   <img src="" alt="" id="lightbox-img">
 </div>
 
+<footer class="site-footer">
+  <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-footer__logo">
+  <p class="site-footer__line">Casa de teatro, escuela y comunidad.</p>
+  <nav class="site-footer__links">
+    <a href="index.html">Inicio</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="galeria.html">Galeria</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="agenda.html">Agenda</a>
+  </nav>
+  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora</p>
+</footer>
+
 <script>
 (function(){
   "use strict";
@@ -542,6 +566,7 @@ img{max-width:100%;display:block}
 
 
   // PWA
+  document.getElementById('current-year').textContent = new Date().getFullYear();
   if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
 
   // nav scroll blur
