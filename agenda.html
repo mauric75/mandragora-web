@@ -280,6 +280,9 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
   background: var(--c-bg); border-top: 1px solid var(--c-border);
 }
 .site-footer__logo { height: 56px; width: auto; margin: 0 auto 1rem; display: block; }
+.site-footer__logo-dark { display: none; }
+[data-theme="dark"] .site-footer__logo-light { display: none; }
+[data-theme="dark"] .site-footer__logo-dark { display: block; }
 .site-footer__line { color: var(--c-cream-dim); margin-bottom: 1rem; font-size: 0.95rem; }
 .site-footer__links { display: flex; justify-content: center; gap: 1.8rem; font-size: 0.78rem; letter-spacing: 0.06em; margin-bottom: 2rem; flex-wrap: wrap; }
 .site-footer__links a { opacity: 0.65; transition: opacity 0.3s; }
@@ -505,7 +508,8 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 </section>
 
 <footer class="site-footer" id="contacto">
-  <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-footer__logo">
+  <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-footer__logo site-footer__logo-light">
+  <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-footer__logo site-footer__logo-dark">
   <p class="site-footer__line">Casa de teatro, escuela y comunidad.</p>
   <nav class="site-footer__links">
     <a href="index.html">Inicio</a>
