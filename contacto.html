@@ -135,6 +135,11 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 .contacto-item h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
 .contacto-item p, .contacto-item a { font-size: 0.95rem; line-height: 1.7; color: var(--c-cream-dim); }
 .contacto-item a:hover { color: var(--c-gold); }
+.contacto-map { margin-top: 2rem; border: 1px solid var(--c-border); border-radius: 2px; overflow: hidden; transition: border-color 0.4s var(--ease); }
+.contacto-map:hover { border-color: var(--c-gold-dim); }
+.contacto-map iframe { display: block; width: 100%; height: 340px; border: 0; filter: grayscale(0.5) contrast(1.05) brightness(1.02); transition: filter 0.4s var(--ease); }
+[data-theme="dark"] .contacto-map iframe { filter: invert(88%) grayscale(0.35) contrast(0.9) brightness(0.95); }
+@media (max-width: 600px) { .contacto-map iframe { height: 260px; } }
 
 .site-footer { padding: 5rem var(--gutter) 2.5rem; text-align: center; background: var(--c-bg); border-top: 1px solid var(--c-border); }
 .site-footer__logo { height: 56px; width: auto; margin: 0 auto 1rem; display: block; }
@@ -260,6 +265,15 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
       <p><a href="https://www.instagram.com/mandragoracasa/" target="_blank" rel="noopener">Instagram @mandragoracasa</a></p>
       <p><a href="https://www.facebook.com/mandragoracasacultural/" target="_blank" rel="noopener">Facebook</a></p>
     </div>
+  </div>
+
+  <div class="contacto-map reveal">
+    <iframe
+      src="https://www.google.com/maps?q=Javier+Barrios+Amor%C3%ADn+1312,+Montevideo,+Uruguay&output=embed"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="Ubicación de Mandrágora en el mapa">
+    </iframe>
   </div>
 </section>
 
