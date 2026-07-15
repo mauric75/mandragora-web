@@ -191,32 +191,42 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 
 /* page header */
 .page-header {
-  padding: 10rem var(--gutter) 4rem; max-width: 880px; margin: 0 auto; text-align: center;
+  padding: 10rem var(--gutter) 4.5rem; max-width: 880px; margin: 0 auto; text-align: center;
+  position: relative;
 }
 .page-header__kicker {
   font-family: var(--f-mark); font-size: 0.68rem; letter-spacing: 0.26em;
   text-transform: uppercase; color: var(--c-gold); margin-bottom: 1.2rem;
 }
 .page-header h1 { font-size: clamp(2.6rem, 6vw, 4.8rem); font-weight: 500; line-height: 1.05; }
+.page-header::after {
+  content: ""; display: block; width: 3.5rem; height: 1px;
+  margin: 2rem auto 0; background: var(--c-gold);
+}
 
 /* ============================================================
    MONTH SECTION
    ============================================================ */
 .month {
-  padding: 3rem var(--gutter) 4rem;
+  padding: 3.5rem var(--gutter) 4.5rem;
   border-top: 1px solid var(--c-border);
+  background: var(--c-bg);
+}
+.month:nth-of-type(odd) {
+  background: color-mix(in srgb, var(--c-bg-soft) 42%, var(--c-bg));
 }
 .month__header {
-  max-width: 1100px; margin: 0 auto 2.5rem;
-  display: flex; align-items: baseline; gap: 1rem;
+  max-width: 1100px; margin: 0 auto 2rem;
+  display: flex; align-items: center; gap: 1rem;
+  padding-left: 1rem; border-left: 2px solid var(--c-gold);
 }
 .month__name {
-  font-family: var(--f-mark); font-size: 0.7rem;
+  font-family: var(--f-mark); font-size: 0.76rem;
   letter-spacing: 0.24em; text-transform: uppercase;
   color: var(--c-gold);
 }
 .month__year {
-  font-size: 0.7rem; color: var(--c-cream-faint);
+  font-size: 0.68rem; color: var(--c-cream-faint);
   letter-spacing: 0.15em; text-transform: uppercase;
 }
 
@@ -227,29 +237,38 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 
 .event-item {
   display: grid; grid-template-columns: 1fr;
-  border-top: 1px solid var(--c-border);
-  padding: 2rem 0; gap: 1.8rem;
-  transition: background 0.3s var(--ease);
+  border: 1px solid var(--c-border);
+  border-radius: 3px;
+  padding: 1.35rem;
+  margin-bottom: 0.75rem;
+  gap: 1.4rem;
+  background: color-mix(in srgb, var(--c-bg) 88%, var(--c-bg-soft));
+  transition: background 0.3s var(--ease), border-color 0.3s var(--ease), transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
-.event-item:last-child { border-bottom: 1px solid var(--c-border); }
-.event-item:hover { background: rgba(206,154,71,0.03); transform: translateX(3px); }
+.event-item:last-child { margin-bottom: 0; }
+.event-item:hover { background: color-mix(in srgb, var(--c-gold-faint) 35%, var(--c-bg)); border-color: var(--c-gold-dim); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
 @media (min-width: 750px) {
-  .event-item { grid-template-columns: 130px 1fr auto; align-items: start; padding: 2.2rem 0; gap: 2.5rem; }
+  .event-item { grid-template-columns: 112px 1fr auto; align-items: center; padding: 1.5rem; gap: 2rem; }
 }
 
 .event-date {
   font-family: var(--f-body);
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--c-gold-faint);
+  background: var(--c-gold-faint);
+  text-align: center;
+  border-radius: 2px;
 }
 .event-date__day {
-  font-size: 2.6rem; font-weight: 300; line-height: 1;
+  font-size: 2.45rem; font-weight: 300; line-height: 1;
   color: var(--c-cream); display: block;
 }
 .event-date__rest {
-  font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+  font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--c-gold);
 }
 
-.event-info h3 { font-size: 1.4rem; margin-bottom: 0.4rem; }
+.event-info h3 { font-size: clamp(1.35rem, 2.4vw, 1.65rem); margin-bottom: 0.45rem; }
 .event-info__type {
   font-family: var(--f-mark); font-size: 0.62rem;
   letter-spacing: 0.16em; text-transform: uppercase;
@@ -258,9 +277,12 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 .event-info p { font-size: 0.9rem; line-height: 1.6; color: var(--c-cream-dim); max-width: 48ch; }
 
 .event-action {
-  display: flex; align-items: center;
+  display: flex; align-items: center; justify-content: flex-start;
 }
-.event-action .btn { font-size: 0.7rem; padding: 0.6em 1.2em; }
+.event-action .btn { font-size: 0.7rem; padding: 0.7em 1.25em; white-space: nowrap; }
+@media (max-width: 749px) {
+  .event-action .btn { width: 100%; justify-content: center; }
+}
 
 /* ============================================================
    NO EVENTS
