@@ -1,5 +1,5 @@
-import { hasValidAdminSession } from './lib/admin-auth.js';
-import { logAdminAction } from './lib/audit.js';
+import { hasValidAdminSession } from '../lib/admin-auth.js';
+import { logAdminAction } from '../lib/audit.js';
 
 const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
 
