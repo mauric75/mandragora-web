@@ -86,6 +86,7 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
       reservas = Array.isArray(data.data) ? data.data : [];
       document.getElementById('dashboard-msg').textContent = '';
       renderReservas('all');
+      document.getElementById('ai-chat').style.display = 'block';
     } catch (error) {
       reservas = [];
       renderReservas('all');
