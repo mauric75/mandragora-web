@@ -42,7 +42,8 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
     <h1 style="margin:0">Reservas</h1>
     <button type="button" id="logout-btn" class="button-link">Cerrar sesión</button>
   </div>
-  <p class="dev-notice">Fase de pruebas: las reservas todavía se leen desde el almacenamiento local de este navegador.</p>
+  <p class="dev-notice">Las reservas se cargan desde la base central de Mandrágora.</p>
+  <p id="dashboard-msg" role="status" aria-live="polite"></p>
   <div class="actions">
     <button class="active" data-filter="all">Todas</button>
     <button data-filter="sala">Sala</button>
@@ -64,26 +65,32 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
   var reservas = [];
   var labels = {sala:'Reserva de sala',taller:'Inscripción a taller',entrada:'Entrada',otro:'Consulta'};
 
-  function readReservations(){
-    try {
-      var stored = JSON.parse(localStorage.getItem('mandragora-reservas') || '[]');
-      return Array.isArray(stored) ? stored : [];
-    } catch (error) {
-      return [];
-    }
-  }
-
   function showLogin(message){
     loginBox.style.display = 'block';
     dashboard.style.display = 'none';
     loginMessage.textContent = message || '';
   }
 
-  function showDashboard(){
+  async function showDashboard(){
     loginBox.style.display = 'none';
     dashboard.style.display = 'block';
-    reservas = readReservations();
-    renderReservas('all');
+    document.getElementById('dashboard-msg').textContent = 'Cargando reservas…';
+    try {
+      var response = await fetch('/api/reservas', {credentials:'same-origin', headers:{Accept:'application/json'}});
+      if (response.status === 401) {
+        showLogin('La sesión expiró.');
+        return;
+      }
+      if (!response.ok) throw new Error('No se pudieron cargar las reservas.');
+      var data = await response.json();
+      reservas = Array.isArray(data.data) ? data.data : [];
+      document.getElementById('dashboard-msg').textContent = '';
+      renderReservas('all');
+    } catch (error) {
+      reservas = [];
+      renderReservas('all');
+      document.getElementById('dashboard-msg').textContent = error.message;
+    }
   }
 
   function appendCell(row, value){
@@ -107,7 +114,7 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
     var table = document.createElement('table');
     var head = document.createElement('thead');
     var headRow = document.createElement('tr');
-    ['Fecha','Tipo','Nombre','WhatsApp','Email','Mensaje'].forEach(function(label){
+    ['Fecha','Tipo','Detalle','Nombre','WhatsApp','Email','Mensaje','Estado'].forEach(function(label){
       var cell = document.createElement('th');
       cell.textContent = label;
       headRow.appendChild(cell);
@@ -120,10 +127,12 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
       var row = document.createElement('tr');
       appendCell(row, item.fecha ? new Date(item.fecha).toLocaleDateString('es-UY') : '');
       appendCell(row, labels[item.servicio] || item.servicio);
+      appendCell(row, item.detalle);
       appendCell(row, item.nombre);
       appendCell(row, item.whatsapp);
       appendCell(row, item.email);
       appendCell(row, item.mensaje);
+      appendCell(row, item.estado);
       body.appendChild(row);
     });
     table.appendChild(body);
@@ -154,7 +163,7 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
         throw new Error(data.error || 'No se pudo iniciar sesión');
       }
       passwordInput.value = '';
-      showDashboard();
+      await showDashboard();
     } catch (error) {
       loginMessage.textContent = error.message;
     } finally {
