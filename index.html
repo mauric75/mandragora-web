@@ -266,6 +266,55 @@ h1, h2, h3, h4, h5 {
 .back-to-top.is-visible { opacity: 1; pointer-events: auto; }
 .back-to-top:hover { border-color: var(--c-gold); transform: translateY(-2px); }
 
+/* noticias banner */
+.noticias-banner {
+  display: none; align-items: center; justify-content: center; gap: 1rem;
+  max-width: 700px; margin: 0 auto 2rem; padding: 0.8rem 1.4rem;
+  border: 1px solid var(--c-gold-dim); border-radius: 2px;
+  background: var(--c-gold-faint); font-size: 0.85rem; text-align: center;
+  flex-wrap: wrap;
+}
+.noticias-banner.is-visible { display: flex; }
+.noticias-banner__label {
+  font-family: var(--f-mark); font-size: 0.62rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--c-gold);
+  padding: 0.25em 0.7em; border: 1px solid var(--c-gold-dim); border-radius: 2px;
+}
+.noticias-banner__link { color: var(--c-cream); flex: 1; min-width: 160px; text-align: left; }
+.noticias-banner__link:hover { color: var(--c-gold); }
+.noticias-banner__close {
+  background: none; border: none; color: var(--c-cream-dim); cursor: pointer;
+  font-size: 0.9rem; padding: 0 0.2rem; line-height: 1;
+}
+.noticias-banner__close:hover { color: var(--c-gold); }
+@media (max-width: 600px) {
+  .noticias-banner { font-size: 0.8rem; padding: 0.7rem 1rem; }
+  .noticias-banner__link { text-align: center; }
+}
+
+/* mini tarjetas de noticias (portada) */
+.noticia-mini-card {
+  display: block;
+  background: var(--c-bg-soft); border: 1px solid var(--c-border);
+  padding: 2.2rem; border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: border-color 0.4s var(--ease), transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.noticia-mini-card:hover {
+  border-color: var(--c-gold-dim); transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+}
+.noticia-mini-card__tag {
+  font-family: var(--f-mark); font-size: 0.62rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--c-gold); margin-bottom: 1.1rem;
+}
+.noticia-mini-card__title { font-size: 1.4rem; line-height: 1.2; margin-bottom: 0.7rem; }
+.noticia-mini-card__desc { font-size: 0.88rem; line-height: 1.6; color: var(--c-cream-dim); margin-bottom: 1rem; }
+.noticia-mini-card__date {
+  font-family: var(--f-body); font-size: 0.74rem; letter-spacing: 0.06em;
+  color: var(--c-cream-faint); text-transform: uppercase;
+}
+
 /* cookie banner */
 .cookie-banner {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 9998;
@@ -995,6 +1044,12 @@ h1, h2, h3, h4, h5 {
     Una casa antigua, reconvertida en territorio para el ensayo, el error, la función y el encuentro.
     Cinco habitaciones, una sola respiración.
   </p>
+
+  <div class="noticias-banner" id="noticias-banner">
+    <span class="noticias-banner__label">Novedades</span>
+    <a href="noticias.html" class="noticias-banner__link" id="noticias-banner-link">Cargando…</a>
+    <button class="noticias-banner__close" id="noticias-banner-close" aria-label="Cerrar aviso">✕</button>
+  </div>
 </section>
 
 <!-- ============ ROOMS ============ -->
@@ -1136,6 +1191,18 @@ h1, h2, h3, h4, h5 {
       <p class="agenda-card__date">Setiembre 2026</p>
     </article>
   </div>
+</section>
+
+<!-- ============ ÚLTIMAS NOTICIAS ============ -->
+<section id="ultimas-noticias" class="agenda" style="border-top:1px solid var(--c-border); display:none;">
+  <div class="agenda__header">
+    <p class="agenda__kicker">Novedades</p>
+    <h2 class="agenda__title">Últimas noticias</h2>
+  </div>
+  <div class="agenda__grid" id="noticias-mini-grid"></div>
+  <p style="text-align:center; margin-top:2.5rem;">
+    <a href="noticias.html" class="btn btn--ghost">Ver todas las noticias →</a>
+  </p>
 </section>
 
 <!-- ============ FOOTER ============ -->
@@ -1325,6 +1392,65 @@ h1, h2, h3, h4, h5 {
 
   // PWA
   if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  fetch('data/noticias.json?t=' + Date.now(), { cache: 'no-store' })
+    .then(function(r){ return r.json(); })
+    .then(function(noticias){
+      var publicadas = (noticias || []).filter(function(n){ return n.publicada; });
+      if (!publicadas.length) return;
+      publicadas.sort(function(a,b){ return (b.fecha || '').localeCompare(a.fecha || ''); });
+
+      // Banner con la novedad más reciente
+      if (!sessionStorage.getItem('noticias-banner-closed')) {
+        var banner = document.getElementById('noticias-banner');
+        var bannerLink = document.getElementById('noticias-banner-link');
+        if (banner && bannerLink) {
+          bannerLink.textContent = publicadas[0].titulo + ' →';
+          banner.classList.add('is-visible');
+        }
+      }
+
+      // Mini tarjetas (hasta 3) cerca de Agenda
+      var section = document.getElementById('ultimas-noticias');
+      var grid = document.getElementById('noticias-mini-grid');
+      if (section && grid) {
+        var top3 = publicadas.slice(0, 3);
+        grid.innerHTML = top3.map(function(n){
+          var badge = n.tipo === 'prensa' ? 'Prensa' : 'Anuncio';
+          var fechaFmt = n.fecha ? new Date(n.fecha + 'T12:00:00').toLocaleDateString('es-UY', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+          return (
+            '<a href="noticias.html" class="noticia-mini-card">' +
+              '<div class="noticia-mini-card__tag">' + badge + '</div>' +
+              '<h3 class="noticia-mini-card__title">' + escapeHtml(n.titulo) + '</h3>' +
+              '<p class="noticia-mini-card__desc">' + escapeHtml(n.texto).slice(0, 110) + (n.texto.length > 110 ? '…' : '') + '</p>' +
+              '<p class="noticia-mini-card__date">' + fechaFmt + '</p>' +
+            '</a>'
+          );
+        }).join('');
+        section.style.display = 'block';
+      }
+    })
+    .catch(function(){ /* si falla, la portada sigue funcionando igual sin noticias */ });
+
+  var bannerClose = document.getElementById('noticias-banner-close');
+  if (bannerClose) {
+    bannerClose.addEventListener('click', function(){
+      document.getElementById('noticias-banner').classList.remove('is-visible');
+      sessionStorage.setItem('noticias-banner-closed', '1');
+    });
+  }
 })();
 </script>
 
