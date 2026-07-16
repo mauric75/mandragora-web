@@ -12,9 +12,14 @@
 
 6. Restringir CORS (`Access-Control-Allow-Origin: *`) a dominios reales
 7. Rate limiting en pagos, reservas y push
-8. Headers de seguridad: CSP, HSTS, X-Content-Type-Options
+8. Headers de seguridad: CSP, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, protección anti-iframes
 9. Variables de entorno: nunca publicar SUPABASE_SERVICE_ROLE_KEY, MERCADOPAGO_ACCESS_TOKEN, PUSH_ADMIN_SECRET
 10. Ampliar .gitignore
+11. Si alguna clave real fue expuesta: revocar y regenerar (no solo ocultar)
+12. Validar pagos de MercadoPago mediante webhook (no confiar solo en exito.html)
+13. Supabase: configurar RLS, permisos por tabla y políticas de acceso
+14. Validar entradas públicas: longitud y formato de nombre, email, teléfono
+15. Sesiones admin: cierre de sesión, expiración, protección contra intentos repetidos
 
 ## Mantenimiento
 
@@ -25,8 +30,12 @@
 
 ## Orden recomendado
 
-1. Autenticación real
-2. Proteger reservas (Supabase)
-3. Validar precios en servidor
-4. Sanitizar datos (XSS)
-5. Endurecer API y headers
+1. Revocar claves expuestas (si las hay)
+2. Public Key real de MercadoPago
+3. Webhook de validación de pagos
+4. Autenticación real para admin
+5. Proteger reservas (Supabase + RLS)
+6. Validar precios en servidor
+7. Sanitizar datos (XSS)
+8. Rate limiting + validación de entradas
+9. Endurecer API y headers
