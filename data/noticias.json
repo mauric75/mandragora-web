@@ -1,0 +1,12 @@
+[
+  {
+    "id": "ejemplo-001",
+    "titulo": "Bienvenidos a la nueva sección de noticias",
+    "texto": "Acá vamos a compartir novedades propias y notas de prensa sobre Mandrágora.",
+    "tipo": "anuncio",
+    "link": "",
+    "imagen": "",
+    "fecha": "2026-07-15",
+    "publicada": false
+  }
+]
