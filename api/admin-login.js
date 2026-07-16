@@ -1,5 +1,6 @@
 import { checkAdminPassword, createSessionCookie, isAdminConfigured } from './lib/admin-auth.js';
 import { logAdminAction } from './lib/audit.js';
+import { checkRateLimit } from './lib/rate-limit.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -10,6 +11,11 @@ export default async function handler(req, res) {
 
   if (!isAdminConfigured()) {
     return res.status(503).json({ error: 'Panel admin no configurado' });
+  }
+
+  const ip = req.headers?.['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
+  if (!checkRateLimit(`login:${ip}`)) {
+    return res.status(429).json({ error: 'Demasiados intentos. Esperá un minuto.' });
   }
 
   let body = req.body || {};
