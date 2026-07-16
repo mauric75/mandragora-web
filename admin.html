@@ -189,5 +189,64 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
   checkSession();
 })();
 </script>
+
+<div id="ai-chat" style="display:none;max-width:700px;margin:2rem auto 0;padding:1rem;border-top:1px solid var(--c-border)">
+  <p style="font-family:var(--f-mark);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-gold);margin-bottom:1rem">Consultá a la IA</p>
+  <div id="ai-chat-log" style="max-height:300px;overflow-y:auto;margin-bottom:1rem;font-size:0.9rem;line-height:1.6"></div>
+  <div style="display:flex;gap:0.5rem">
+    <input type="text" id="ai-input" placeholder="Ej: cuántas reservas hay esta semana?" style="flex:1;padding:0.5em;background:var(--c-bg);border:1px solid var(--c-border);color:var(--c-cream);font-family:inherit;font-size:0.85rem">
+    <button id="ai-send" style="background:var(--c-gold);color:var(--c-bg);border:none;padding:0.5em 1em;cursor:pointer;font-family:inherit;font-size:0.8rem">Enviar</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  if(!document.getElementById('ai-chat')) return;
+  var chatDiv = document.getElementById('ai-chat');
+  var log = document.getElementById('ai-chat-log');
+  var input = document.getElementById('ai-input');
+  var send = document.getElementById('ai-send');
+
+  function addMsg(text, who){
+    var div = document.createElement('div');
+    div.style.marginBottom = '0.5rem';
+    div.innerHTML = '<strong>' + (who === 'user' ? 'Vos' : 'IA') + ':</strong> ' + text;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  async function sendMsg(){
+    var msg = input.value.trim();
+    if(!msg) return;
+    addMsg(msg, 'user');
+    input.value = '';
+    addMsg('Pensando…', 'ia');
+    try {
+      var r = await fetch('/api/ai-admin/chat', {
+        method:'POST', credentials:'same-origin',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({message:msg})
+      });
+      var data = await r.json();
+      log.lastChild.innerHTML = '<strong>IA:</strong> ' + (data.reply || 'Sin respuesta');
+    } catch(e) {
+      log.lastChild.innerHTML = '<strong>IA:</strong> Error de conexión';
+    }
+  }
+
+  send.addEventListener('click', sendMsg);
+  input.addEventListener('keydown', function(e){ if(e.key === 'Enter') sendMsg(); });
+
+  // Show chat after login
+  var orig = document.querySelector('#dashboard');
+  if(orig){
+    var obs = new MutationObserver(function(){
+      if(orig.style.display !== 'none') chatDiv.style.display = 'block';
+    });
+    obs.observe(orig, {attributes:true, attributeFilter:['style']});
+  }
+})();
+</script>
+
 </body>
 </html>
