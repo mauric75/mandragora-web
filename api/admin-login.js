@@ -1,4 +1,5 @@
 import { checkAdminPassword, createSessionCookie, isAdminConfigured } from './lib/admin-auth.js';
+import { logAdminAction } from './lib/audit.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -20,10 +21,12 @@ export default async function handler(req, res) {
     }
   }
 
-  if (!checkAdminPassword(body.password)) {
+  const role = checkAdminPassword(body.password);
+  if (!role) {
     return res.status(401).json({ error: 'Credenciales incorrectas' });
   }
 
-  res.setHeader('Set-Cookie', createSessionCookie(req));
+  res.setHeader('Set-Cookie', createSessionCookie(req, role));
+  logAdminAction(role, 'login', 'admin', null, req);
   return res.status(204).end();
 }

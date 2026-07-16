@@ -34,12 +34,22 @@ export function isAdminConfigured() {
 
 export function checkAdminPassword(password) {
   if (!isAdminConfigured() || typeof password !== 'string') return false;
-  return safeEqual(digest(password), digest(process.env.ADMIN_PASSWORD));
+  const pwds = [
+    { pwd: process.env.ADMIN_PASSWORD, role: 'admin' },
+    { pwd: process.env.ADMIN_PASSWORD_EDITOR, role: 'editor' },
+    { pwd: process.env.ADMIN_PASSWORD_CONSULTA, role: 'consulta' },
+  ];
+  for (const entry of pwds) {
+    if (entry.pwd && safeEqual(digest(password), digest(entry.pwd))) {
+      return entry.role;
+    }
+  }
+  return false;
 }
 
-export function createSessionCookie(req) {
+export function createSessionCookie(req, role) {
   const issuedAt = Math.floor(Date.now() / 1000);
-  const payload = `${issuedAt}.${crypto.randomBytes(16).toString('hex')}`;
+  const payload = `${issuedAt}.${crypto.randomBytes(16).toString('hex')}.${role || 'admin'}`;
   const secure = isSecureRequest(req) ? '; Secure' : '';
   return `${COOKIE_NAME}=${payload}.${sign(payload)}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${SESSION_MAX_AGE_SECONDS}${secure}`;
 }
@@ -58,6 +68,16 @@ export function hasValidAdminSession(req) {
   const issuedAt = Number(payload.split('.')[0]);
   const age = Math.floor(Date.now() / 1000) - issuedAt;
   return Number.isFinite(issuedAt) && age >= -60 && age <= SESSION_MAX_AGE_SECONDS;
+}
+
+export function getAdminSessionRole(req) {
+  const value = getCookieValue(req);
+  if (!value) return null;
+  const separator = value.lastIndexOf('.');
+  if (separator < 1) return null;
+  const payload = value.slice(0, separator);
+  const parts = payload.split('.');
+  return parts.length >= 3 ? parts[2] : 'admin';
 }
 
 export function clearSessionCookie(req) {
