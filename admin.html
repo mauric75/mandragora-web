@@ -141,7 +141,7 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
 
   async function checkSession(){
     try {
-      var response = await fetch('/api/admin-session', {credentials:'same-origin', headers:{Accept:'application/json'}});
+      var response = await fetch('/api/admin-auth', {credentials:'same-origin', headers:{Accept:'application/json'}});
       if(response.ok) showDashboard();
     } catch (error) {
       showLogin('No se pudo conectar con el panel seguro.');
@@ -152,7 +152,7 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
     loginButton.disabled = true;
     loginMessage.textContent = '';
     try {
-      var response = await fetch('/api/admin-login', {
+      var response = await fetch('/api/admin-auth?action=login', {
         method:'POST',
         credentials:'same-origin',
         headers:{'Content-Type':'application/json', Accept:'application/json'},
@@ -172,7 +172,7 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
   }
 
   async function logout(){
-    await fetch('/api/admin-logout', {method:'POST', credentials:'same-origin'}).catch(function(){});
+    await fetch('/api/admin-auth?action=logout', {method:'POST', credentials:'same-origin'}).catch(function(){});
     showLogin('Sesión cerrada.');
   }
 
