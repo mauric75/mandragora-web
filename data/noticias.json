@@ -8,5 +8,45 @@
     "imagen": "",
     "fecha": "2026-07-15",
     "publicada": true
+  },
+  {
+    "id": "prueba-002",
+    "titulo": "Abren las inscripciones para el segundo semestre",
+    "texto": "Ya está abierta la inscripción a los talleres de actuación, danza y maquillaje teatral para el segundo semestre del año.",
+    "tipo": "anuncio",
+    "link": "",
+    "imagen": "",
+    "fecha": "2026-07-14",
+    "publicada": true
+  },
+  {
+    "id": "prueba-003",
+    "titulo": "Mandrágora en la prensa: nota sobre el Festival Tenemos Que Ver",
+    "texto": "Un medio local cubrió la última edición del festival y la propuesta de la casa como espacio de encuentro cultural.",
+    "tipo": "prensa",
+    "link": "https://ejemplo.com/nota-festival",
+    "imagen": "",
+    "fecha": "2026-07-10",
+    "publicada": true
+  },
+  {
+    "id": "prueba-004",
+    "titulo": "Nueva alianza con la Escuela de Cine Viajero",
+    "texto": "Sumamos una colaboración con Cine Viajero para llevar funciones a distintos barrios de Montevideo este semestre.",
+    "tipo": "anuncio",
+    "link": "",
+    "imagen": "",
+    "fecha": "2026-07-05",
+    "publicada": true
+  },
+  {
+    "id": "prueba-005",
+    "titulo": "Borrador de ejemplo: aún no publicado",
+    "texto": "Esta noticia queda como borrador para probar que las no publicadas no aparecen en el sitio público.",
+    "tipo": "anuncio",
+    "link": "",
+    "imagen": "",
+    "fecha": "2026-07-16",
+    "publicada": false
   }
 ]
