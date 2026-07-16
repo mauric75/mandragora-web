@@ -237,14 +237,13 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
   send.addEventListener('click', sendMsg);
   input.addEventListener('keydown', function(e){ if(e.key === 'Enter') sendMsg(); });
 
-  // Show chat after login
-  var orig = document.querySelector('#dashboard');
-  if(orig){
-    var obs = new MutationObserver(function(){
-      if(orig.style.display !== 'none') chatDiv.style.display = 'block';
-    });
-    obs.observe(orig, {attributes:true, attributeFilter:['style']});
-  }
+  // Show chat after dashboard is visible
+  var check = setInterval(function(){
+    if(document.getElementById('dashboard').style.display !== 'none'){
+      chatDiv.style.display = 'block';
+      clearInterval(check);
+    }
+  }, 500);
 })();
 </script>
 
