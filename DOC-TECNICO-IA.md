@@ -149,16 +149,16 @@ La respuesta de DeepSeek se registra en `admin_logs` (solo primeros 200 chars de
 ### Variables de entorno (Preview)
 
 ```
-ADMIN_PASSWORD=MandragoraAdmin2026!
-ADMIN_PASSWORD_EDITOR=MandragoraEditor2026!
-ADMIN_PASSWORD_CONSULTA=MandragoraConsulta2026!
-ADMIN_SESSION_SECRET=mndrgr2026secretsessionkey987654321
-DEEPSEEK_API_KEY=sk-...
+ADMIN_PASSWORD=<ver en Vercel — Settings → Environment Variables>
+ADMIN_PASSWORD_EDITOR=<ver en Vercel>
+ADMIN_PASSWORD_CONSULTA=<ver en Vercel>
+ADMIN_SESSION_SECRET=<ver en Vercel>
+DEEPSEEK_API_KEY=<ver en Vercel>
 SUPABASE_URL=https://qreponqhjjqfzsqjweza.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
+SUPABASE_SERVICE_ROLE_KEY=<ver en Vercel>
 ```
 
-**IMPORTANTE:** Solo configuradas para Preview, no Production.
+**IMPORTANTE:** Estas credenciales estuvieron expuestas en texto plano en este documento, en un repo público. Fueron rotadas por seguridad — cualquier valor visto anteriormente en el historial de git ya no es válido.
 
 ### Deploy actual (Preview)
 URL base: `https://deploy-rm95wzdug-mauricio-s-projects1.vercel.app`
