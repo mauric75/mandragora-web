@@ -11,6 +11,7 @@ h1 { font-size:1.5rem; margin-bottom:1.5rem; }
 .login { max-width:400px; margin:4rem auto; text-align:center; }
 .login input { width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ddd; border-radius:4px; font-size:1rem; }
 .login button { width:100%; padding:0.8rem; background:var(--c-gold); color:#fff; border:none; border-radius:4px; font-size:1rem; cursor:pointer; }
+.login button:disabled { opacity:0.6; cursor:wait; }
 table { width:100%; border-collapse:collapse; margin-top:1rem; }
 th,td { padding:0.6rem; text-align:left; border-bottom:1px solid #ddd; font-size:0.9rem; }
 th { font-weight:600; color:var(--c-gold); text-transform:uppercase; letter-spacing:0.05em; font-size:0.75rem; }
@@ -18,7 +19,9 @@ th { font-weight:600; color:var(--c-gold); text-transform:uppercase; letter-spac
 .actions button { padding:0.4em 1em; border-radius:4px; cursor:pointer; border:1px solid #ddd; background:#fff; font-size:0.85rem; }
 .actions button.active { background:var(--c-gold); color:#fff; border-color:var(--c-gold); }
 .no-data { text-align:center; padding:3rem; opacity:0.5; }
-a.back { color:var(--c-gold); font-size:0.85rem; }
+a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
+.button-link { background:none; border:0; cursor:pointer; padding:0; }
+.dev-notice { margin:0 0 1rem; padding:0.75rem 1rem; border-left:3px solid var(--c-gold); background:#fff8e8; font-size:0.85rem; }
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -30,15 +33,16 @@ a.back { color:var(--c-gold); font-size:0.85rem; }
   <h1>Admin · Mandrágora</h1>
   <input type="password" id="password" placeholder="Contraseña" autofocus>
   <button id="login-btn">Entrar</button>
-  <div id="login-msg" style="margin-top:0.5rem;font-size:0.85rem;color:var(--c-red)"></div>
+  <div id="login-msg" role="status" aria-live="polite" style="margin-top:0.5rem;font-size:0.85rem;color:var(--c-red)"></div>
   <a href="index.html" class="back">← Volver al inicio</a>
 </div>
 
 <div id="dashboard" style="display:none">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
     <h1 style="margin:0">Reservas</h1>
-    <a href="index.html" class="back">← Salir</a>
+    <button type="button" id="logout-btn" class="button-link">Cerrar sesión</button>
   </div>
+  <p class="dev-notice">Fase de pruebas: las reservas todavía se leen desde el almacenamiento local de este navegador.</p>
   <div class="actions">
     <button class="active" data-filter="all">Todas</button>
     <button data-filter="sala">Sala</button>
@@ -52,46 +56,128 @@ a.back { color:var(--c-gold); font-size:0.85rem; }
 
 <script>
 (function(){
-  var PASSWORD = 'mandragora2026';
-  var reservas = JSON.parse(localStorage.getItem('mandragora-reservas') || '[]');
+  var loginBox = document.getElementById('login-box');
+  var dashboard = document.getElementById('dashboard');
+  var passwordInput = document.getElementById('password');
+  var loginButton = document.getElementById('login-btn');
+  var loginMessage = document.getElementById('login-msg');
+  var reservas = [];
+  var labels = {sala:'Reserva de sala',taller:'Inscripción a taller',entrada:'Entrada',otro:'Consulta'};
 
-  document.getElementById('login-btn').addEventListener('click',function(){
-    if(document.getElementById('password').value === PASSWORD){
-      document.getElementById('login-box').style.display='none';
-      document.getElementById('dashboard').style.display='block';
-      renderReservas('all');
-    } else {
-      document.getElementById('login-msg').textContent='Contraseña incorrecta';
+  function readReservations(){
+    try {
+      var stored = JSON.parse(localStorage.getItem('mandragora-reservas') || '[]');
+      return Array.isArray(stored) ? stored : [];
+    } catch (error) {
+      return [];
     }
-  });
-
-  function renderReservas(filter){
-    var filtered = filter==='all' ? reservas : reservas.filter(function(r){return r.servicio===filter;});
-    var table = document.getElementById('reservas-table');
-    var noData = document.getElementById('no-data');
-    if(!filtered.length){ table.innerHTML=''; noData.style.display='block'; return; }
-    noData.style.display='none';
-    var labels = {sala:'Reserva de sala',taller:'Inscripción a taller',entrada:'Entrada',otro:'Consulta'};
-    var html = '<table><thead><tr><th>Fecha</th><th>Tipo</th><th>Nombre</th><th>WhatsApp</th><th>Email</th><th>Mensaje</th></tr></thead><tbody>';
-    filtered.forEach(function(r){
-      html += '<tr><td>'+new Date(r.fecha).toLocaleDateString('es-UY')+'</td>'
-        +'<td>'+(labels[r.servicio]||r.servicio)+'</td>'
-        +'<td>'+r.nombre+'</td>'
-        +'<td>'+r.whatsapp+'</td>'
-        +'<td>'+(r.email||'')+'</td>'
-        +'<td>'+(r.mensaje||'')+'</td></tr>';
-    });
-    html += '</tbody></table>';
-    table.innerHTML = html;
   }
 
+  function showLogin(message){
+    loginBox.style.display = 'block';
+    dashboard.style.display = 'none';
+    loginMessage.textContent = message || '';
+  }
+
+  function showDashboard(){
+    loginBox.style.display = 'none';
+    dashboard.style.display = 'block';
+    reservas = readReservations();
+    renderReservas('all');
+  }
+
+  function appendCell(row, value){
+    var cell = document.createElement('td');
+    cell.textContent = value == null ? '' : String(value);
+    row.appendChild(cell);
+  }
+
+  function renderReservas(filter){
+    var filtered = filter === 'all' ? reservas : reservas.filter(function(item){ return item.servicio === filter; });
+    var tableContainer = document.getElementById('reservas-table');
+    var noData = document.getElementById('no-data');
+    tableContainer.replaceChildren();
+
+    if(!filtered.length){
+      noData.style.display = 'block';
+      return;
+    }
+
+    noData.style.display = 'none';
+    var table = document.createElement('table');
+    var head = document.createElement('thead');
+    var headRow = document.createElement('tr');
+    ['Fecha','Tipo','Nombre','WhatsApp','Email','Mensaje'].forEach(function(label){
+      var cell = document.createElement('th');
+      cell.textContent = label;
+      headRow.appendChild(cell);
+    });
+    head.appendChild(headRow);
+    table.appendChild(head);
+
+    var body = document.createElement('tbody');
+    filtered.forEach(function(item){
+      var row = document.createElement('tr');
+      appendCell(row, item.fecha ? new Date(item.fecha).toLocaleDateString('es-UY') : '');
+      appendCell(row, labels[item.servicio] || item.servicio);
+      appendCell(row, item.nombre);
+      appendCell(row, item.whatsapp);
+      appendCell(row, item.email);
+      appendCell(row, item.mensaje);
+      body.appendChild(row);
+    });
+    table.appendChild(body);
+    tableContainer.appendChild(table);
+  }
+
+  async function checkSession(){
+    try {
+      var response = await fetch('/api/admin-session', {credentials:'same-origin', headers:{Accept:'application/json'}});
+      if(response.ok) showDashboard();
+    } catch (error) {
+      showLogin('No se pudo conectar con el panel seguro.');
+    }
+  }
+
+  async function login(){
+    loginButton.disabled = true;
+    loginMessage.textContent = '';
+    try {
+      var response = await fetch('/api/admin-login', {
+        method:'POST',
+        credentials:'same-origin',
+        headers:{'Content-Type':'application/json', Accept:'application/json'},
+        body:JSON.stringify({password:passwordInput.value})
+      });
+      if(!response.ok){
+        var data = await response.json().catch(function(){ return {}; });
+        throw new Error(data.error || 'No se pudo iniciar sesión');
+      }
+      passwordInput.value = '';
+      showDashboard();
+    } catch (error) {
+      loginMessage.textContent = error.message;
+    } finally {
+      loginButton.disabled = false;
+    }
+  }
+
+  async function logout(){
+    await fetch('/api/admin-logout', {method:'POST', credentials:'same-origin'}).catch(function(){});
+    showLogin('Sesión cerrada.');
+  }
+
+  loginButton.addEventListener('click', login);
+  passwordInput.addEventListener('keydown', function(event){ if(event.key === 'Enter') login(); });
+  document.getElementById('logout-btn').addEventListener('click', logout);
   document.querySelectorAll('.actions button').forEach(function(btn){
     btn.addEventListener('click',function(){
-      document.querySelectorAll('.actions button').forEach(function(b){b.classList.remove('active');});
+      document.querySelectorAll('.actions button').forEach(function(button){button.classList.remove('active');});
       btn.classList.add('active');
       renderReservas(btn.dataset.filter);
     });
   });
+  checkSession();
 })();
 </script>
 </body>
