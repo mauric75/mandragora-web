@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "noticia-1752000000000",
+    "titulo": "Atrapada en la pantalla suma funciones extra en agosto",
+    "texto": "Por la buena respuesta del público durante julio, la Compañía Mandrágora agrega dos funciones extra de 'Atrapada en la pantalla' los primeros sábados de agosto. Las entradas para las nuevas fechas ya están disponibles.",
+    "tipo": "anuncio",
+    "link": "",
+    "imagen": "",
+    "fecha": "2026-07-16",
+    "publicada": true
+  }
+]
