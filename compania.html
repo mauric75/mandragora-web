@@ -667,9 +667,10 @@ h1, h2, h3, h4 {
   var grid = document.getElementById('elenco-grid');
   if(!grid) return;
 
-  fetch('https://raw.githubusercontent.com/mauric75/mandragora-web/feature/admin-unificado/data/docentes.json?t=' + Date.now(), {cache:'no-store'})
+  fetch('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list'})})
     .then(function(r){ return r.json(); })
-    .then(function(docentes){
+    .then(function(data){
+      var docentes = data.docentes || [];
       var activos = (docentes||[]).filter(function(d){ return d.activo !== false; });
       if(!activos.length) return;
 

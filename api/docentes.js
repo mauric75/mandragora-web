@@ -55,11 +55,6 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
-  const role = hasValidAdminSession(req);
-  if (!role) {
-    return res.status(401).json({ error: 'No autorizado' });
-  }
-
   const branch = process.env.GITHUB_BRANCH || 'main';
 
   if (!process.env.GITHUB_TOKEN) {
@@ -69,9 +64,16 @@ export default async function handler(req, res) {
   try {
     const { action, docente, id } = req.body || {};
 
+    // list es público — lo usan las páginas del sitio
     if (action === 'list') {
       const { docentes } = await readDocentes(branch);
       return res.status(200).json({ ok: true, docentes, branch });
+    }
+
+    // save y delete requieren auth
+    const role = hasValidAdminSession(req);
+    if (!role) {
+      return res.status(401).json({ error: 'No autorizado' });
     }
 
     if (action === 'save') {

@@ -595,9 +595,10 @@ img{max-width:100%;display:block}
   var list = document.getElementById('taller-opciones-list');
   if(!list) return;
 
-  fetch('https://raw.githubusercontent.com/mauric75/mandragora-web/feature/admin-unificado/data/docentes.json?t=' + Date.now(), {cache:'no-store'})
+  fetch('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list'})})
     .then(function(r){ return r.json(); })
-    .then(function(docentes){
+    .then(function(data){
+      var docentes = data.docentes || [];
       var activos = (docentes||[]).filter(function(d){ return d.activo !== false; });
       activos.forEach(function(d){
         var card = document.createElement('div');
