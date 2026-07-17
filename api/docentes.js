@@ -28,9 +28,16 @@ async function githubRequest(path, options = {}) {
 }
 
 async function readDocentes(branch) {
-  const data = await githubRequest(`contents/${FILE_PATH}?ref=${branch}`);
-  const content = Buffer.from(data.content, 'base64').toString('utf-8');
-  return { docentes: JSON.parse(content), sha: data.sha };
+  try {
+    const data = await githubRequest(`contents/${FILE_PATH}?ref=${branch}`);
+    const content = Buffer.from(data.content, 'base64').toString('utf-8');
+    return { docentes: JSON.parse(content), sha: data.sha };
+  } catch (e) {
+    if (e.message && e.message.includes('Not Found')) {
+      return { docentes: [], sha: null };
+    }
+    throw e;
+  }
 }
 
 async function writeDocentes(branch, docentes, sha, message) {
@@ -101,7 +108,16 @@ export default async function handler(req, res) {
         docentes.push(docente);
       }
 
-      await writeDocentes(branch, docentes, sha, `docentes: guardar "${docente.nombre}"`);
+      const commitMsg = `docentes: guardar "${docente.nombre}"`;
+      if (sha) {
+        await writeDocentes(branch, docentes, sha, commitMsg);
+      } else {
+        const encoded = Buffer.from(JSON.stringify(docentes, null, 2) + '\n', 'utf-8').toString('base64');
+        await githubRequest(`contents/${FILE_PATH}`, {
+          method: 'PUT',
+          body: JSON.stringify({ message: commitMsg, content: encoded, branch }),
+        });
+      }
       logAdminAction(getAdminSessionRole(req), 'docentes-save', 'docentes', { id: docente.id, nombre: docente.nombre }, req);
       return res.status(200).json({ ok: true, id: docente.id });
     }
@@ -113,6 +129,7 @@ export default async function handler(req, res) {
       if (!id) return res.status(400).json({ error: 'Falta id' });
 
       const { docentes, sha } = await readDocentes(branch);
+      if (!sha) return res.status(404).json({ error: 'No hay docentes para borrar' });
       const docente = docentes.find((d) => d.id === id);
       if (!docente) return res.status(404).json({ error: 'Docente no encontrado' });
 
