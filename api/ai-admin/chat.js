@@ -5,6 +5,33 @@ const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
 const GITHUB_OWNER = 'mauric75';
 const GITHUB_REPO = 'mandragora-web';
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
+const DOCENTES_PATH = 'data/docentes.json';
+
+// ── Helpers para leer/escribir docentes.json en GitHub ──────
+
+async function readDocentesJSON() {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) throw new Error('GITHUB_TOKEN no configurado');
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DOCENTES_PATH}?ref=${GITHUB_BRANCH}`, {
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json' },
+  });
+  if (!res.ok) throw new Error('No se pudo leer docentes.json');
+  const json = await res.json();
+  const content = Buffer.from(json.content, 'base64').toString('utf-8');
+  return { docentes: JSON.parse(content), sha: json.sha };
+}
+
+async function writeDocentesJSON(docentes, sha, message) {
+  const token = process.env.GITHUB_TOKEN;
+  const encoded = Buffer.from(JSON.stringify(docentes, null, 2) + '\n', 'utf-8').toString('base64');
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DOCENTES_PATH}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, content: encoded, sha, branch: GITHUB_BRANCH }),
+  });
+  if (!res.ok) throw new Error('No se pudo escribir docentes.json');
+  return 'OK';
+}
 
 // Herramientas disponibles para DeepSeek
 const TOOLS = [
@@ -36,6 +63,57 @@ const TOOLS = [
       name: 'listar_docentes',
       description: 'Lista los docentes de la escuela. Muestra nombre, rol, precio y si están activos.',
       parameters: { type: 'object', properties: {} },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'actualizar_docente',
+      description: 'Actualiza los datos de un docente existente. Buscalo por nombre (o parte del nombre). Solo admin y editor pueden usar esta herramienta.',
+      parameters: {
+        type: 'object',
+        properties: {
+          nombre: { type: 'string', description: 'Nombre del docente a actualizar (o parte)' },
+          cambios: {
+            type: 'object',
+            description: 'Campos a cambiar: nombre, rol, foto, frase, trayectoria, instagram, whatsapp, precio, activo',
+            properties: {
+              nombre: { type: 'string' },
+              rol: { type: 'string' },
+              foto: { type: 'string', description: 'URL o path de la imagen' },
+              frase: { type: 'string' },
+              trayectoria: { type: 'string' },
+              instagram: { type: 'string' },
+              whatsapp: { type: 'string' },
+              precio: { type: 'number' },
+              activo: { type: 'boolean' },
+            },
+          },
+        },
+        required: ['nombre', 'cambios'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'crear_docente',
+      description: 'Crea un nuevo docente en la escuela. Solo admin y editor pueden usar esta herramienta.',
+      parameters: {
+        type: 'object',
+        properties: {
+          nombre: { type: 'string', description: 'Nombre del docente' },
+          rol: { type: 'string', description: 'Disciplinas que enseña' },
+          foto: { type: 'string', description: 'URL o path de la imagen' },
+          frase: { type: 'string' },
+          trayectoria: { type: 'string' },
+          instagram: { type: 'string' },
+          whatsapp: { type: 'string' },
+          precio: { type: 'number' },
+          activo: { type: 'boolean' },
+        },
+        required: ['nombre', 'rol'],
+      },
     },
   },
 ];
@@ -77,23 +155,62 @@ async function executeTool(name, args) {
   }
 
   if (name === 'listar_docentes') {
-    const token = process.env.GITHUB_TOKEN;
-    if (!token) return 'Error: GITHUB_TOKEN no configurado.';
     try {
-      const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data/docentes.json?ref=${GITHUB_BRANCH}`, {
-        headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json' },
-      });
-      if (!res.ok) return 'No se pudo leer docentes.json (quizás no existe aún).';
-      const json = await res.json();
-      const content = Buffer.from(json.content, 'base64').toString('utf-8');
-      const docentes = JSON.parse(content);
+      const { docentes } = await readDocentesJSON();
       if (!docentes.length) return 'No hay docentes cargados todavía.';
       return JSON.stringify(docentes.map(d => ({
         nombre: d.nombre, rol: d.rol, precio: d.precio, activo: d.activo,
-        instagram: d.instagram, whatsapp: d.whatsapp
+        instagram: d.instagram, whatsapp: d.whatsapp, id: d.id
       })));
     } catch (e) {
       return 'Error al consultar docentes: ' + e.message;
+    }
+  }
+
+  if (name === 'actualizar_docente') {
+    const role = args?._role;
+    if (role !== 'admin' && role !== 'editor') return 'Solo admin y editor pueden modificar docentes.';
+    try {
+      const { docentes, sha } = await readDocentesJSON();
+      const nombreBuscado = (args?.nombre || '').toLowerCase();
+      const idx = docentes.findIndex(d => d.nombre.toLowerCase().includes(nombreBuscado));
+      if (idx === -1) return 'No encontré un docente que coincida con "' + (args?.nombre || '') + '".';
+      
+      const cambios = args?.cambios || {};
+      Object.keys(cambios).forEach(k => {
+        if (cambios[k] !== undefined) docentes[idx][k] = cambios[k];
+      });
+      
+      await writeDocentesJSON(docentes, sha, `IA: actualizar docente "${docentes[idx].nombre}"`);
+      return 'Docente "' + docentes[idx].nombre + '" actualizado correctamente.';
+    } catch (e) {
+      return 'Error al actualizar: ' + e.message;
+    }
+  }
+
+  if (name === 'crear_docente') {
+    const role = args?._role;
+    if (role !== 'admin' && role !== 'editor') return 'Solo admin y editor pueden crear docentes.';
+    if (!args?.nombre || !args?.rol) return 'Falta nombre o rol para crear el docente.';
+    try {
+      const { docentes, sha } = await readDocentesJSON();
+      const nuevo = {
+        id: 'docente-' + Date.now(),
+        nombre: args.nombre,
+        rol: args.rol,
+        foto: args.foto || '',
+        frase: args.frase || '',
+        trayectoria: args.trayectoria || '',
+        instagram: args.instagram || '',
+        whatsapp: args.whatsapp || '',
+        precio: args.precio || 2500,
+        activo: args.activo !== false,
+      };
+      docentes.push(nuevo);
+      await writeDocentesJSON(docentes, sha, `IA: crear docente "${nuevo.nombre}"`);
+      return 'Docente "' + nuevo.nombre + '" creado correctamente con id ' + nuevo.id + '.';
+    } catch (e) {
+      return 'Error al crear: ' + e.message;
     }
   }
 
@@ -131,12 +248,15 @@ export default async function handler(req, res) {
         role: 'system',
         content: `Sos el asistente IA del panel admin de Mandrágora, una casa de teatro y escuela de artes en Montevideo, Uruguay.
 El usuario que te habla tiene rol "${role}".
-Podés consultar datos reales usando las herramientas disponibles:
-- listar_reservas: lista reservas con filtros opcionales (servicio, estado)
-- resumir_reservas: resumen numérico de reservas por estado y tipo
+Podés consultar y modificar datos reales usando las herramientas disponibles:
+- listar_reservas: lista reservas con filtros opcionales
+- resumir_reservas: resumen numérico de reservas
 - listar_docentes: lista los docentes de la escuela
-Si el usuario pide modificar algo (borrar, cambiar estado, crear), decile que por ahora solo podés consultar.
-Respondé siempre en español, con claridad y precisión. Si no entendés algo, preguntá.`
+- actualizar_docente: modifica datos de un docente (nombre, rol, foto, frase, trayectoria, etc.)
+- crear_docente: crea un nuevo docente (requiere nombre y rol)
+Si el usuario te pide hacer algo, hacelo directamente con la herramienta correspondiente. No le pidas que vaya al panel manualmente.
+Si no tenés una herramienta para algo, decilo claramente.
+Respondé siempre en español, con claridad y precisión.`
       },
       { role: 'user', content: message },
     ];
@@ -167,6 +287,7 @@ Respondé siempre en español, con claridad y precisión. Si no entendés algo, 
         const fnName = tc.function?.name;
         let fnArgs = {};
         try { fnArgs = JSON.parse(tc.function?.arguments || '{}'); } catch (e) { /* empty */ }
+        fnArgs._role = role; // pasar rol para control de permisos
         const result = await executeTool(fnName, fnArgs);
         toolResults.push({ tool_call_id: tc.id, role: 'tool', content: result });
       }
