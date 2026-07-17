@@ -328,6 +328,10 @@ Respondé siempre en español, con claridad y precisión.`
       reply = choice?.message?.content || '';
     }
 
+    if (!reply || !reply.trim()) {
+      reply = 'Lo siento, no pude procesar esa acción. Intentá decirlo de otra forma.';
+    }
+
     logAdminAction(role, 'ai-chat', 'ai-admin', { message: message.slice(0, 200), reply: reply.slice(0, 200) }, req);
 
     return res.status(200).json({ reply });
