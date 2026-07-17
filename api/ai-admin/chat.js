@@ -297,18 +297,18 @@ Respondé siempre en español, con claridad y precisión.`
     console.error('[CHAT] content:', JSON.stringify(reply?.substring(0,200)));
     console.error('[CHAT] finish_reason:', choice?.finish_reason);
 
-    // Si DeepSeek quiere llamar una herramienta (nativo OpenAI)
-    const nativeCalls = choice?.message?.tool_calls;
-    // O si devuelve JSON en el contenido (dentro o fuera de ```)
-    let jsonTool = null;
-    if (!nativeCalls && reply) {
-      const clean = reply.replace(/```json\s*|\s*```/g, '').trim();
-      const m = clean.match(/\{\s*"tool"\s*:\s*"([^"]+)"\s*,\s*"args"\s*:\s*(\{[\s\S]*?\})\s*\}/);
-      if (m) jsonTool = { name: m[1], args: m[2] };
-    }
+    // Function calling loop (máx 3 rondas)
+    for (let loop = 0; loop < 3; loop++) {
+      const nativeCalls = choice?.message?.tool_calls;
+      let jsonTool = null;
+      if (!nativeCalls && reply) {
+        const clean = reply.replace(/```json\s*|\s*```/g, '').trim();
+        const m = clean.match(/\{\s*"tool"\s*:\s*"([^"]+)"\s*,\s*"args"\s*:\s*(\{[\s\S]*?\})\s*\}/);
+        if (m) jsonTool = { name: m[1], args: m[2] };
+      }
 
-    if (nativeCalls?.length || jsonTool) {
-      console.error('[CHAT] executing tools. native:', nativeCalls?.length, 'json:', !!jsonTool);
+      if (!nativeCalls?.length && !jsonTool) break;
+      console.error('[CHAT] loop', loop, 'native:', nativeCalls?.length, 'json:', !!jsonTool);
 
       if (nativeCalls) {
         messages.push(choice.message);
@@ -329,7 +329,7 @@ Respondé siempre en español, con claridad y precisión.`
         messages.push({ role: 'tool', tool_call_id: jsonTool.name, content: result });
       }
 
-      // Segunda llamada con el resultado
+      // Llamar a DeepSeek con los resultados
       response = await fetch(DEEPSEEK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
@@ -339,7 +339,7 @@ Respondé siempre en español, con claridad y precisión.`
       data = await response.json();
       choice = data.choices?.[0];
       reply = choice?.message?.content || '';
-      console.error('[CHAT] final reply:', JSON.stringify(reply?.substring(0,200)));
+      console.error('[CHAT] loop', loop, 'reply:', JSON.stringify(reply?.substring(0,100)));
     }
 
     if (!reply || !reply.trim()) {
