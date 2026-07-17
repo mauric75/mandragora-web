@@ -280,6 +280,9 @@ Respondé siempre en español, con claridad y precisión.`
     let data = await response.json();
     let choice = data.choices?.[0];
     let reply = choice?.message?.content || '';
+    console.error('[CHAT] content:', JSON.stringify(reply?.substring(0,300)));
+    console.error('[CHAT] tool_calls:', JSON.stringify(choice?.message?.tool_calls));
+    console.error('[CHAT] finish_reason:', choice?.finish_reason);
 
     // Function calling: detectar JSON tool calls o nativos
     let loops = 0;
