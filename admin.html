@@ -93,6 +93,7 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
   <nav class="tabs" id="tabs">
     <button class="active" data-tab="reservas">Reservas</button>
     <button data-tab="noticias">Noticias</button>
+    <button data-tab="docentes">Docentes</button>
     <button data-tab="push">Push</button>
     <button data-tab="chat">Chat IA</button>
   </nav>
@@ -136,6 +137,37 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
 
     <h2 style="margin-top:2rem">Noticias existentes</h2>
     <div id="noticias-list"></div>
+  </section>
+
+  <!-- ====== TAB: DOCENTES ====== -->
+  <section class="tab-panel" id="tab-docentes">
+    <h2>Nuevo docente</h2>
+    <label>Nombre</label>
+    <input type="text" id="doce-nombre" placeholder="Nombre del docente" maxlength="80">
+    <label>Rol / Disciplinas</label>
+    <input type="text" id="doce-rol" placeholder="Actuación . Dirección" maxlength="120">
+    <label>Foto (URL o path)</label>
+    <input type="text" id="doce-foto" placeholder="assets/images/elenco/nombre.jpeg">
+    <label>Frase</label>
+    <textarea id="doce-frase" placeholder="Cita personal del docente" maxlength="200"></textarea>
+    <label>Trayectoria</label>
+    <textarea id="doce-trayectoria" placeholder="Teatro Solís . Comedia Nacional" maxlength="300"></textarea>
+    <label>Instagram</label>
+    <input type="text" id="doce-instagram" placeholder="@usuario">
+    <label>WhatsApp</label>
+    <input type="text" id="doce-whatsapp" placeholder="598XXXXXXXXX">
+    <label>Precio del taller ($)</label>
+    <input type="number" id="doce-precio" placeholder="2500" min="0">
+    <label class="inline"><input type="checkbox" id="doce-activo" checked> Activo (visible en el sitio)</label>
+    <input type="hidden" id="doce-id">
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <button class="primary" id="doce-save">Guardar docente</button>
+      <button class="secondary" id="doce-cancel" style="display:none">Cancelar edición</button>
+    </div>
+    <div class="msg" id="doce-msg"></div>
+
+    <h2 style="margin-top:2rem">Docentes existentes</h2>
+    <div id="docentes-list"></div>
   </section>
 
   <!-- ====== TAB: PUSH ====== -->
@@ -224,6 +256,7 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
     document.getElementById('tab-'+tabName).classList.add('is-active');
     if(tabName==='reservas') loadReservas();
     if(tabName==='noticias') loadNoticias();
+    if(tabName==='docentes') loadDocentes();
   }
 
   document.querySelectorAll('.tabs button').forEach(function(btn){
@@ -400,6 +433,110 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
   });
 
   document.getElementById('noti-cancel').addEventListener('click', resetNotiForm);
+
+  // ─────────────────────────────────────
+  //  TAB: DOCENTES
+  // ─────────────────────────────────────
+  var docentesData = [];
+
+  function resetDoceForm(){
+    document.getElementById('doce-id').value = '';
+    document.getElementById('doce-nombre').value = '';
+    document.getElementById('doce-rol').value = '';
+    document.getElementById('doce-foto').value = '';
+    document.getElementById('doce-frase').value = '';
+    document.getElementById('doce-trayectoria').value = '';
+    document.getElementById('doce-instagram').value = '';
+    document.getElementById('doce-whatsapp').value = '';
+    document.getElementById('doce-precio').value = '';
+    document.getElementById('doce-activo').checked = true;
+    document.getElementById('doce-cancel').style.display = 'none';
+    document.getElementById('doce-save').textContent = 'Guardar docente';
+  }
+
+  function loadDocentes(){
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list'})}).then(function(r){
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(r.data.error){ document.getElementById('docentes-list').innerHTML = '<p class="msg error">Error: '+r.data.error+'</p>'; return; }
+      docentesData = r.data.docentes || [];
+      renderDocentes();
+    });
+  }
+
+  function renderDocentes(){
+    var el = document.getElementById('docentes-list');
+    if(!docentesData.length){ el.innerHTML = '<p style="opacity:0.6">No hay docentes todavia.</p>'; return; }
+    el.innerHTML = docentesData.map(function(d){
+      var activoClass = d.activo !== false ? 'badge--publicada' : 'badge--borrador';
+      var activoText = d.activo !== false ? 'Activo' : 'Inactivo';
+      return '<div class="card" data-id="'+esc(d.id)+'">'+
+        '<span class="badge '+activoClass+'">'+activoText+'</span>'+
+        '<div class="card__title">'+esc(d.nombre)+'</div>'+
+        '<div class="card__meta">'+esc(d.rol||'')+'</div>'+
+        (d.frase ? '<div style="font-style:italic;font-size:0.85rem;margin:0.3rem 0;opacity:0.7;">"'+esc(d.frase)+'"</div>' : '')+
+        '<div class="card__actions">'+
+          '<button class="secondary doce-edit">Editar</button>'+
+          '<button class="danger doce-delete">Borrar</button>'+
+        '</div></div>';
+    }).join('');
+
+    el.querySelectorAll('.card').forEach(function(card){
+      var id = card.dataset.id;
+      var doce = docentesData.find(function(d){ return d.id===id; });
+      card.querySelector('.doce-edit').addEventListener('click',function(){
+        document.getElementById('doce-id').value = doce.id;
+        document.getElementById('doce-nombre').value = doce.nombre||'';
+        document.getElementById('doce-rol').value = doce.rol||'';
+        document.getElementById('doce-foto').value = doce.foto||'';
+        document.getElementById('doce-frase').value = doce.frase||'';
+        document.getElementById('doce-trayectoria').value = doce.trayectoria||'';
+        document.getElementById('doce-instagram').value = doce.instagram||'';
+        document.getElementById('doce-whatsapp').value = doce.whatsapp||'';
+        document.getElementById('doce-precio').value = doce.precio||'';
+        document.getElementById('doce-activo').checked = doce.activo !== false;
+        document.getElementById('doce-cancel').style.display = 'inline-block';
+        document.getElementById('doce-save').textContent = 'Guardar cambios';
+        document.getElementById('tab-docentes').scrollIntoView({behavior:'smooth'});
+      });
+      card.querySelector('.doce-delete').addEventListener('click',function(){
+        if(!confirm('¿Borrar a "'+doce.nombre+'"? No se deshace.')) return;
+        api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'delete',id:id})}).then(function(r){
+          if(r.data.error){ alert('Error: '+r.data.error); return; }
+          loadDocentes();
+        });
+      });
+    });
+  }
+
+  document.getElementById('doce-save').addEventListener('click',function(){
+    var nombre = document.getElementById('doce-nombre').value.trim();
+    var rol = document.getElementById('doce-rol').value.trim();
+    if(!nombre||!rol){ document.getElementById('doce-msg').className='msg error'; document.getElementById('doce-msg').textContent='Falta nombre o rol.'; return; }
+    var doce = {
+      id: document.getElementById('doce-id').value || undefined,
+      nombre:nombre, rol:rol,
+      foto: document.getElementById('doce-foto').value.trim(),
+      frase: document.getElementById('doce-frase').value.trim(),
+      trayectoria: document.getElementById('doce-trayectoria').value.trim(),
+      instagram: document.getElementById('doce-instagram').value.trim(),
+      whatsapp: document.getElementById('doce-whatsapp').value.trim(),
+      precio: document.getElementById('doce-precio').value ? Number(document.getElementById('doce-precio').value) : null,
+      activo: document.getElementById('doce-activo').checked
+    };
+    var btn = document.getElementById('doce-save');
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    document.getElementById('doce-msg').className='msg'; document.getElementById('doce-msg').textContent='';
+
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'save',docente:doce})}).then(function(r){
+      btn.disabled = false;
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(r.data.error){ document.getElementById('doce-msg').className='msg error'; document.getElementById('doce-msg').textContent='Error: '+r.data.error; btn.textContent=doce.id?'Guardar cambios':'Guardar docente'; return; }
+      document.getElementById('doce-msg').className='msg ok'; document.getElementById('doce-msg').textContent='Guardado.';
+      resetDoceForm(); loadDocentes();
+    });
+  });
+
+  document.getElementById('doce-cancel').addEventListener('click', resetDoceForm);
 
   // ─────────────────────────────────────
   //  TAB: PUSH
