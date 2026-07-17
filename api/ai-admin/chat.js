@@ -281,41 +281,60 @@ Respondé siempre en español, con claridad y precisión.`
     // Function calling loop — DeepSeek puede devolver tools en XML o en tool_calls
     let loops = 0;
     while (loops < 3) {
-      // Detectar tool calls en XML (DeepSeek style)
-      const xmlMatch = reply?.match(/<｜｜DSML｜｜tool_calls>([\s\S]*?)<\/｜｜DSML｜｜tool_calls>/);
+      // Detectar tool calls en formato DeepSeek (usa <\|tool_calls\|> con pipes)
+      const dsMatch = reply?.match(/<\|tool_calls\|>([\s\S]*?)<\|tool_calls\|>/);
       // Detectar tool calls en formato nativo (OpenAI style)
       const nativeCalls = choice?.message?.tool_calls;
 
-      if (!xmlMatch && !nativeCalls) break;
+      if (!dsMatch && !nativeCalls) break;
       loops++;
 
       let toolResults = [];
 
-      if (xmlMatch) {
-        // Parsear XML
-        const xmlContent = xmlMatch[1];
-        const invokes = xmlContent.match(/<｜｜DSML｜｜invoke name="([^"]+)">([\s\S]*?)<\/｜｜DSML｜｜invoke>/g);
-        if (!invokes) break;
-
-        for (const inv of invokes) {
-          const nameMatch = inv.match(/name="([^"]+)"/);
-          const fnName = nameMatch ? nameMatch[1] : '';
-          const fnArgs = { _role: role };
-          // Extraer parámetros del XML
-          const paramRegex = /<｜｜DSML｜｜parameter name="([^"]+)"[^>]*>([^<]+)<\/｜｜DSML｜｜parameter>/g;
-          let pm;
-          while ((pm = paramRegex.exec(inv)) !== null) {
-            let val = pm[2].trim();
-            if (val === 'true') val = true;
-            else if (val === 'false') val = false;
-            else if (/^\d+$/.test(val)) val = Number(val);
-            fnArgs[pm[1]] = val;
-          }
-          const result = await executeTool(fnName, fnArgs);
-          toolResults.push({ tool_call_id: fnName + '-' + loops, role: 'tool', content: result });
+      if (dsMatch) {
+        // Parsear DeepSeek format: <|tool_calls|><|invoke name="fn"><|invoke name="p1">v1</invoke>...</invoke></tool_calls>
+        const dsContent = dsMatch[1];
+        
+        // Split into individual invoke blocks
+        const allInvokes = [];
+        const invokeRegex = /<\|invoke name="([^"]+)"\|>([\s\S]*?)<\|invoke\|>/g;
+        let im;
+        while ((im = invokeRegex.exec(dsContent)) !== null) {
+          allInvokes.push({ name: im[1], content: im[2], full: im[0] });
         }
 
-        // Agregar al historial y re-llamar
+        // The function calls are the ones that contain other invokes (or have no nested invokes but are the only ones)
+        // Parameters are simple key=value invokes without nested invokes
+        // Group: first invoke is function name, subsequent until next function are its params
+        let currentFn = null;
+        let currentParams = {};
+
+        for (const inv of allInvokes) {
+          // Check if this invoke contains nested invokes → it's a function call
+          const hasNested = /<\|invoke name="/.test(inv.content);
+          if (hasNested || !currentFn) {
+            // If we have a pending function, execute it
+            if (currentFn) {
+              const result = await executeTool(currentFn, { ...currentParams, _role: role });
+              toolResults.push({ tool_call_id: currentFn + '-' + loops, role: 'tool', content: result });
+            }
+            currentFn = inv.name;
+            currentParams = {};
+          } else {
+            // This is a parameter of the current function
+            let val = inv.content.trim();
+            if (val === 'true') val = true;
+            else if (val === 'false') val = false;
+            else if (/^\d+(\.\d+)?$/.test(val)) val = Number(val);
+            currentParams[inv.name] = val;
+          }
+        }
+        // Execute last function
+        if (currentFn) {
+          const result = await executeTool(currentFn, { ...currentParams, _role: role });
+          toolResults.push({ tool_call_id: currentFn + '-' + loops, role: 'tool', content: result });
+        }
+
         messages.push({ role: 'assistant', content: reply });
         messages.push(...toolResults);
       } else if (nativeCalls) {
