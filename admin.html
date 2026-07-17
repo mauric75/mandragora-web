@@ -932,7 +932,7 @@ a:hover { text-decoration: underline; }
     btn.disabled = true; btn.textContent = 'Enviando…';
     document.getElementById('push-msg').className='msg'; document.getElementById('push-msg').textContent='';
 
-    api('/api/push-send', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title:title,body:body,url:url})}).then(function(r){
+    api('/api/push', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'send',title:title,body:body,url:url})}).then(function(r){
       btn.disabled = false; btn.textContent = 'Enviar a todos los suscriptos';
       if(r.status===401){ document.getElementById('push-msg').className='msg error'; document.getElementById('push-msg').textContent='Sesión expirada.'; return; }
       if(r.data.error){ document.getElementById('push-msg').className='msg error'; document.getElementById('push-msg').textContent='Error: '+r.data.error; return; }

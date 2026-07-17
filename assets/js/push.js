@@ -1,7 +1,7 @@
 // Mandrágora — Web Push: botón de activar notificaciones + suscripción
 (function () {
   var VAPID_PUBLIC_KEY = 'BGzBEECV_PlkO2WBn8ix-_4EzUNLm5hbRIeua55CJ0biqjHqijCL0I4jbTLH1sfCbjh-KrW9vjzbb6vO8Wp6DNo';
-  var SUBSCRIBE_ENDPOINT = '/api/push-subscribe';
+  var SUBSCRIBE_ENDPOINT = '/api/push';
 
   function urlBase64ToUint8Array(base64String) {
     var padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -27,7 +27,7 @@
         return fetch(SUBSCRIBE_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ subscription: sub }),
+          body: JSON.stringify({ action: 'subscribe', subscription: sub }),
         }).then(function () {
           localStorage.setItem('mandragora-push', 'subscribed');
           return true;
