@@ -1,9 +1,10 @@
 // Vercel Serverless Function — envía una notificación push a todos los suscriptos
-// Protegida con PUSH_ADMIN_SECRET (header: Authorization: Bearer <secreto>)
+// Auth: cookie mandragora_admin_session (admin/editor) o Bearer token (transición)
 // POST body: { title, body, url }
 
 import { createClient } from '@supabase/supabase-js';
 import webpush from 'web-push';
+import { hasValidAdminSession } from './lib/admin-auth.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -12,9 +13,12 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
+  // Auth: cookie session (admin unificado) o Bearer token (compatibilidad)
+  const sessionRole = hasValidAdminSession(req);
   const adminSecret = process.env.PUSH_ADMIN_SECRET;
   const authHeader = req.headers['authorization'] || '';
-  if (!adminSecret || authHeader !== `Bearer ${adminSecret}`) {
+
+  if (!sessionRole && (!adminSecret || authHeader !== `Bearer ${adminSecret}`)) {
     return res.status(401).json({ error: 'No autorizado' });
   }
 

@@ -5,30 +5,75 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Mandrágora</title>
 <style>
-:root { --c-bg:#f8f4ed; --c-cream:#1a1512; --c-gold:#b8892e; --c-red:#c0432a; }
+:root { --c-bg:#f8f4ed; --c-cream:#1a1512; --c-gold:#b8892e; --c-red:#c0432a; --c-green:#2e7d32; --c-border:rgba(26,21,18,0.10); }
 body { background:var(--c-bg); color:var(--c-cream); font-family:system-ui,sans-serif; margin:0; padding:2rem; }
-h1 { font-size:1.5rem; margin-bottom:1.5rem; }
+h1 { font-size:1.5rem; margin:0; }
+h2 { font-size:1.1rem; margin:0 0 1rem; }
+
+/* Login */
 .login { max-width:400px; margin:4rem auto; text-align:center; }
-.login input { width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ddd; border-radius:4px; font-size:1rem; }
+.login input { width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ddd; border-radius:4px; font-size:1rem; box-sizing:border-box; }
 .login button { width:100%; padding:0.8rem; background:var(--c-gold); color:#fff; border:none; border-radius:4px; font-size:1rem; cursor:pointer; }
 .login button:disabled { opacity:0.6; cursor:wait; }
+
+/* Tabs */
+.tabs { display:flex; gap:0.25rem; margin-bottom:1.5rem; border-bottom:2px solid var(--c-border); padding-bottom:0; }
+.tabs button { padding:0.6em 1.2em; border:none; background:none; cursor:pointer; font-size:0.82rem; color:var(--c-cream); opacity:0.55; border-bottom:2px solid transparent; margin-bottom:-2px; transition:opacity 0.2s,border-color 0.2s; }
+.tabs button:hover { opacity:0.8; }
+.tabs button.active { opacity:1; border-bottom-color:var(--c-gold); }
+
+/* Tab panels */
+.tab-panel { display:none; animation: fade-in 0.3s ease; }
+.tab-panel.is-active { display:block; }
+
+/* Table */
 table { width:100%; border-collapse:collapse; margin-top:1rem; }
 th,td { padding:0.6rem; text-align:left; border-bottom:1px solid #ddd; font-size:0.9rem; }
 th { font-weight:600; color:var(--c-gold); text-transform:uppercase; letter-spacing:0.05em; font-size:0.75rem; }
-.actions { margin-bottom:1rem; display:flex; gap:0.5rem; }
-.actions button { padding:0.4em 1em; border-radius:4px; cursor:pointer; border:1px solid #ddd; background:#fff; font-size:0.85rem; }
-.actions button.active { background:var(--c-gold); color:#fff; border-color:var(--c-gold); }
+.filters { margin-bottom:1rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
+.filters button { padding:0.4em 1em; border-radius:4px; cursor:pointer; border:1px solid #ddd; background:#fff; font-size:0.85rem; }
+.filters button.active { background:var(--c-gold); color:#fff; border-color:var(--c-gold); }
 .no-data { text-align:center; padding:3rem; opacity:0.5; }
+
+/* Forms */
+input[type="text"], input[type="url"], input[type="number"], textarea, select { width:100%; padding:0.7rem; margin:0.3rem 0 1rem; border:1px solid #ddd; border-radius:4px; font-size:0.95rem; font-family:inherit; box-sizing:border-box; }
+textarea { resize:vertical; min-height:80px; }
+label { font-size:0.82rem; font-weight:600; opacity:0.7; display:block; margin-top:0.5rem; }
+label.inline { display:inline-flex; align-items:center; gap:0.4rem; margin:0.5rem 0 1rem; opacity:1; font-weight:400; cursor:pointer; }
+label.inline input[type="checkbox"] { width:auto; margin:0; }
+
+button.primary { padding:0.7em 1.6em; background:var(--c-gold); color:#fff; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer; }
+button.primary:disabled { opacity:0.6; cursor:wait; }
+button.secondary { padding:0.5em 1em; border:1px solid #ddd; border-radius:4px; cursor:pointer; background:#fff; font-size:0.82rem; }
+button.danger { padding:0.5em 1em; border-radius:4px; cursor:pointer; background:none; border:1px solid var(--c-red); color:var(--c-red); font-size:0.82rem; }
+
+.msg { font-size:0.85rem; margin-top:0.5rem; }
+.msg.ok { color:var(--c-green); }
+.msg.error { color:var(--c-red); }
+
+/* Cards */
+.card { border:1px solid var(--c-border); border-radius:4px; padding:1rem; margin-bottom:0.75rem; background:#fff; }
+.card__title { font-weight:600; margin-bottom:0.3rem; }
+.card__meta { font-size:0.8rem; opacity:0.6; margin-bottom:0.5rem; }
+.card__actions { display:flex; gap:0.5rem; margin-top:0.5rem; }
+
+/* Badges */
+.badge { font-size:0.7rem; padding:0.2em 0.6em; border-radius:3px; margin-right:0.3rem; }
+.badge--publicada { background:#d4edda; color:#155724; }
+.badge--borrador { background:#eee; color:#555; }
+.badge--anuncio { background:#d4edda; color:#155724; }
+.badge--prensa { background:#cce5ff; color:#004085; }
+
 a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
 .button-link { background:none; border:0; cursor:pointer; padding:0; }
 .dev-notice { margin:0 0 1rem; padding:0.75rem 1rem; border-left:3px solid var(--c-gold); background:#fff8e8; font-size:0.85rem; }
-@keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+
+@keyframes fade-in { from { opacity:0; } to { opacity:1; } }
 </style>
 </head>
 <body>
+
+<!-- ========== LOGIN ========== -->
 <div class="login" id="login-box">
   <h1>Admin · Mandrágora</h1>
   <input type="password" id="password" placeholder="Contraseña" autofocus>
@@ -37,139 +82,129 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
   <a href="index.html" class="back">← Volver al inicio</a>
 </div>
 
+<!-- ========== DASHBOARD ========== -->
 <div id="dashboard" style="display:none">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
-    <h1 style="margin:0">Reservas</h1>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <h1>Admin · Mandrágora</h1>
     <button type="button" id="logout-btn" class="button-link">Cerrar sesión</button>
   </div>
-  <p class="dev-notice">Las reservas se cargan desde la base central de Mandrágora.</p>
-  <p id="dashboard-msg" role="status" aria-live="polite"></p>
-  <div class="actions">
-    <button class="active" data-filter="all">Todas</button>
-    <button data-filter="sala">Sala</button>
-    <button data-filter="taller">Talleres</button>
-    <button data-filter="entrada">Entradas</button>
-    <button data-filter="otro">Consultas</button>
-  </div>
-  <div id="reservas-table"></div>
-  <div class="no-data" id="no-data">No hay reservas todavía.</div>
+
+  <!-- Tabs -->
+  <nav class="tabs" id="tabs">
+    <button class="active" data-tab="reservas">Reservas</button>
+    <button data-tab="noticias">Noticias</button>
+    <button data-tab="push">Push</button>
+    <button data-tab="chat">Chat IA</button>
+  </nav>
+
+  <!-- ====== TAB: RESERVAS ====== -->
+  <section class="tab-panel is-active" id="tab-reservas">
+    <p class="dev-notice">Las reservas se cargan desde la base central de Mandrágora (Supabase).</p>
+    <p id="reservas-msg" role="status" aria-live="polite"></p>
+    <div class="filters" id="reservas-filters">
+      <button class="active" data-filter="all">Todas</button>
+      <button data-filter="sala">Sala</button>
+      <button data-filter="taller">Talleres</button>
+      <button data-filter="entrada">Entradas</button>
+      <button data-filter="otro">Consultas</button>
+    </div>
+    <div id="reservas-table"></div>
+    <div class="no-data" id="reservas-empty">No hay reservas todavía.</div>
+  </section>
+
+  <!-- ====== TAB: NOTICIAS ====== -->
+  <section class="tab-panel" id="tab-noticias">
+    <h2>Nueva noticia</h2>
+    <label>Título</label>
+    <input type="text" id="noti-titulo" placeholder="Título de la noticia" maxlength="200">
+    <label>Texto</label>
+    <textarea id="noti-texto" placeholder="Cuerpo de la noticia" maxlength="5000"></textarea>
+    <label>Tipo</label>
+    <select id="noti-tipo"><option value="anuncio">Anuncio</option><option value="prensa">Prensa</option></select>
+    <label>Link externo (opcional)</label>
+    <input type="url" id="noti-link" placeholder="https://...">
+    <label>Imagen (URL, opcional)</label>
+    <input type="text" id="noti-imagen" placeholder="assets/images/...">
+    <label class="inline"><input type="checkbox" id="noti-publicada" checked> Publicada</label>
+    <label class="inline"><input type="checkbox" id="noti-push"> Avisar por push al guardar</label>
+    <input type="hidden" id="noti-id">
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <button class="primary" id="noti-save">Guardar noticia</button>
+      <button class="secondary" id="noti-cancel" style="display:none">Cancelar edición</button>
+    </div>
+    <div class="msg" id="noti-msg"></div>
+
+    <h2 style="margin-top:2rem">Noticias existentes</h2>
+    <div id="noticias-list"></div>
+  </section>
+
+  <!-- ====== TAB: PUSH ====== -->
+  <section class="tab-panel" id="tab-push">
+    <h2>Enviar notificación push</h2>
+    <label>Título</label>
+    <input type="text" id="push-title" placeholder="Ej: Nueva función este sábado" maxlength="60">
+    <label>Mensaje</label>
+    <textarea id="push-body" placeholder="Cuerpo de la notificación" maxlength="200"></textarea>
+    <label>Link (opcional)</label>
+    <input type="text" id="push-url" placeholder="/agenda.html">
+    <button class="primary" id="push-send-btn">Enviar a todos los suscriptos</button>
+    <div class="msg" id="push-msg"></div>
+  </section>
+
+  <!-- ====== TAB: CHAT IA ====== -->
+  <section class="tab-panel" id="tab-chat">
+    <p class="dev-notice">Asistente con IA (DeepSeek). Solo consultas, no modifica datos.</p>
+    <div id="ai-chat-log" style="max-height:350px;overflow-y:auto;margin-bottom:1rem;font-size:0.9rem;line-height:1.6;border:1px solid var(--c-border);border-radius:4px;padding:0.75rem;background:#fff;"></div>
+    <div style="display:flex;gap:0.5rem">
+      <input type="text" id="ai-input" placeholder="Ej: cuántas reservas hay esta semana?" style="flex:1;padding:0.6em;border:1px solid #ddd;border-radius:4px;font-family:inherit;font-size:0.9rem;">
+      <button class="primary" id="ai-send">Enviar</button>
+    </div>
+  </section>
 </div>
 
+<!-- ========== SCRIPTS ========== -->
 <script>
 (function(){
+  "use strict";
+
+  // ── DOM refs ──────────────────────────
   var loginBox = document.getElementById('login-box');
   var dashboard = document.getElementById('dashboard');
   var passwordInput = document.getElementById('password');
   var loginButton = document.getElementById('login-btn');
   var loginMessage = document.getElementById('login-msg');
-  var reservas = [];
-  var labels = {sala:'Reserva de sala',taller:'Inscripción a taller',entrada:'Entrada',otro:'Consulta'};
 
+  // ── Auth ─────────────────────────────
   function showLogin(message){
     loginBox.style.display = 'block';
     dashboard.style.display = 'none';
     loginMessage.textContent = message || '';
   }
 
-  async function showDashboard(){
-    loginBox.style.display = 'none';
-    dashboard.style.display = 'block';
-    document.getElementById('dashboard-msg').textContent = 'Cargando reservas…';
-    try {
-      var response = await fetch('/api/reservas', {credentials:'same-origin', headers:{Accept:'application/json'}});
-      if (response.status === 401) {
-        showLogin('La sesión expiró.');
-        return;
-      }
-      if (!response.ok) throw new Error('No se pudieron cargar las reservas.');
-      var data = await response.json();
-      reservas = Array.isArray(data.data) ? data.data : [];
-      document.getElementById('dashboard-msg').textContent = '';
-      renderReservas('all');
-      document.getElementById('ai-chat').style.display = 'block';
-    } catch (error) {
-      reservas = [];
-      renderReservas('all');
-      document.getElementById('dashboard-msg').textContent = error.message;
-    }
-  }
-
-  function appendCell(row, value){
-    var cell = document.createElement('td');
-    cell.textContent = value == null ? '' : String(value);
-    row.appendChild(cell);
-  }
-
-  function renderReservas(filter){
-    var filtered = filter === 'all' ? reservas : reservas.filter(function(item){ return item.servicio === filter; });
-    var tableContainer = document.getElementById('reservas-table');
-    var noData = document.getElementById('no-data');
-    tableContainer.replaceChildren();
-
-    if(!filtered.length){
-      noData.style.display = 'block';
-      return;
-    }
-
-    noData.style.display = 'none';
-    var table = document.createElement('table');
-    var head = document.createElement('thead');
-    var headRow = document.createElement('tr');
-    ['Fecha','Tipo','Detalle','Nombre','WhatsApp','Email','Mensaje','Estado'].forEach(function(label){
-      var cell = document.createElement('th');
-      cell.textContent = label;
-      headRow.appendChild(cell);
-    });
-    head.appendChild(headRow);
-    table.appendChild(head);
-
-    var body = document.createElement('tbody');
-    filtered.forEach(function(item){
-      var row = document.createElement('tr');
-      appendCell(row, item.fecha ? new Date(item.fecha).toLocaleDateString('es-UY') : '');
-      appendCell(row, labels[item.servicio] || item.servicio);
-      appendCell(row, item.detalle);
-      appendCell(row, item.nombre);
-      appendCell(row, item.whatsapp);
-      appendCell(row, item.email);
-      appendCell(row, item.mensaje);
-      appendCell(row, item.estado);
-      body.appendChild(row);
-    });
-    table.appendChild(body);
-    tableContainer.appendChild(table);
-  }
-
   async function checkSession(){
     try {
-      var response = await fetch('/api/admin-auth', {credentials:'same-origin', headers:{Accept:'application/json'}});
-      if(response.ok) showDashboard();
-    } catch (error) {
-      showLogin('No se pudo conectar con el panel seguro.');
-    }
+      var r = await fetch('/api/admin-auth', {credentials:'same-origin', headers:{Accept:'application/json'}});
+      if(r.ok) { showDashboard(); }
+    } catch(e) { showLogin('No se pudo conectar.'); }
   }
 
   async function login(){
     loginButton.disabled = true;
     loginMessage.textContent = '';
     try {
-      var response = await fetch('/api/admin-auth?action=login', {
-        method:'POST',
-        credentials:'same-origin',
+      var r = await fetch('/api/admin-auth?action=login', {
+        method:'POST', credentials:'same-origin',
         headers:{'Content-Type':'application/json', Accept:'application/json'},
         body:JSON.stringify({password:passwordInput.value})
       });
-      if(!response.ok){
-        var data = await response.json().catch(function(){ return {}; });
-        throw new Error(data.error || 'No se pudo iniciar sesión');
+      if(!r.ok){
+        var d = await r.json().catch(function(){ return {}; });
+        throw new Error(d.error || 'No se pudo iniciar sesión');
       }
       passwordInput.value = '';
       await showDashboard();
-    } catch (error) {
-      loginMessage.textContent = error.message;
-    } finally {
-      loginButton.disabled = false;
-    }
+    } catch(e) { loginMessage.textContent = e.message; }
+    finally { loginButton.disabled = false; }
   }
 
   async function logout(){
@@ -178,73 +213,258 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
   }
 
   loginButton.addEventListener('click', login);
-  passwordInput.addEventListener('keydown', function(event){ if(event.key === 'Enter') login(); });
+  passwordInput.addEventListener('keydown', function(e){ if(e.key==='Enter') login(); });
   document.getElementById('logout-btn').addEventListener('click', logout);
-  document.querySelectorAll('.actions button').forEach(function(btn){
+
+  // ── Tabs ─────────────────────────────
+  function switchTab(tabName){
+    document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelector('.tabs button[data-tab="'+tabName+'"]').classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('is-active'); });
+    document.getElementById('tab-'+tabName).classList.add('is-active');
+    if(tabName==='reservas') loadReservas();
+    if(tabName==='noticias') loadNoticias();
+  }
+
+  document.querySelectorAll('.tabs button').forEach(function(btn){
+    btn.addEventListener('click', function(){ switchTab(btn.dataset.tab); });
+  });
+
+  // ── Shared API helper ────────────────
+  function api(url, opts){
+    opts = opts || {};
+    opts.credentials = 'same-origin';
+    opts.headers = Object.assign({Accept:'application/json'}, opts.headers || {});
+    return fetch(url, opts).then(function(r){
+      return r.json().then(function(data){ return {status:r.status, data:data}; });
+    });
+  }
+
+  // ─────────────────────────────────────
+  //  TAB: RESERVAS
+  // ─────────────────────────────────────
+  var reservas = [];
+  var labels = {sala:'Reserva de sala',taller:'Inscripción a taller',entrada:'Entrada',otro:'Consulta'};
+
+  async function loadReservas(){
+    document.getElementById('reservas-msg').textContent = 'Cargando…';
+    try {
+      var r = await api('/api/reservas');
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(!r.data || r.data.error) throw new Error(r.data&&r.data.error||'Error');
+      reservas = Array.isArray(r.data.data) ? r.data.data : [];
+      document.getElementById('reservas-msg').textContent = '';
+      renderReservas('all');
+    } catch(e){
+      reservas = [];
+      renderReservas('all');
+      document.getElementById('reservas-msg').textContent = e.message;
+    }
+  }
+
+  function renderReservas(filter){
+    var filtered = filter==='all' ? reservas : reservas.filter(function(r){ return r.servicio===filter; });
+    var container = document.getElementById('reservas-table');
+    var empty = document.getElementById('reservas-empty');
+    container.replaceChildren();
+    if(!filtered.length){ empty.style.display='block'; return; }
+    empty.style.display='none';
+
+    var tbl = document.createElement('table');
+    var hdr = '<thead><tr><th>Fecha</th><th>Tipo</th><th>Detalle</th><th>Nombre</th><th>WhatsApp</th><th>Email</th><th>Mensaje</th><th>Estado</th></tr></thead>';
+    var tbody = document.createElement('tbody');
+    filtered.forEach(function(item){
+      var tr = document.createElement('tr');
+      ['fecha','servicio','detalle','nombre','whatsapp','email','mensaje','estado'].forEach(function(key){
+        var td = document.createElement('td');
+        var v = item[key];
+        if(key==='fecha' && v) v = new Date(v).toLocaleDateString('es-UY');
+        if(key==='servicio') v = labels[v] || v;
+        td.textContent = v == null ? '' : String(v);
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    tbl.innerHTML = hdr;
+    tbl.appendChild(tbody);
+    container.appendChild(tbl);
+  }
+
+  document.querySelectorAll('#reservas-filters button').forEach(function(btn){
     btn.addEventListener('click',function(){
-      document.querySelectorAll('.actions button').forEach(function(button){button.classList.remove('active');});
+      document.querySelectorAll('#reservas-filters button').forEach(function(b){ b.classList.remove('active'); });
       btn.classList.add('active');
       renderReservas(btn.dataset.filter);
     });
   });
-  checkSession();
-})();
-</script>
 
-<div id="ai-chat" style="display:none;max-width:700px;margin:2rem auto 0;padding:1rem;border-top:1px solid var(--c-border)">
-  <p style="font-family:var(--f-mark);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-gold);margin-bottom:1rem">Consultá a la IA</p>
-  <div id="ai-chat-log" style="max-height:300px;overflow-y:auto;margin-bottom:1rem;font-size:0.9rem;line-height:1.6"></div>
-  <div style="display:flex;gap:0.5rem">
-    <input type="text" id="ai-input" placeholder="Ej: cuántas reservas hay esta semana?" style="flex:1;padding:0.5em;background:var(--c-bg);border:1px solid var(--c-border);color:var(--c-cream);font-family:inherit;font-size:0.85rem">
-    <button id="ai-send" style="background:var(--c-gold);color:var(--c-bg);border:none;padding:0.5em 1em;cursor:pointer;font-family:inherit;font-size:0.8rem">Enviar</button>
-  </div>
-</div>
+  // ─────────────────────────────────────
+  //  TAB: NOTICIAS
+  // ─────────────────────────────────────
+  var noticiasData = [];
 
-<script>
-(function(){
-  if(!document.getElementById('ai-chat')) return;
-  var chatDiv = document.getElementById('ai-chat');
-  var log = document.getElementById('ai-chat-log');
-  var input = document.getElementById('ai-input');
-  var send = document.getElementById('ai-send');
-
-  function addMsg(text, who){
-    var div = document.createElement('div');
-    div.style.marginBottom = '0.5rem';
-    div.innerHTML = '<strong>' + (who === 'user' ? 'Vos' : 'IA') + ':</strong> ' + text;
-    log.appendChild(div);
-    log.scrollTop = log.scrollHeight;
+  function resetNotiForm(){
+    document.getElementById('noti-id').value = '';
+    document.getElementById('noti-titulo').value = '';
+    document.getElementById('noti-texto').value = '';
+    document.getElementById('noti-tipo').value = 'anuncio';
+    document.getElementById('noti-link').value = '';
+    document.getElementById('noti-imagen').value = '';
+    document.getElementById('noti-publicada').checked = true;
+    document.getElementById('noti-push').checked = false;
+    document.getElementById('noti-cancel').style.display = 'none';
+    document.getElementById('noti-save').textContent = 'Guardar noticia';
   }
 
-  async function sendMsg(){
-    var msg = input.value.trim();
-    if(!msg) return;
-    addMsg(msg, 'user');
-    input.value = '';
-    addMsg('Pensando…', 'ia');
-    try {
-      var r = await fetch('/api/ai-admin/chat', {
-        method:'POST', credentials:'same-origin',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({message:msg})
+  function loadNoticias(){
+    api('/api/noticias-save', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list'})}).then(function(r){
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(r.data.error){ document.getElementById('noticias-list').innerHTML = '<p class="msg error">Error: '+r.data.error+'</p>'; return; }
+      noticiasData = r.data.noticias || [];
+      renderNoticias();
+    });
+  }
+
+  function renderNoticias(){
+    var el = document.getElementById('noticias-list');
+    if(!noticiasData.length){ el.innerHTML = '<p style="opacity:0.6">No hay noticias todavía.</p>'; return; }
+    el.innerHTML = noticiasData.map(function(n){
+      var pubClass = n.publicada ? 'badge--publicada' : 'badge--borrador';
+      var pubText = n.publicada ? 'Publicada' : 'Borrador';
+      var tipoClass = n.tipo==='prensa' ? 'badge--prensa' : 'badge--anuncio';
+      var tipoText = n.tipo==='prensa' ? 'Prensa' : 'Anuncio';
+      return '<div class="card" data-id="'+esc(n.id)+'">'+
+        '<span class="badge '+pubClass+'">'+pubText+'</span> <span class="badge '+tipoClass+'">'+tipoText+'</span>'+
+        '<div class="card__title">'+esc(n.titulo)+'</div>'+
+        '<div class="card__meta">'+esc(n.fecha||'')+'</div>'+
+        '<div class="card__actions">'+
+          '<button class="secondary noti-edit">Editar</button>'+
+          '<button class="danger noti-delete">Borrar</button>'+
+        '</div></div>';
+    }).join('');
+
+    el.querySelectorAll('.card').forEach(function(card){
+      var id = card.dataset.id;
+      var noti = noticiasData.find(function(n){ return n.id===id; });
+      card.querySelector('.noti-edit').addEventListener('click',function(){
+        document.getElementById('noti-id').value = noti.id;
+        document.getElementById('noti-titulo').value = noti.titulo||'';
+        document.getElementById('noti-texto').value = noti.texto||'';
+        document.getElementById('noti-tipo').value = noti.tipo||'anuncio';
+        document.getElementById('noti-link').value = noti.link||'';
+        document.getElementById('noti-imagen').value = noti.imagen||'';
+        document.getElementById('noti-publicada').checked = !!noti.publicada;
+        document.getElementById('noti-cancel').style.display = 'inline-block';
+        document.getElementById('noti-save').textContent = 'Guardar cambios';
+        document.getElementById('tab-noticias').scrollIntoView({behavior:'smooth'});
       });
-      var data = await r.json();
-      log.lastChild.innerHTML = '<strong>IA:</strong> ' + (data.reply || 'Sin respuesta');
-    } catch(e) {
-      log.lastChild.innerHTML = '<strong>IA:</strong> Error de conexión';
-    }
+      card.querySelector('.noti-delete').addEventListener('click',function(){
+        if(!confirm('¿Borrar "'+noti.titulo+'"? No se deshace.')) return;
+        api('/api/noticias-save', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'delete',id:id})}).then(function(r){
+          if(r.data.error){ alert('Error: '+r.data.error); return; }
+          loadNoticias();
+        });
+      });
+    });
   }
 
-  send.addEventListener('click', sendMsg);
-  input.addEventListener('keydown', function(e){ if(e.key === 'Enter') sendMsg(); });
+  function esc(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
 
-  // Show chat after dashboard is visible
-  var check = setInterval(function(){
-    if(document.getElementById('dashboard').style.display !== 'none'){
-      chatDiv.style.display = 'block';
-      clearInterval(check);
+  document.getElementById('noti-save').addEventListener('click',function(){
+    var titulo = document.getElementById('noti-titulo').value.trim();
+    var texto = document.getElementById('noti-texto').value.trim();
+    if(!titulo||!texto){ document.getElementById('noti-msg').className='msg error'; document.getElementById('noti-msg').textContent='Falta título o texto.'; return; }
+    var noti = {
+      id: document.getElementById('noti-id').value || undefined,
+      titulo:titulo, texto:texto,
+      tipo: document.getElementById('noti-tipo').value,
+      link: document.getElementById('noti-link').value.trim(),
+      imagen: document.getElementById('noti-imagen').value.trim(),
+      publicada: document.getElementById('noti-publicada').checked
+    };
+    var avisarPush = document.getElementById('noti-push').checked;
+    var btn = document.getElementById('noti-save');
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    document.getElementById('noti-msg').className='msg'; document.getElementById('noti-msg').textContent='';
+
+    api('/api/noticias-save', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'save',noticia:noti})}).then(function(r){
+      btn.disabled = false;
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(r.data.error){ document.getElementById('noti-msg').className='msg error'; document.getElementById('noti-msg').textContent='Error: '+r.data.error; btn.textContent=noti.id?'Guardar cambios':'Guardar noticia'; return; }
+      document.getElementById('noti-msg').className='msg ok'; document.getElementById('noti-msg').textContent='Guardado.';
+      resetNotiForm(); loadNoticias();
+      if(avisarPush && noti.publicada){
+        api('/api/push-send', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title:titulo, body:texto.slice(0,120), url:'/noticias.html'})});
+      }
+    });
+  });
+
+  document.getElementById('noti-cancel').addEventListener('click', resetNotiForm);
+
+  // ─────────────────────────────────────
+  //  TAB: PUSH
+  // ─────────────────────────────────────
+  document.getElementById('push-send-btn').addEventListener('click',function(){
+    var title = document.getElementById('push-title').value.trim();
+    var body = document.getElementById('push-body').value.trim();
+    var url = document.getElementById('push-url').value.trim() || '/';
+    if(!title||!body){ document.getElementById('push-msg').className='msg error'; document.getElementById('push-msg').textContent='Falta título o mensaje.'; return; }
+    var btn = document.getElementById('push-send-btn');
+    btn.disabled = true; btn.textContent = 'Enviando…';
+    document.getElementById('push-msg').className='msg'; document.getElementById('push-msg').textContent='';
+
+    api('/api/push-send', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title:title,body:body,url:url})}).then(function(r){
+      btn.disabled = false; btn.textContent = 'Enviar a todos los suscriptos';
+      if(r.status===401){ document.getElementById('push-msg').className='msg error'; document.getElementById('push-msg').textContent='Sesión expirada.'; return; }
+      if(r.data.error){ document.getElementById('push-msg').className='msg error'; document.getElementById('push-msg').textContent='Error: '+r.data.error; return; }
+      document.getElementById('push-msg').className='msg ok';
+      document.getElementById('push-msg').textContent = 'Enviado a '+r.data.sent+' de '+r.data.total+' suscriptos.';
+      document.getElementById('push-title').value = '';
+      document.getElementById('push-body').value = '';
+      document.getElementById('push-url').value = '';
+    });
+  });
+
+  // ─────────────────────────────────────
+  //  TAB: CHAT IA
+  // ─────────────────────────────────────
+  (function(){
+    var log = document.getElementById('ai-chat-log');
+    var input = document.getElementById('ai-input');
+    var send = document.getElementById('ai-send');
+
+    function addMsg(text, who){
+      var div = document.createElement('div');
+      div.style.marginBottom = '0.5rem';
+      div.innerHTML = '<strong>'+(who==='user'?'Vos':'IA')+':</strong> '+text;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
     }
-  }, 500);
+
+    send.addEventListener('click', function(){
+      var msg = input.value.trim();
+      if(!msg) return;
+      addMsg(msg, 'user');
+      input.value = '';
+      addMsg('Pensando…', 'ia');
+      api('/api/ai-admin/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg})}).then(function(r){
+        log.lastChild.innerHTML = '<strong>IA:</strong> '+(r.data.reply||'Sin respuesta');
+      }).catch(function(){
+        log.lastChild.innerHTML = '<strong>IA:</strong> Error de conexión';
+      });
+    });
+
+    input.addEventListener('keydown', function(e){ if(e.key==='Enter') send.click(); });
+  })();
+
+  // ── Init ─────────────────────────────
+  function showDashboard(){
+    loginBox.style.display = 'none';
+    dashboard.style.display = 'block';
+    switchTab('reservas');
+  }
+
+  checkSession();
 })();
 </script>
 
