@@ -4,104 +4,323 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Mandrágora</title>
+<link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
 <style>
-:root { --c-bg:#f8f4ed; --c-cream:#1a1512; --c-gold:#b8892e; --c-red:#c0432a; --c-green:#2e7d32; --c-border:rgba(26,21,18,0.10); }
-body { background:var(--c-bg); color:var(--c-cream); font-family:system-ui,sans-serif; margin:0; padding:2rem; }
-h1 { font-size:1.5rem; margin:0; }
-h2 { font-size:1.1rem; margin:0 0 1rem; }
+/* ============================================================
+   MANDRÁGORA ADMIN — Design System
+   ============================================================ */
+@font-face {
+  font-family: 'Schrifted'; src: url('assets/fonts/SFTSchriftedRoundTRIAL-Medium.ttf') format('truetype');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
 
-/* Login */
-.login { max-width:400px; margin:4rem auto; text-align:center; }
-.login input { width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ddd; border-radius:4px; font-size:1rem; box-sizing:border-box; }
-.login button { width:100%; padding:0.8rem; background:var(--c-gold); color:#fff; border:none; border-radius:4px; font-size:1rem; cursor:pointer; }
-.login button:disabled { opacity:0.6; cursor:wait; }
+:root {
+  --c-bg: #0c1012;
+  --c-surface: #14181b;
+  --c-surface2: #1a1f23;
+  --c-gold: #CE9A47;
+  --c-gold-bright: #e0b85a;
+  --c-gold-faint: rgba(206,154,71,0.10);
+  --c-gold-dim: rgba(206,154,71,0.25);
+  --c-text: #e6ded5;
+  --c-dim: rgba(230,222,213,0.6);
+  --c-faint: rgba(230,222,213,0.25);
+  --c-border: rgba(230,222,213,0.08);
+  --c-red: #e0554a;
+  --c-green: #5cb85c;
+  --c-blue: #5b9bd5;
+  --c-yellow: #d4a843;
+  --radius: 6px;
+  --ease: cubic-bezier(0.22,1,0.36,1);
+}
 
-/* Tabs */
-.tabs { display:flex; gap:0.25rem; margin-bottom:1.5rem; border-bottom:2px solid var(--c-border); padding-bottom:0; }
-.tabs button { padding:0.6em 1.2em; border:none; background:none; cursor:pointer; font-size:0.82rem; color:var(--c-cream); opacity:0.55; border-bottom:2px solid transparent; margin-bottom:-2px; transition:opacity 0.2s,border-color 0.2s; }
-.tabs button:hover { opacity:0.8; }
-.tabs button.active { opacity:1; border-bottom-color:var(--c-gold); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Tab panels */
-.tab-panel { display:none; animation: fade-in 0.3s ease; }
-.tab-panel.is-active { display:block; }
+body {
+  background: var(--c-bg); color: var(--c-text);
+  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh; line-height: 1.6;
+}
 
-/* Table */
-table { width:100%; border-collapse:collapse; margin-top:1rem; }
-th,td { padding:0.6rem; text-align:left; border-bottom:1px solid #ddd; font-size:0.9rem; }
-th { font-weight:600; color:var(--c-gold); text-transform:uppercase; letter-spacing:0.05em; font-size:0.75rem; }
-.filters { margin-bottom:1rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
-.filters button { padding:0.4em 1em; border-radius:4px; cursor:pointer; border:1px solid #ddd; background:#fff; font-size:0.85rem; }
-.filters button.active { background:var(--c-gold); color:#fff; border-color:var(--c-gold); }
-.no-data { text-align:center; padding:3rem; opacity:0.5; }
+/* ============================================================
+   LOGIN
+   ============================================================ */
+.login {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 2rem;
+  background: radial-gradient(ellipse 60% 40% at 50% 35%, rgba(206,154,71,0.06), transparent 60%);
+}
+.login__logo { height: 48px; margin-bottom: 2rem; opacity: 0.85; }
+.login h1 { font-family: 'Schrifted', 'Cinzel', serif; font-size: 1.2rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--c-gold); margin-bottom: 2rem; font-weight: 500; }
+.login input {
+  width: 100%; max-width: 320px; padding: 0.85rem 1rem;
+  border: 1px solid var(--c-border); border-radius: var(--radius);
+  background: var(--c-surface); color: var(--c-text); font-size: 1rem;
+  outline: none; transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.login input:focus { border-color: var(--c-gold); box-shadow: 0 0 0 3px var(--c-gold-faint); }
+.login button {
+  width: 100%; max-width: 320px; margin-top: 1rem;
+  padding: 0.85rem; background: var(--c-gold); color: #0a0a0a;
+  border: none; border-radius: var(--radius); font-size: 0.95rem;
+  font-weight: 600; cursor: pointer; transition: background 0.3s var(--ease), transform 0.2s var(--ease);
+}
+.login button:hover { background: var(--c-gold-bright); transform: translateY(-1px); }
+.login button:disabled { opacity: 0.5; cursor: wait; transform: none; }
+.login__msg { margin-top: 0.8rem; font-size: 0.85rem; color: var(--c-red); }
+.login__back { color: var(--c-dim); font-size: 0.8rem; margin-top: 2rem; transition: color 0.2s; }
+.login__back:hover { color: var(--c-gold); }
 
-/* Forms */
-input[type="text"], input[type="url"], input[type="number"], textarea, select { width:100%; padding:0.7rem; margin:0.3rem 0 1rem; border:1px solid #ddd; border-radius:4px; font-size:0.95rem; font-family:inherit; box-sizing:border-box; }
-textarea { resize:vertical; min-height:80px; }
-label { font-size:0.82rem; font-weight:600; opacity:0.7; display:block; margin-top:0.5rem; }
-label.inline { display:inline-flex; align-items:center; gap:0.4rem; margin:0.5rem 0 1rem; opacity:1; font-weight:400; cursor:pointer; }
-label.inline input[type="checkbox"] { width:auto; margin:0; }
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.5rem; background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+  position: sticky; top: 0; z-index: 10;
+}
+.header__brand { display: flex; align-items: center; gap: 0.75rem; }
+.header__logo { height: 28px; opacity: 0.9; }
+.header__title { font-family: 'Schrifted', 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-dim); }
+.header__logout { background: none; border: 1px solid var(--c-border); color: var(--c-dim); padding: 0.4em 1em; border-radius: var(--radius); cursor: pointer; font-size: 0.78rem; transition: all 0.2s; }
+.header__logout:hover { border-color: var(--c-red); color: var(--c-red); }
 
-button.primary { padding:0.7em 1.6em; background:var(--c-gold); color:#fff; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer; }
-button.primary:disabled { opacity:0.6; cursor:wait; }
-button.secondary { padding:0.5em 1em; border:1px solid #ddd; border-radius:4px; cursor:pointer; background:#fff; font-size:0.82rem; }
-button.danger { padding:0.5em 1em; border-radius:4px; cursor:pointer; background:none; border:1px solid var(--c-red); color:var(--c-red); font-size:0.82rem; }
+/* ============================================================
+   STATS
+   ============================================================ */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; padding: 1.25rem 1.5rem; }
+.stat-card {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: var(--radius); padding: 1rem 1.2rem;
+  transition: border-color 0.3s var(--ease);
+}
+.stat-card:hover { border-color: var(--c-gold-dim); }
+.stat-card__value { font-size: 1.8rem; font-weight: 700; color: var(--c-gold-bright); line-height: 1.1; }
+.stat-card__label { font-size: 0.72rem; color: var(--c-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.3rem; }
 
-.msg { font-size:0.85rem; margin-top:0.5rem; }
-.msg.ok { color:var(--c-green); }
-.msg.error { color:var(--c-red); }
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs {
+  display: flex; gap: 0; padding: 0 1.5rem;
+  background: var(--c-surface); border-bottom: 1px solid var(--c-border);
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tabs button {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.7em 1.1em; border: none; background: none; cursor: pointer;
+  font-size: 0.8rem; color: var(--c-dim); white-space: nowrap;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: all 0.2s var(--ease);
+}
+.tabs button svg { width: 14px; height: 14px; opacity: 0.5; }
+.tabs button:hover { color: var(--c-text); }
+.tabs button.active { color: var(--c-gold); border-bottom-color: var(--c-gold); }
+.tabs button.active svg { opacity: 1; }
 
-/* Cards */
-.card { border:1px solid var(--c-border); border-radius:4px; padding:1rem; margin-bottom:0.75rem; background:#fff; }
-.card__title { font-weight:600; margin-bottom:0.3rem; }
-.card__meta { font-size:0.8rem; opacity:0.6; margin-bottom:0.5rem; }
-.card__actions { display:flex; gap:0.5rem; margin-top:0.5rem; }
+/* ============================================================
+   CONTENT
+   ============================================================ */
+.content { padding: 1.5rem; max-width: 1200px; }
+.tab-panel { display: none; animation: fade-in 0.25s var(--ease); }
+.tab-panel.is-active { display: block; }
+
+/* ============================================================
+   TABLE (Reservas)
+   ============================================================ */
+.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--c-border); }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th { text-align: left; padding: 0.7rem 0.8rem; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--c-dim); background: var(--c-surface); border-bottom: 1px solid var(--c-border); }
+td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--c-border); color: var(--c-text); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--c-gold-faint); }
+
+.filters { margin-bottom: 0.75rem; display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.filters button {
+  padding: 0.35em 0.9em; border-radius: 20px; cursor: pointer;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+  color: var(--c-dim); font-size: 0.78rem; transition: all 0.2s var(--ease);
+}
+.filters button:hover { border-color: var(--c-gold-dim); color: var(--c-text); }
+.filters button.active { background: var(--c-gold); color: #0a0a0a; border-color: var(--c-gold); font-weight: 600; }
+
+.no-data { text-align: center; padding: 3rem; opacity: 0.4; font-style: italic; }
+
+/* Status badges */
+.status { font-size: 0.7rem; padding: 0.2em 0.6em; border-radius: 12px; font-weight: 500; }
+.status--pendiente { background: rgba(212,168,67,0.15); color: var(--c-yellow); }
+.status--contactada { background: rgba(91,155,213,0.15); color: var(--c-blue); }
+.status--confirmada { background: rgba(92,184,92,0.15); color: var(--c-green); }
+.status--cancelada { background: rgba(224,85,74,0.15); color: var(--c-red); }
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+input[type="text"], input[type="url"], input[type="number"], textarea, select {
+  width: 100%; padding: 0.7rem 0.9rem; border: 1px solid var(--c-border);
+  border-radius: var(--radius); background: var(--c-surface);
+  color: var(--c-text); font-size: 0.9rem; font-family: inherit;
+  outline: none; transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  margin: 0.25rem 0 0.9rem;
+}
+textarea { resize: vertical; min-height: 80px; }
+select { cursor: pointer; }
+input:focus, textarea:focus, select:focus { border-color: var(--c-gold); box-shadow: 0 0 0 3px var(--c-gold-faint); }
+label { font-size: 0.78rem; font-weight: 500; color: var(--c-dim); display: block; margin-top: 0.5rem; }
+label.inline { display: inline-flex; align-items: center; gap: 0.4rem; margin: 0.3rem 1rem 0.9rem 0; color: var(--c-text); font-weight: 400; cursor: pointer; }
+label.inline input[type="checkbox"] { width: auto; margin: 0; accent-color: var(--c-gold); }
+
+button.primary {
+  padding: 0.65em 1.5em; background: var(--c-gold); color: #0a0a0a;
+  border: none; border-radius: var(--radius); font-size: 0.85rem;
+  font-weight: 600; cursor: pointer; transition: all 0.2s var(--ease);
+}
+button.primary:hover { background: var(--c-gold-bright); transform: translateY(-1px); }
+button.primary:disabled { opacity: 0.5; cursor: wait; transform: none; }
+button.secondary {
+  padding: 0.45em 0.9em; border: 1px solid var(--c-border); border-radius: var(--radius);
+  cursor: pointer; background: var(--c-surface); color: var(--c-text); font-size: 0.78rem;
+  transition: all 0.2s;
+}
+button.secondary:hover { border-color: var(--c-dim); }
+button.danger {
+  padding: 0.45em 0.9em; border-radius: var(--radius); cursor: pointer;
+  background: none; border: 1px solid rgba(224,85,74,0.3); color: var(--c-red); font-size: 0.78rem;
+  transition: all 0.2s;
+}
+button.danger:hover { background: rgba(224,85,74,0.1); border-color: var(--c-red); }
+
+/* ============================================================
+   CARDS (Noticias, Docentes)
+   ============================================================ */
+.card {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 0.6rem;
+  transition: border-color 0.3s var(--ease);
+}
+.card:hover { border-color: var(--c-gold-dim); }
+.card__title { font-weight: 600; color: var(--c-text); margin-bottom: 0.2rem; }
+.card__meta { font-size: 0.78rem; color: var(--c-dim); margin-bottom: 0.4rem; }
+.card__actions { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
 
 /* Badges */
-.badge { font-size:0.7rem; padding:0.2em 0.6em; border-radius:3px; margin-right:0.3rem; }
-.badge--publicada { background:#d4edda; color:#155724; }
-.badge--borrador { background:#eee; color:#555; }
-.badge--anuncio { background:#d4edda; color:#155724; }
-.badge--prensa { background:#cce5ff; color:#004085; }
+.badge { font-size: 0.68rem; padding: 0.15em 0.55em; border-radius: 10px; font-weight: 500; display: inline-block; margin-right: 0.3rem; }
+.badge--publicada, .badge--anuncio { background: rgba(92,184,92,0.15); color: var(--c-green); }
+.badge--borrador { background: rgba(230,222,213,0.08); color: var(--c-dim); }
+.badge--prensa { background: rgba(91,155,213,0.15); color: var(--c-blue); }
 
-a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
-.button-link { background:none; border:0; cursor:pointer; padding:0; }
-.dev-notice { margin:0 0 1rem; padding:0.75rem 1rem; border-left:3px solid var(--c-gold); background:#fff8e8; font-size:0.85rem; }
+/* ============================================================
+   CHAT
+   ============================================================ */
+.chat-log {
+  height: 350px; overflow-y: auto; margin-bottom: 1rem; font-size: 0.9rem;
+  line-height: 1.6; border: 1px solid var(--c-border); border-radius: var(--radius);
+  padding: 1rem; background: var(--c-surface);
+}
+.chat-wrap { display: flex; gap: 0.5rem; }
+.chat-wrap input { flex: 1; margin: 0 !important; }
+
+/* ============================================================
+   MISC
+   ============================================================ */
+h2 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.8rem; color: var(--c-text); }
+h2:first-child { margin-top: 0; }
+.msg { font-size: 0.82rem; margin-top: 0.4rem; }
+.msg.ok { color: var(--c-green); }
+.msg.error { color: var(--c-red); }
+a { color: var(--c-gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
 
 @keyframes fade-in { from { opacity:0; } to { opacity:1; } }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .stats { grid-template-columns: repeat(2, 1fr); padding: 0.75rem 1rem; }
+  .stat-card { padding: 0.75rem 1rem; }
+  .stat-card__value { font-size: 1.4rem; }
+  .content { padding: 1rem; }
+  .table-wrap { font-size: 0.8rem; }
+  th, td { padding: 0.5rem 0.6rem; }
+  .tabs { padding: 0 0.5rem; }
+  .tabs button { font-size: 0.72rem; padding: 0.5em 0.7em; }
+  .header { padding: 0.75rem 1rem; }
+}
+
+@media (max-width: 480px) {
+  .stats { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+  .stat-card__value { font-size: 1.2rem; }
+  .tabs button span { display: none; }
+  .tabs button svg { width: 16px; height: 16px; }
+}
+
+@media (min-width: 1200px) {
+  .content { margin: 0 auto; }
+}
 </style>
 </head>
 <body>
 
 <!-- ========== LOGIN ========== -->
 <div class="login" id="login-box">
-  <h1>Admin · Mandrágora</h1>
+  <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="login__logo">
+  <h1>Panel de Administración</h1>
   <input type="password" id="password" placeholder="Contraseña" autofocus>
   <button id="login-btn">Entrar</button>
-  <div id="login-msg" role="status" aria-live="polite" style="margin-top:0.5rem;font-size:0.85rem;color:var(--c-red)"></div>
-  <a href="index.html" class="back">← Volver al inicio</a>
+  <div class="login__msg" id="login-msg"></div>
+  <a href="index.html" class="login__back">← Volver al inicio</a>
 </div>
 
 <!-- ========== DASHBOARD ========== -->
 <div id="dashboard" style="display:none">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-    <h1>Admin · Mandrágora</h1>
-    <button type="button" id="logout-btn" class="button-link">Cerrar sesión</button>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__brand">
+      <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="header__logo">
+      <span class="header__title">Admin</span>
+    </div>
+    <button class="header__logout" id="logout-btn">Cerrar sesión</button>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats" id="stats-bar">
+    <div class="stat-card"><div class="stat-card__value" id="stat-reservas">—</div><div class="stat-card__label">Reservas totales</div></div>
+    <div class="stat-card"><div class="stat-card__value" id="stat-pendientes">—</div><div class="stat-card__label">Pendientes</div></div>
+    <div class="stat-card"><div class="stat-card__value" id="stat-noticias">—</div><div class="stat-card__label">Noticias publicadas</div></div>
+    <div class="stat-card"><div class="stat-card__value" id="stat-docentes">—</div><div class="stat-card__label">Docentes activos</div></div>
   </div>
 
   <!-- Tabs -->
   <nav class="tabs" id="tabs">
-    <button class="active" data-tab="reservas">Reservas</button>
-    <button data-tab="noticias">Noticias</button>
-    <button data-tab="docentes">Docentes</button>
-    <button data-tab="push">Push</button>
-    <button data-tab="chat">Chat IA</button>
+    <button class="active" data-tab="reservas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      <span>Reservas</span>
+    </button>
+    <button data-tab="noticias">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Noticias</span>
+    </button>
+    <button data-tab="docentes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Docentes</span>
+    </button>
+    <button data-tab="push">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span>Push</span>
+    </button>
+    <button data-tab="chat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Chat IA</span>
+    </button>
   </nav>
 
+  <!-- Content -->
+  <div class="content">
   <!-- ====== TAB: RESERVAS ====== -->
   <section class="tab-panel is-active" id="tab-reservas">
-    <p class="dev-notice">Las reservas se cargan desde la base central de Mandrágora (Supabase).</p>
-    <p id="reservas-msg" role="status" aria-live="polite"></p>
+    <p id="reservas-msg" style="font-size:0.82rem;color:var(--c-dim);margin-bottom:0.75rem"></p>
     <div class="filters" id="reservas-filters">
       <button class="active" data-filter="all">Todas</button>
       <button data-filter="sala">Sala</button>
@@ -109,7 +328,7 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
       <button data-filter="entrada">Entradas</button>
       <button data-filter="otro">Consultas</button>
     </div>
-    <div id="reservas-table"></div>
+    <div class="table-wrap"><div id="reservas-table"></div></div>
     <div class="no-data" id="reservas-empty">No hay reservas todavía.</div>
   </section>
 
@@ -185,14 +404,14 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
 
   <!-- ====== TAB: CHAT IA ====== -->
   <section class="tab-panel" id="tab-chat">
-    <p class="dev-notice">Asistente con IA (DeepSeek). Solo consultas, no modifica datos.</p>
-    <div id="ai-chat-log" style="max-height:350px;overflow-y:auto;margin-bottom:1rem;font-size:0.9rem;line-height:1.6;border:1px solid var(--c-border);border-radius:4px;padding:0.75rem;background:#fff;"></div>
-    <div style="display:flex;gap:0.5rem">
-      <input type="text" id="ai-input" placeholder="Ej: cuántas reservas hay esta semana?" style="flex:1;padding:0.6em;border:1px solid #ddd;border-radius:4px;font-family:inherit;font-size:0.9rem;">
+    <div class="chat-log" id="ai-chat-log"></div>
+    <div class="chat-wrap">
+      <input type="text" id="ai-input" placeholder="Ej: cuántas reservas hay esta semana?">
       <button class="primary" id="ai-send">Enviar</button>
     </div>
   </section>
-</div>
+  </div><!-- /content -->
+</div><!-- /dashboard -->
 
 <!-- ========== SCRIPTS ========== -->
 <script>
@@ -205,12 +424,17 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
   var passwordInput = document.getElementById('password');
   var loginButton = document.getElementById('login-btn');
   var loginMessage = document.getElementById('login-msg');
+  var statsReservas = document.getElementById('stat-reservas');
+  var statsPendientes = document.getElementById('stat-pendientes');
+  var statsNoticias = document.getElementById('stat-noticias');
+  var statsDocentes = document.getElementById('stat-docentes');
 
   // ── Auth ─────────────────────────────
   function showLogin(message){
-    loginBox.style.display = 'block';
+    loginBox.style.display = 'flex';
     dashboard.style.display = 'none';
     loginMessage.textContent = message || '';
+    loginMessage.style.display = message ? 'block' : 'none';
   }
 
   async function checkSession(){
@@ -304,23 +528,38 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
     empty.style.display='none';
 
     var tbl = document.createElement('table');
-    var hdr = '<thead><tr><th>Fecha</th><th>Tipo</th><th>Detalle</th><th>Nombre</th><th>WhatsApp</th><th>Email</th><th>Mensaje</th><th>Estado</th></tr></thead>';
+    tbl.innerHTML = '<thead><tr><th>Fecha</th><th>Tipo</th><th>Detalle</th><th>Nombre</th><th>WhatsApp</th><th>Email</th><th>Mensaje</th><th>Estado</th></tr></thead>';
     var tbody = document.createElement('tbody');
     filtered.forEach(function(item){
       var tr = document.createElement('tr');
-      ['fecha','servicio','detalle','nombre','whatsapp','email','mensaje','estado'].forEach(function(key){
+      var cols = [
+        item.fecha ? new Date(item.fecha).toLocaleDateString('es-UY') : '',
+        labels[item.servicio] || item.servicio || '',
+        item.detalle || '',
+        item.nombre || '',
+        item.whatsapp || '',
+        item.email || '',
+        item.mensaje || '',
+        item.estado || 'pendiente'
+      ];
+      cols.forEach(function(v, i){
         var td = document.createElement('td');
-        var v = item[key];
-        if(key==='fecha' && v) v = new Date(v).toLocaleDateString('es-UY');
-        if(key==='servicio') v = labels[v] || v;
-        td.textContent = v == null ? '' : String(v);
+        if(i === 7){ // estado column
+          var estado = (item.estado || 'pendiente').toLowerCase();
+          td.innerHTML = '<span class="status status--' + estado + '">' + esc(v) + '</span>';
+        } else {
+          td.textContent = v == null ? '' : String(v);
+        }
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
     });
-    tbl.innerHTML = hdr;
     tbl.appendChild(tbody);
     container.appendChild(tbl);
+
+    // Update stats
+    statsReservas.textContent = reservas.length;
+    statsPendientes.textContent = reservas.filter(function(r){ return r.estado === 'pendiente'; }).length;
   }
 
   document.querySelectorAll('#reservas-filters button').forEach(function(btn){
@@ -355,6 +594,7 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
       if(r.data.error){ document.getElementById('noticias-list').innerHTML = '<p class="msg error">Error: '+r.data.error+'</p>'; return; }
       noticiasData = r.data.noticias || [];
       renderNoticias();
+      statsNoticias.textContent = noticiasData.filter(function(n){ return n.publicada; }).length;
     });
   }
 
@@ -460,6 +700,7 @@ a.back, .button-link { color:var(--c-gold); font-size:0.85rem; }
       if(r.data.error){ document.getElementById('docentes-list').innerHTML = '<p class="msg error">Error: '+r.data.error+'</p>'; return; }
       docentesData = r.data.docentes || [];
       renderDocentes();
+      statsDocentes.textContent = docentesData.filter(function(d){ return d.activo !== false; }).length;
     });
   }
 
