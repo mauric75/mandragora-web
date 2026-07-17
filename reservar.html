@@ -278,15 +278,6 @@ img{max-width:100%;display:block}
   <div class="step" id="step-taller-opciones">
     <p class="step-title">Elegí docente y disciplina</p>
     <div class="options" id="taller-opciones-list">
-      <div class="option-card" data-sub="actuacion" data-price="2500" data-wa="598XXXXXXXX">
-        <div class="option-card__title">Docente de Actuación</div><div class="option-card__price">Actuación · Dirección · $2.500</div>
-      </div>
-      <div class="option-card" data-sub="clown" data-price="2500" data-wa="598XXXXXXXX">
-        <div class="option-card__title">Docente de Clown</div><div class="option-card__price">Clown · Voz · $2.500</div>
-      </div>
-      <div class="option-card" data-sub="dramaturgia" data-price="2500" data-wa="598XXXXXXXX">
-        <div class="option-card__title">Docente de Dramaturgia</div><div class="option-card__price">Dramaturgia · Escritura · $2.500</div>
-      </div>
       <div class="option-card" data-sub="otro-taller" data-price="0">
         <div class="option-card__title">Consultar por otro taller</div><div class="option-card__price">a convenir</div>
       </div>
@@ -599,5 +590,29 @@ img{max-width:100%;display:block}
 </script>
 
 <script src="/assets/js/push.js" defer></script>
+<script>
+(function(){
+  var list = document.getElementById('taller-opciones-list');
+  if(!list) return;
+
+  fetch('data/docentes.json?t=' + Date.now(), {cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(docentes){
+      var activos = (docentes||[]).filter(function(d){ return d.activo !== false; });
+      activos.forEach(function(d){
+        var card = document.createElement('div');
+        card.className = 'option-card';
+        card.setAttribute('data-sub', (d.nombre||'docente').toLowerCase().replace(/\s+/g,'-'));
+        card.setAttribute('data-price', d.precio || 2500);
+        if(d.whatsapp) card.setAttribute('data-wa', d.whatsapp);
+        card.innerHTML = '<div class="option-card__title">' + escHtml(d.nombre) + '</div>' +
+          '<div class="option-card__price">' + escHtml(d.rol) + ' · $' + (d.precio||2500) + '</div>';
+        list.insertBefore(card, list.firstChild);
+      });
+    });
+
+  function escHtml(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+})();
+</script>
 </body>
 </html>

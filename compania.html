@@ -545,31 +545,7 @@ h1, h2, h3, h4 {
     </p>
   </div>
 
-  <div class="elenco__grid">
-    <article class="elenco-card reveal">
-      <div class="elenco-card__photo">
-        <img src="assets/images/elenco/WhatsApp Image 2026-06-14 at 1.22.29 PM.jpeg" alt="Pancho" loading="lazy">
-      </div>
-      <h4>Pancho</h4>
-      <p class="elenco-card__rol">Actor · Productor</p>
-    </article>
-
-    <article class="elenco-card reveal">
-      <div class="elenco-card__photo">
-        <img src="assets/images/elenco/WhatsApp Image 2026-06-14 at 1.23.21 PM.jpeg" alt="Fefa" loading="lazy">
-      </div>
-      <h4>Fefa</h4>
-      <p class="elenco-card__rol">Actriz</p>
-    </article>
-
-    <article class="elenco-card reveal">
-      <div class="elenco-card__photo">
-        <img src="assets/images/elenco/WhatsApp Image 2026-06-14 at 1.24.11 PM.jpeg" alt="Chú" loading="lazy">
-      </div>
-      <h4>Chú</h4>
-      <p class="elenco-card__rol">Actriz</p>
-    </article>
-  </div>
+  <div class="elenco__grid" id="elenco-grid"></div>
 </section>
 
 <!-- ============ MANIFIESTO ============ -->
@@ -686,5 +662,39 @@ h1, h2, h3, h4 {
 
 
 <script src="/assets/js/push.js" defer></script>
+<script>
+(function(){
+  var grid = document.getElementById('elenco-grid');
+  if(!grid) return;
+
+  fetch('data/docentes.json?t=' + Date.now(), {cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(docentes){
+      var activos = (docentes||[]).filter(function(d){ return d.activo !== false; });
+      if(!activos.length) return;
+
+      grid.innerHTML = activos.map(function(d){
+        var foto = d.foto || 'assets/images/elenco/WhatsApp Image 2026-06-14 at 1.22.29 PM.jpeg';
+        return '<article class="elenco-card reveal">' +
+          '<div class="elenco-card__photo"><img src="' + escAttr(foto) + '" alt="' + escAttr(d.nombre) + '" loading="lazy"></div>' +
+          '<h4>' + escHtml(d.nombre) + '</h4>' +
+          '<p class="elenco-card__rol">' + escHtml(d.rol) + '</p>' +
+        '</article>';
+      }).join('');
+
+      setTimeout(function(){
+        document.querySelectorAll('.elenco-card.reveal').forEach(function(c){
+          var obs = new IntersectionObserver(function(e){
+            e.forEach(function(entry){ if(entry.isIntersecting) entry.target.classList.add('is-visible'); });
+          },{threshold:0.15});
+          obs.observe(c);
+        });
+      },100);
+    });
+
+  function escHtml(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+  function escAttr(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+})();
+</script>
 </body>
 </html>
