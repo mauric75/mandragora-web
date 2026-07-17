@@ -10,5 +10,17 @@
     "precio": 2500,
     "activo": true,
     "id": "docente-1784266319276"
+  },
+  {
+    "id": "docente-1784270155621",
+    "nombre": "Fefa",
+    "rol": "Clown y Voz",
+    "foto": "",
+    "frase": "",
+    "trayectoria": "",
+    "instagram": "",
+    "whatsapp": "",
+    "precio": 2500,
+    "activo": true
   }
 ]
