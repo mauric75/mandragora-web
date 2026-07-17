@@ -10,5 +10,17 @@
     "precio": 2500,
     "activo": true,
     "id": "docente-1784265292884"
+  },
+  {
+    "nombre": "Pancho",
+    "rol": "Actuaci�n . Direcci�n",
+    "foto": "assets/images/elenco/pancho.jpeg",
+    "frase": "El teatro es el lugar donde podemos equivocarnos en voz alta",
+    "trayectoria": "Teatro Sol�s . Comedia Nacional . Fundaci�n Teatro a Mil",
+    "instagram": "@pancho.actor",
+    "whatsapp": "59898914088",
+    "precio": 2500,
+    "activo": true,
+    "id": "docente-1784265799413"
   }
 ]
