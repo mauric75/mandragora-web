@@ -1,11 +1,27 @@
 import { hasValidAdminSession, getAdminSessionRole } from '../lib/admin-auth.js';
 import { logAdminAction } from '../lib/audit.js';
+import { checkRateLimit } from '../lib/rate-limit.js';
 
 const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
 const GITHUB_OWNER = 'mauric75';
 const GITHUB_REPO = 'mandragora-web';
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
 const DOCENTES_PATH = 'data/docentes.json';
+
+// Solo estos orígenes pueden hacer pedidos con credenciales (cookie de sesión) a este endpoint.
+// Sin esto, reflejar cualquier origen + Allow-Credentials permite que un sitio de terceros
+// use la sesión del admin sin que se dé cuenta.
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  try {
+    const { hostname } = new URL(origin);
+    if (hostname === 'deploy-phi-wheat.vercel.app') return true;
+    if (hostname.endsWith('-mauricio-s-projects1.vercel.app')) return true;
+    return false;
+  } catch {
+    return false;
+  }
+}
 
 // ── Helpers para leer/escribir docentes.json en GitHub ──────
 
@@ -233,8 +249,11 @@ async function executeTool(name, args) {
 // ── Handler principal ────────────────────────────────────────
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', req.headers?.origin || '');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  const origin = req.headers?.origin;
+  if (isAllowedOrigin(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
   res.setHeader('Cache-Control', 'no-store');
 
   if (req.method === 'OPTIONS') return res.status(204).end();
@@ -242,6 +261,11 @@ export default async function handler(req, res) {
 
   if (!hasValidAdminSession(req)) {
     return res.status(401).json({ error: 'No autorizado' });
+  }
+
+  const ip = req.headers?.['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
+  if (!checkRateLimit(`ai-chat:${ip}`)) {
+    return res.status(429).json({ error: 'Demasiados mensajes. Esperá un minuto.' });
   }
 
   const apiKey = process.env.DEEPSEEK_API_KEY;
@@ -294,8 +318,6 @@ Respondé siempre en español, con claridad y precisión.`
     let data = await response.json();
     let choice = data.choices?.[0];
     let reply = choice?.message?.content || '';
-    console.error('[CHAT] content:', JSON.stringify(reply?.substring(0,200)));
-    console.error('[CHAT] finish_reason:', choice?.finish_reason);
 
     // Function calling loop (máx 3 rondas)
     for (let loop = 0; loop < 3; loop++) {
@@ -308,7 +330,6 @@ Respondé siempre en español, con claridad y precisión.`
       }
 
       if (!nativeCalls?.length && !jsonTool) break;
-      console.error('[CHAT] loop', loop, 'native:', nativeCalls?.length, 'json:', !!jsonTool);
 
       if (nativeCalls) {
         messages.push(choice.message);
@@ -339,7 +360,6 @@ Respondé siempre en español, con claridad y precisión.`
       data = await response.json();
       choice = data.choices?.[0];
       reply = choice?.message?.content || '';
-      console.error('[CHAT] loop', loop, 'reply:', JSON.stringify(reply?.substring(0,100)));
     }
 
     // Si no hay reply pero se ejecutaron herramientas, dar confirmación
