@@ -266,10 +266,9 @@ h1, h2, h3, h4, h5 {
 .back-to-top.is-visible { opacity: 1; pointer-events: auto; }
 .back-to-top:hover { border-color: var(--c-gold); transform: translateY(-2px); }
 
-/* cartelera de noticias (papel pegado en la fachada) */
+/* cartelera de noticias (papel pegado) */
 .cartelera {
   position: absolute;
-  bottom: -1.5rem; right: 1.2rem;
   background: #f3ece0;
   color: #2a2115;
   max-width: 200px;
@@ -278,9 +277,10 @@ h1, h2, h3, h4, h5 {
   box-shadow: 0 10px 24px rgba(0,0,0,0.28), 0 2px 4px rgba(0,0,0,0.15);
   font-family: 'Courier New', 'Courier', monospace;
   display: none;
-  z-index: 2;
+  z-index: 15;
 }
 .cartelera.is-visible { display: block; }
+.cartelera--hero { top: 6.5rem; right: 1.5rem; }
 .cartelera::before {
   content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(6deg);
   width: 20px; height: 20px; border-radius: 50%;
@@ -296,7 +296,8 @@ h1, h2, h3, h4, h5 {
 .cartelera__link { font-size: 0.72rem; text-decoration: underline; color: #2a2115; }
 .cartelera__link:hover { color: #8f1f1f; }
 @media (max-width: 700px) {
-  .cartelera { position: static; margin: -1.5rem 1.5rem 0 auto; transform: rotate(-1.5deg); max-width: 180px; }
+  .cartelera--hero { top: 5.5rem; right: 1rem; max-width: 150px; padding: 0.8rem 0.9rem 1rem; transform: rotate(-2deg); }
+  .cartelera__title { font-size: 0.8rem; }
 }
 
 /* cookie banner */
@@ -1008,6 +1009,13 @@ h1, h2, h3, h4, h5 {
     </div>
   </div>
 
+  <div class="cartelera cartelera--hero" id="cartelera">
+    <p class="cartelera__kicker">Recién pegado</p>
+    <p class="cartelera__title" id="cartelera-title">Cargando…</p>
+    <p class="cartelera__date" id="cartelera-date"></p>
+    <a href="noticias.html" class="cartelera__link">Leer más →</a>
+  </div>
+
   <a href="#threshold" class="hero__scroll-cue" aria-label="Entrar a Mandrágora">
     <span>Entrar</span>
     <i aria-hidden="true"></i>
@@ -1128,12 +1136,6 @@ h1, h2, h3, h4, h5 {
 <section class="casa-strip reveal">
   <div class="casa-strip__media">
     <img src="assets/images/fachada.jpg" alt="Fachada de Mandrágora" loading="lazy">
-    <div class="cartelera" id="cartelera">
-      <p class="cartelera__kicker">Recién pegado</p>
-      <p class="cartelera__title" id="cartelera-title">Cargando…</p>
-      <p class="cartelera__date" id="cartelera-date"></p>
-      <a href="noticias.html" class="cartelera__link">Leer más →</a>
-    </div>
   </div>
   <div class="casa-strip__text">
     <p class="casa-strip__kicker">La casa</p>
