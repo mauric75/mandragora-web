@@ -10,5 +10,12 @@
     "texto_boton": "Entradas",
     "publicado": true,
     "id": "evento-1784330286647"
+  },
+  {
+    "titulo": "Taller de prueba",
+    "tipo": "Taller",
+    "fecha": "2026-08-10",
+    "publicado": true,
+    "id": "evento-1784330821022"
   }
 ]
