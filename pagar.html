@@ -47,7 +47,7 @@ body { background: var(--c-bg); color: var(--c-cream); font-family: var(--f-body
 </div>
 
 <script>
-const API = '/api/crear-preferencia';
+const API = '/api/mercadopago';
 
 document.getElementById('checkout-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -62,10 +62,12 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
   const price = option.dataset.price;
   const type = option.dataset.type;
   const email = document.getElementById('email').value;
-  const endpoint = type === 'suscripcion' ? '/api/crear-suscripcion' : '/api/crear-preferencia';
 
   try {
-    const res = await fetch(endpoint, {
+    const body = type === 'suscripcion'
+      ? { action: 'suscripcion', title, price, email }
+      : { action: 'preferencia', title, price, email };
+    const res = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, price: Number(price), quantity: 1, email }),
