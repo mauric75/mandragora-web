@@ -172,15 +172,28 @@ async function executeTool(name, args) {
     if (role !== 'admin' && role !== 'editor') return 'Solo admin y editor pueden modificar docentes.';
     try {
       const { docentes, sha } = await readDocentesJSON();
-      const nombreBuscado = (args?.nombre || '').toLowerCase();
-      const idx = docentes.findIndex(d => d.nombre.toLowerCase().includes(nombreBuscado));
-      if (idx === -1) return 'No encontré un docente que coincida con "' + (args?.nombre || '') + '".';
-      
+      let idx = -1;
+      // Buscar por id o por nombre
+      if (args?.id) {
+        idx = docentes.findIndex(d => d.id === args.id);
+      } else if (args?.nombre) {
+        const nombreBuscado = (args.nombre || '').toLowerCase();
+        idx = docentes.findIndex(d => d.nombre.toLowerCase().includes(nombreBuscado));
+      }
+      if (idx === -1) return 'No encontré un docente que coincida con "' + (args?.nombre || args?.id || '') + '".';
+
+      // args directos (frase, foto, etc.) van como cambios
       const cambios = args?.cambios || {};
+      // También aceptar campos directos como cambios
+      const camposDirectos = ['nombre','rol','foto','frase','trayectoria','instagram','whatsapp','precio','activo'];
+      camposDirectos.forEach(k => {
+        if (args[k] !== undefined) cambios[k] = args[k];
+      });
+
       Object.keys(cambios).forEach(k => {
         if (cambios[k] !== undefined) docentes[idx][k] = cambios[k];
       });
-      
+
       await writeDocentesJSON(docentes, sha, `IA: actualizar docente "${docentes[idx].nombre}"`);
       return 'Docente "' + docentes[idx].nombre + '" actualizado correctamente.';
     } catch (e) {
@@ -256,8 +269,9 @@ Podés consultar y modificar datos reales usando las herramientas disponibles:
 - crear_docente: crea un nuevo docente (requiere nombre y rol)
 Si el usuario te pide hacer algo, respondé ÚNICAMENTE con un bloque JSON así:
 \`\`\`json
-{"tool": "nombre_de_herramienta", "args": {...}}
+{"tool": "nombre_de_herramienta", "args": {"campo1": "valor1", ...}}
 \`\`\`
+Para actualizar_docente usá el id o nombre del docente y los campos a cambiar directamente en args (sin wrapper cambios).
 No agregues texto antes ni después del bloque JSON cuando uses una herramienta.
 Respondé siempre en español, con claridad y precisión.`
       },
@@ -285,18 +299,34 @@ Respondé siempre en español, con claridad y precisión.`
 
     // Si DeepSeek quiere llamar una herramienta (nativo OpenAI)
     const nativeCalls = choice?.message?.tool_calls;
-    if (nativeCalls && nativeCalls.length > 0) {
-      console.error('[CHAT] executing nativeCalls:', nativeCalls.length);
-      messages.push(choice.message);
+    // O si devuelve JSON en el contenido (dentro o fuera de ```)
+    let jsonTool = null;
+    if (!nativeCalls && reply) {
+      const clean = reply.replace(/```json\s*|\s*```/g, '').trim();
+      const m = clean.match(/\{\s*"tool"\s*:\s*"([^"]+)"\s*,\s*"args"\s*:\s*(\{[\s\S]*?\})\s*\}/);
+      if (m) jsonTool = { name: m[1], args: m[2] };
+    }
 
-      for (const tc of nativeCalls) {
-        const fnName = tc.function?.name;
+    if (nativeCalls?.length || jsonTool) {
+      console.error('[CHAT] executing tools. native:', nativeCalls?.length, 'json:', !!jsonTool);
+
+      if (nativeCalls) {
+        messages.push(choice.message);
+        for (const tc of nativeCalls) {
+          const fnName = tc.function?.name;
+          let fnArgs = {};
+          try { fnArgs = JSON.parse(tc.function?.arguments || '{}'); } catch(e) {}
+          fnArgs._role = role;
+          const result = await executeTool(fnName, fnArgs);
+          messages.push({ role: 'tool', tool_call_id: tc.id, content: result });
+        }
+      } else if (jsonTool) {
+        messages.push({ role: 'assistant', content: reply });
         let fnArgs = {};
-        try { fnArgs = JSON.parse(tc.function?.arguments || '{}'); } catch(e) {}
+        try { fnArgs = JSON.parse(jsonTool.args); } catch(e) {}
         fnArgs._role = role;
-        console.error('[CHAT] tool:', fnName);
-        const result = await executeTool(fnName, fnArgs);
-        messages.push({ role: 'tool', tool_call_id: tc.id, content: result });
+        const result = await executeTool(jsonTool.name, fnArgs);
+        messages.push({ role: 'tool', tool_call_id: jsonTool.name, content: result });
       }
 
       // Segunda llamada con el resultado
