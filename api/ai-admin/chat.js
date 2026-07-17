@@ -276,27 +276,61 @@ Respondé siempre en español, con claridad y precisión.`
 
     let data = await response.json();
     let choice = data.choices?.[0];
+    let reply = choice?.message?.content || '';
 
-    // Function calling loop
+    // Function calling loop — DeepSeek puede devolver tools en XML o en tool_calls
     let loops = 0;
-    while (choice?.message?.tool_calls && loops < 3) {
-      loops++;
-      const toolResults = [];
+    while (loops < 3) {
+      // Detectar tool calls en XML (DeepSeek style)
+      const xmlMatch = reply?.match(/<｜｜DSML｜｜tool_calls>([\s\S]*?)<\/｜｜DSML｜｜tool_calls>/);
+      // Detectar tool calls en formato nativo (OpenAI style)
+      const nativeCalls = choice?.message?.tool_calls;
 
-      for (const tc of choice.message.tool_calls) {
-        const fnName = tc.function?.name;
-        let fnArgs = {};
-        try { fnArgs = JSON.parse(tc.function?.arguments || '{}'); } catch (e) { /* empty */ }
-        fnArgs._role = role; // pasar rol para control de permisos
-        const result = await executeTool(fnName, fnArgs);
-        toolResults.push({ tool_call_id: tc.id, role: 'tool', content: result });
+      if (!xmlMatch && !nativeCalls) break;
+      loops++;
+
+      let toolResults = [];
+
+      if (xmlMatch) {
+        // Parsear XML
+        const xmlContent = xmlMatch[1];
+        const invokes = xmlContent.match(/<｜｜DSML｜｜invoke name="([^"]+)">([\s\S]*?)<\/｜｜DSML｜｜invoke>/g);
+        if (!invokes) break;
+
+        for (const inv of invokes) {
+          const nameMatch = inv.match(/name="([^"]+)"/);
+          const fnName = nameMatch ? nameMatch[1] : '';
+          const fnArgs = { _role: role };
+          // Extraer parámetros del XML
+          const paramRegex = /<｜｜DSML｜｜parameter name="([^"]+)"[^>]*>([^<]+)<\/｜｜DSML｜｜parameter>/g;
+          let pm;
+          while ((pm = paramRegex.exec(inv)) !== null) {
+            let val = pm[2].trim();
+            if (val === 'true') val = true;
+            else if (val === 'false') val = false;
+            else if (/^\d+$/.test(val)) val = Number(val);
+            fnArgs[pm[1]] = val;
+          }
+          const result = await executeTool(fnName, fnArgs);
+          toolResults.push({ tool_call_id: fnName + '-' + loops, role: 'tool', content: result });
+        }
+
+        // Agregar al historial y re-llamar
+        messages.push({ role: 'assistant', content: reply });
+        messages.push(...toolResults);
+      } else if (nativeCalls) {
+        for (const tc of nativeCalls) {
+          const fnName = tc.function?.name;
+          let fnArgs = {};
+          try { fnArgs = JSON.parse(tc.function?.arguments || '{}'); } catch (e) { /* empty */ }
+          fnArgs._role = role;
+          const result = await executeTool(fnName, fnArgs);
+          toolResults.push({ tool_call_id: tc.id, role: 'tool', content: result });
+        }
+        messages.push(choice.message);
+        messages.push(...toolResults);
       }
 
-      // Agregar assistant message + tool results al historial
-      messages.push(choice.message);
-      messages.push(...toolResults);
-
-      // Segunda llamada a DeepSeek con los resultados
       response = await fetch(DEEPSEEK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
@@ -310,9 +344,8 @@ Respondé siempre en español, con claridad y precisión.`
 
       data = await response.json();
       choice = data.choices?.[0];
+      reply = choice?.message?.content || '';
     }
-
-    const reply = choice?.message?.content || 'No pude procesar tu consulta.';
 
     logAdminAction(role, 'ai-chat', 'ai-admin', { message: message.slice(0, 200), reply: reply.slice(0, 200) }, req);
 
