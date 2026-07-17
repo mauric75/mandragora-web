@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administrar noticias — Mandrágora</title>
+<style>
+:root { --c-bg:#f8f4ed; --c-cream:#1a1512; --c-gold:#b8892e; --c-red:#c0432a; --c-green:#2e7d32; --c-border:rgba(26,21,18,0.12); }
+body { background:var(--c-bg); color:var(--c-cream); font-family:system-ui,sans-serif; margin:0; padding:2rem; }
+h1 { font-size:1.5rem; margin-bottom:1.5rem; }
+h2 { font-size:1.1rem; margin:2rem 0 1rem; }
+.box { max-width:560px; margin:0 auto; }
+input, textarea, select { width:100%; padding:0.8rem; margin:0.4rem 0 1rem; border:1px solid #ddd; border-radius:4px; font-size:1rem; font-family:inherit; box-sizing:border-box; }
+textarea { resize:vertical; min-height:100px; }
+label { font-size:0.85rem; font-weight:600; opacity:0.75; }
+.checkbox-row { display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem; }
+.checkbox-row input { width:auto; margin:0; }
+.checkbox-row label { margin:0; font-weight:400; opacity:1; }
+button { padding:0.9rem 1.4rem; background:var(--c-gold); color:#fff; border:none; border-radius:4px; font-size:0.95rem; cursor:pointer; }
+button:disabled { opacity:0.6; cursor:default; }
+button.secondary { background:transparent; border:1px solid var(--c-border); color:var(--c-cream); }
+button.danger { background:var(--c-red); }
+.msg { margin-top:1rem; font-size:0.9rem; text-align:center; }
+.msg.ok { color:var(--c-green); }
+.msg.error { color:var(--c-red); }
+a.back { color:var(--c-gold); font-size:0.85rem; display:block; margin-top:2rem; text-align:center; }
+.noticia-row { border:1px solid var(--c-border); border-radius:4px; padding:1rem; margin-bottom:0.8rem; }
+.noticia-row__title { font-weight:600; margin-bottom:0.3rem; }
+.noticia-row__meta { font-size:0.78rem; opacity:0.6; margin-bottom:0.6rem; }
+.noticia-row__actions { display:flex; gap:0.5rem; }
+.noticia-row__actions button { padding:0.4rem 0.8rem; font-size:0.82rem; }
+.badge { display:inline-block; padding:0.1em 0.6em; border-radius:2px; font-size:0.72rem; margin-right:0.4rem; }
+.badge--publicada { background:var(--c-green); color:#fff; }
+.badge--borrador { background:#999; color:#fff; }
+</style>
+</head>
+<body>
+
+<div class="box" id="login-box">
+  <h1>Administrar noticias</h1>
+  <label>Clave de administrador</label>
+  <input type="password" id="secret" placeholder="Clave" autofocus>
+  <button id="login-btn">Entrar</button>
+  <div class="msg error" id="login-msg"></div>
+  <a href="index.html" class="back">← Volver al inicio</a>
+</div>
+
+<div class="box" id="panel-box" style="display:none">
+  <h1>Administrar noticias</h1>
+
+  <h2>Nueva noticia</h2>
+  <input type="hidden" id="edit-id" value="">
+  <label>Título</label>
+  <input type="text" id="titulo" placeholder="Ej: Nueva temporada 2027" maxlength="100">
+  <label>Texto</label>
+  <textarea id="texto" placeholder="Resumen o cuerpo de la noticia" maxlength="600"></textarea>
+  <label>Tipo</label>
+  <select id="tipo">
+    <option value="anuncio">Anuncio propio</option>
+    <option value="prensa">Nota de prensa</option>
+  </select>
+  <label>Link (opcional — para notas de prensa que apuntan a otro medio)</label>
+  <input type="text" id="link" placeholder="https://...">
+  <label>Imagen (opcional — URL)</label>
+  <input type="text" id="imagen" placeholder="https://...">
+  <div class="checkbox-row">
+    <input type="checkbox" id="publicada" checked>
+    <label for="publicada">Publicar ahora (si no, queda como borrador)</label>
+  </div>
+  <div class="checkbox-row">
+    <input type="checkbox" id="avisar-push">
+    <label for="avisar-push">Avisar también por notificación push</label>
+  </div>
+  <button id="save-btn">Guardar noticia</button>
+  <button class="secondary" id="cancel-edit-btn" style="display:none">Cancelar edición</button>
+  <div class="msg" id="save-msg"></div>
+
+  <h2>Noticias existentes</h2>
+  <div id="noticias-list"></div>
+
+  <a href="index.html" class="back">← Volver al inicio</a>
+</div>
+
+<script>
+(function () {
+  var loginBox = document.getElementById('login-box');
+  var panelBox = document.getElementById('panel-box');
+  var secretInput = document.getElementById('secret');
+  var loginBtn = document.getElementById('login-btn');
+  var loginMsg = document.getElementById('login-msg');
+  var saveBtn = document.getElementById('save-btn');
+  var cancelEditBtn = document.getElementById('cancel-edit-btn');
+  var saveMsg = document.getElementById('save-msg');
+  var listEl = document.getElementById('noticias-list');
+  var secret = '';
+
+  function call(action, extra) {
+    var body = Object.assign({ action: action }, extra || {});
+    return fetch('/api/noticias-save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + secret },
+      body: JSON.stringify(body),
+    }).then(function (r) { return r.json().then(function (data) { return { status: r.status, data: data }; }); });
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  function renderList(noticias) {
+    if (!noticias.length) {
+      listEl.innerHTML = '<p style="opacity:0.6">No hay noticias todavía.</p>';
+      return;
+    }
+    listEl.innerHTML = noticias.map(function (n) {
+      var badge = n.publicada
+        ? '<span class="badge badge--publicada">Publicada</span>'
+        : '<span class="badge badge--borrador">Borrador</span>';
+      var tipoLabel = n.tipo === 'prensa' ? 'Prensa' : 'Anuncio';
+      return (
+        '<div class="noticia-row" data-id="' + escapeHtml(n.id) + '">' +
+          badge + '<span class="badge" style="background:#ddd;color:#333">' + tipoLabel + '</span>' +
+          '<div class="noticia-row__title">' + escapeHtml(n.titulo) + '</div>' +
+          '<div class="noticia-row__meta">' + escapeHtml(n.fecha) + '</div>' +
+          '<div class="noticia-row__actions">' +
+            '<button class="secondary edit-btn">Editar</button>' +
+            '<button class="danger delete-btn">Borrar</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    listEl.querySelectorAll('.noticia-row').forEach(function (row) {
+      var id = row.getAttribute('data-id');
+      var noticia = noticias.find(function (n) { return n.id === id; });
+
+      row.querySelector('.edit-btn').addEventListener('click', function () {
+        document.getElementById('edit-id').value = noticia.id;
+        document.getElementById('titulo').value = noticia.titulo || '';
+        document.getElementById('texto').value = noticia.texto || '';
+        document.getElementById('tipo').value = noticia.tipo || 'anuncio';
+        document.getElementById('link').value = noticia.link || '';
+        document.getElementById('imagen').value = noticia.imagen || '';
+        document.getElementById('publicada').checked = !!noticia.publicada;
+        cancelEditBtn.style.display = 'inline-block';
+        saveBtn.textContent = 'Guardar cambios';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      row.querySelector('.delete-btn').addEventListener('click', function () {
+        if (!confirm('¿Borrar la noticia "' + noticia.titulo + '"? No se puede deshacer.')) return;
+        call('delete', { id: noticia.id }).then(function (result) {
+          if (result.data.error) { alert('Error: ' + result.data.error); return; }
+          loadList();
+        });
+      });
+    });
+  }
+
+  function loadList() {
+    call('list').then(function (result) {
+      if (result.status === 401) { showLogin('Clave incorrecta.'); return; }
+      if (result.data.error) { listEl.innerHTML = '<p class="msg error">Error: ' + result.data.error + '</p>'; return; }
+      renderList(result.data.noticias);
+    });
+  }
+
+  function showLogin(msg) {
+    panelBox.style.display = 'none';
+    loginBox.style.display = 'block';
+    loginMsg.textContent = msg || '';
+  }
+
+  function resetForm() {
+    document.getElementById('edit-id').value = '';
+    document.getElementById('titulo').value = '';
+    document.getElementById('texto').value = '';
+    document.getElementById('tipo').value = 'anuncio';
+    document.getElementById('link').value = '';
+    document.getElementById('imagen').value = '';
+    document.getElementById('publicada').checked = true;
+    document.getElementById('avisar-push').checked = false;
+    cancelEditBtn.style.display = 'none';
+    saveBtn.textContent = 'Guardar noticia';
+  }
+
+  loginBtn.addEventListener('click', function () {
+    secret = secretInput.value.trim();
+    if (!secret) { loginMsg.textContent = 'Ingresá la clave.'; return; }
+    loginBox.style.display = 'none';
+    panelBox.style.display = 'block';
+    loadList();
+  });
+  secretInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') loginBtn.click(); });
+
+  cancelEditBtn.addEventListener('click', resetForm);
+
+  saveBtn.addEventListener('click', function () {
+    var titulo = document.getElementById('titulo').value.trim();
+    var texto = document.getElementById('texto').value.trim();
+    if (!titulo || !texto) { saveMsg.className = 'msg error'; saveMsg.textContent = 'Falta título o texto.'; return; }
+
+    var noticia = {
+      id: document.getElementById('edit-id').value || undefined,
+      titulo: titulo,
+      texto: texto,
+      tipo: document.getElementById('tipo').value,
+      link: document.getElementById('link').value.trim(),
+      imagen: document.getElementById('imagen').value.trim(),
+      publicada: document.getElementById('publicada').checked,
+    };
+    var avisarPush = document.getElementById('avisar-push').checked;
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Guardando…';
+    saveMsg.className = 'msg';
+    saveMsg.textContent = '';
+
+    call('save', { noticia: noticia }).then(function (result) {
+      saveBtn.disabled = false;
+      if (result.status === 401) { showLogin('Clave incorrecta.'); return; }
+      if (result.data.error) {
+        saveMsg.className = 'msg error';
+        saveMsg.textContent = 'Error: ' + result.data.error;
+        saveBtn.textContent = noticia.id ? 'Guardar cambios' : 'Guardar noticia';
+        return;
+      }
+
+      saveMsg.className = 'msg ok';
+      saveMsg.textContent = 'Guardado.';
+      resetForm();
+      loadList();
+
+      if (avisarPush && noticia.publicada) {
+        fetch('/api/push-send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + secret },
+          body: JSON.stringify({ title: titulo, body: texto.slice(0, 120), url: '/noticias.html' }),
+        }).catch(function () {});
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
