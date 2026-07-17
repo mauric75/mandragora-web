@@ -667,7 +667,7 @@ h1, h2, h3, h4 {
   var grid = document.getElementById('elenco-grid');
   if(!grid) return;
 
-  fetch('data/docentes.json?t=' + Date.now(), {cache:'no-store'})
+  fetch('https://raw.githubusercontent.com/mauric75/mandragora-web/feature/admin-unificado/data/docentes.json?t=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.json(); })
     .then(function(docentes){
       var activos = (docentes||[]).filter(function(d){ return d.activo !== false; });
