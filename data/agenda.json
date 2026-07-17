@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "titulo": "Noches Criminales",
+    "tipo": "Evento especial",
+    "categoria": "Mandr�gora",
+    "descripcion": "Una noche de misterio y teatro criminal.",
+    "fecha": "2026-07-26",
+    "hora": "20:00",
+    "link_tickets": "https://redtickets.uy/evento/NOCHES-CRIMINALES/31363/",
+    "texto_boton": "Entradas",
+    "publicado": true,
+    "id": "evento-1784330286647"
+  }
+]
