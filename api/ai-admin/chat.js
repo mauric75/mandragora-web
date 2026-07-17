@@ -49,6 +49,54 @@ async function writeDocentesJSON(docentes, sha, message) {
   return 'OK';
 }
 
+// ── Helpers para agenda.json ─────────────────────────────────
+
+const AGENDA_PATH = 'data/agenda.json';
+
+async function readAgendaJSON() {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) throw new Error('GITHUB_TOKEN no configurado');
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${AGENDA_PATH}?ref=${GITHUB_BRANCH}`, {
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json' },
+  });
+  if (!res.ok) return { eventos: [], sha: null };
+  const json = await res.json();
+  const content = Buffer.from(json.content, 'base64').toString('utf-8');
+  return { eventos: JSON.parse(content), sha: json.sha };
+}
+
+async function writeAgendaJSON(eventos, sha, message) {
+  const token = process.env.GITHUB_TOKEN;
+  const encoded = Buffer.from(JSON.stringify(eventos, null, 2) + '\n', 'utf-8').toString('base64');
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${AGENDA_PATH}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, content: encoded, sha, branch: GITHUB_BRANCH }),
+  });
+  if (!res.ok) throw new Error('No se pudo escribir agenda.json');
+  return 'OK';
+}
+
+// ── Helper genérico para GitHub API ─────────────────────────
+
+async function githubRequest(path, options = {}) {
+  const token = process.env.GITHUB_TOKEN;
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
+    ...options,
+    headers: {
+      Authorization: `token ${token}`,
+      Accept: 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    },
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || `GitHub API error (${res.status})`);
+  }
+  return res;
+}
+
 // Herramientas disponibles para DeepSeek
 const TOOLS = [
   {
@@ -78,6 +126,63 @@ const TOOLS = [
     function: {
       name: 'listar_docentes',
       description: 'Lista los docentes de la escuela. Muestra nombre, rol, precio y si están activos.',
+      parameters: { type: 'object', properties: {} },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'listar_eventos',
+      description: 'Lista los eventos de la agenda. Devuelve todos o filtrados por mes.',
+      parameters: {
+        type: 'object',
+        properties: {
+          mes: { type: 'number', description: 'Número de mes (1-12) para filtrar, opcional' },
+        },
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'crear_evento',
+      description: 'Crea un nuevo evento en la agenda. Requiere título y fecha (YYYY-MM-DD). Solo admin y editor.',
+      parameters: {
+        type: 'object',
+        properties: {
+          titulo: { type: 'string', description: 'Título del evento' },
+          fecha: { type: 'string', description: 'Fecha en formato YYYY-MM-DD' },
+          hora: { type: 'string', description: 'Hora opcional (ej: 20:00)' },
+          tipo: { type: 'string', description: 'Tipo de evento (ej: Teatro, Evento especial)' },
+          categoria: { type: 'string', description: 'Categoría (ej: Compañía Mandrágora)' },
+          descripcion: { type: 'string', description: 'Descripción del evento' },
+          link_tickets: { type: 'string', description: 'URL de tickets' },
+          texto_boton: { type: 'string', description: 'Texto del botón (ej: Entradas, Estreno)' },
+        },
+        required: ['titulo', 'fecha'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'actualizar_evento',
+      description: 'Actualiza un evento existente. Buscalo por título. Solo admin y editor.',
+      parameters: {
+        type: 'object',
+        properties: {
+          titulo: { type: 'string', description: 'Título del evento a buscar' },
+          cambios: { type: 'object', description: 'Campos a cambiar: titulo, fecha, hora, tipo, categoria, descripcion, link_tickets, texto_boton, publicado' },
+        },
+        required: ['titulo', 'cambios'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'proximo_evento',
+      description: 'Devuelve el próximo evento en la agenda (el más cercano a hoy).',
       parameters: { type: 'object', properties: {} },
     },
   },
@@ -180,6 +285,87 @@ async function executeTool(name, args) {
       })));
     } catch (e) {
       return 'Error al consultar docentes: ' + e.message;
+    }
+  }
+
+  // ── Agenda ──────────────────────────
+
+  if (name === 'listar_eventos') {
+    try {
+      const { eventos } = await readAgendaJSON();
+      let evs = eventos || [];
+      if (args?.mes) evs = evs.filter(e => e.fecha && parseInt(e.fecha.split('-')[1]) === args.mes);
+      if (!evs.length) return 'No hay eventos' + (args?.mes ? ' en ese mes' : '') + '.';
+      evs.sort((a,b) => a.fecha.localeCompare(b.fecha));
+      return JSON.stringify(evs.map(e => ({
+        titulo: e.titulo, fecha: e.fecha, hora: e.hora, tipo: e.tipo,
+        categoria: e.categoria, link_tickets: e.link_tickets, publicado: e.publicado, id: e.id
+      })));
+    } catch (e) {
+      return 'Error al consultar agenda: ' + e.message;
+    }
+  }
+
+  if (name === 'crear_evento') {
+    const role = args?._role;
+    if (role !== 'admin' && role !== 'editor') return 'Solo admin y editor pueden crear eventos.';
+    if (!args?.titulo || !args?.fecha) return 'Falta título o fecha.';
+    try {
+      const { eventos, sha } = await readAgendaJSON();
+      const nuevo = {
+        id: 'evento-' + Date.now(),
+        titulo: args.titulo, fecha: args.fecha,
+        hora: args.hora || '', tipo: args.tipo || '', categoria: args.categoria || '',
+        descripcion: args.descripcion || '', link_tickets: args.link_tickets || '',
+        texto_boton: args.texto_boton || 'Ver más', publicado: true,
+      };
+      eventos.push(nuevo);
+      const msg = `IA: crear evento "${nuevo.titulo}"`;
+      if (sha) {
+        await writeAgendaJSON(eventos, sha, msg);
+      } else {
+        const encoded = Buffer.from(JSON.stringify(eventos, null, 2) + '\n', 'utf-8').toString('base64');
+        await githubRequest(`contents/data/agenda.json`, {
+          method: 'PUT',
+          headers: { Authorization: `token ${process.env.GITHUB_TOKEN}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg, content: encoded, branch: GITHUB_BRANCH }),
+        });
+      }
+      return 'Evento "' + nuevo.titulo + '" creado el ' + nuevo.fecha + '.';
+    } catch (e) {
+      return 'Error al crear evento: ' + e.message;
+    }
+  }
+
+  if (name === 'actualizar_evento') {
+    const role = args?._role;
+    if (role !== 'admin' && role !== 'editor') return 'Solo admin y editor pueden modificar eventos.';
+    try {
+      const { eventos, sha } = await readAgendaJSON();
+      const tituloBuscado = (args?.titulo || '').toLowerCase();
+      const idx = eventos.findIndex(e => e.titulo.toLowerCase().includes(tituloBuscado));
+      if (idx === -1) return 'No encontré un evento que coincida con "' + (args?.titulo || '') + '".';
+      const cambios = args?.cambios || {};
+      Object.keys(cambios).forEach(k => {
+        if (cambios[k] !== undefined) eventos[idx][k] = cambios[k];
+      });
+      await writeAgendaJSON(eventos, sha, `IA: actualizar evento "${eventos[idx].titulo}"`);
+      return 'Evento "' + eventos[idx].titulo + '" actualizado.';
+    } catch (e) {
+      return 'Error al actualizar evento: ' + e.message;
+    }
+  }
+
+  if (name === 'proximo_evento') {
+    try {
+      const { eventos } = await readAgendaJSON();
+      const hoy = new Date().toISOString().slice(0,10);
+      const futuros = (eventos||[]).filter(e => e.fecha >= hoy && e.publicado !== false).sort((a,b) => a.fecha.localeCompare(b.fecha));
+      if (!futuros.length) return 'No hay eventos próximos.';
+      const e = futuros[0];
+      return JSON.stringify({ titulo: e.titulo, fecha: e.fecha, hora: e.hora, tipo: e.tipo, descripcion: e.descripcion });
+    } catch (e) {
+      return 'Error: ' + e.message;
     }
   }
 
@@ -289,8 +475,10 @@ Podés consultar y modificar datos reales usando las herramientas disponibles:
 - listar_reservas: lista reservas con filtros opcionales
 - resumir_reservas: resumen numérico de reservas
 - listar_docentes: lista los docentes de la escuela
-- actualizar_docente: modifica datos de un docente (nombre, rol, foto, frase, trayectoria, etc.)
-- crear_docente: crea un nuevo docente (requiere nombre y rol)
+- listar_eventos: lista los eventos de la agenda (opcional: filtrar por mes)
+- crear_evento: crea un nuevo evento (requiere título y fecha YYYY-MM-DD)
+- actualizar_evento: modifica un evento existente
+- proximo_evento: muestra el próximo evento
 Si el usuario te pide hacer algo, respondé ÚNICAMENTE con un bloque JSON así:
 \`\`\`json
 {"tool": "nombre_de_herramienta", "args": {"campo1": "valor1", ...}}

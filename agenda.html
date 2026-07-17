@@ -412,124 +412,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
   <h1>Agenda</h1>
 </section>
 
-<!-- ============ JULIO 2026 ============ -->
-<section class="month reveal">
-  <div class="month__header">
-    <span class="month__name">Julio</span>
-    <span class="month__year">2026</span>
-  </div>
-
-  <div class="event-list">
-    <article class="event-item">
-      <div class="event-date">
-        <span class="event-date__day">26</span>
-        <span class="event-date__rest">Sáb</span>
-      </div>
-      <div class="event-info">
-        <h3>Noches Criminales</h3>
-        <p class="event-info__type">Evento especial · Mandrágora</p>
-        <p>Una noche de misterio y teatro criminal. Nueva propuesta en la sala.</p>
-      </div>
-      <div class="event-action">
-        <a href="https://redtickets.uy/evento/NOCHES-CRIMINALES/31363/" target="_blank" rel="noopener" class="btn btn--gold">Entradas</a>
-      </div>
-    </article>
-    <article class="event-item">
-      <div class="event-date">
-        <span class="event-date__day">05</span>
-        <span class="event-date__rest">Sáb</span>
-      </div>
-      <div class="event-info">
-        <h3>Atrapada en la pantalla</h3>
-        <p class="event-info__type">Teatro · Compañía Mandrágora · +5 años</p>
-        <p>Canopus y Galatea rescatan a su tía atrapada en un celular. Interactiva, divertida y nominada a 3 Florencio.</p>
-      </div>
-      <div class="event-action">
-        <a href="pagar.html" class="btn btn--ghost">Entradas</a>
-      </div>
-    </article>
-
-    <article class="event-item">
-      <div class="event-date">
-        <span class="event-date__day">12</span>
-        <span class="event-date__rest">Sáb</span>
-      </div>
-      <div class="event-info">
-        <h3>Atrapada en la pantalla</h3>
-        <p class="event-info__type">Teatro · Compañía Mandrágora</p>
-        <p>Segunda función del mes. Una obra sobre los vínculos mediados por la tecnología.</p>
-      </div>
-      <div class="event-action">
-        <a href="pagar.html" class="btn btn--ghost">Entradas</a>
-      </div>
-    </article>
-
-    <article class="event-item">
-      <div class="event-date">
-        <span class="event-date__day">19</span>
-        <span class="event-date__rest">Sáb</span>
-      </div>
-      <div class="event-info">
-        <h3>Atrapada en la pantalla</h3>
-        <p class="event-info__type">Teatro · Compañía Mandrágora</p>
-        <p>Última función del mes. Una obra sobre los vínculos mediados por la tecnología.</p>
-      </div>
-      <div class="event-action">
-        <a href="pagar.html" class="btn btn--ghost">Entradas</a>
-      </div>
-    </article>
-  </div>
-</section>
-
-<!-- ============ AGOSTO 2026 ============ -->
-<section class="month reveal">
-  <div class="month__header">
-    <span class="month__name">Agosto</span>
-    <span class="month__year">2026</span>
-  </div>
-
-  <div class="event-list">
-    <article class="event-item">
-      <div class="event-date">
-        <span class="event-date__day">09</span>
-        <span class="event-date__rest">Sáb</span>
-      </div>
-      <div class="event-info">
-        <h3>Con las manos atadas</h3>
-        <p class="event-info__type">Estreno · Compañía Mandrágora</p>
-        <p>La impotencia como punto de partida. Un ejercicio escénico sobre lo que no podemos controlar y lo que elegimos soltar.</p>
-      </div>
-      <div class="event-action">
-        <a href="#" class="btn btn--gold">Estreno</a>
-      </div>
-    </article>
-  </div>
-</section>
-
-<!-- ============ SETIEMBRE 2026 ============ -->
-<section class="month reveal">
-  <div class="month__header">
-    <span class="month__name">Setiembre</span>
-    <span class="month__year">2026</span>
-  </div>
-
-  <div class="event-list">
-    <article class="event-item">
-      <div class="event-date">
-        <span class="event-date__day">13</span>
-        <span class="event-date__rest">Sáb</span>
-      </div>
-      <div class="event-info">
-        <h3>La inevitable crisis del actor</h3>
-        <p class="event-info__type">Estreno · Compañía Mandrágora</p>
-        <p>Detrás del personaje hay una persona. Detrás de la persona, una pregunta que no se deja de hacer. Un biodrama sobre el oficio.</p>
-      </div>
-      <div class="event-action">
-        <a href="#" class="btn btn--gold">Estreno</a>
-      </div>
-    </article>
-  </div>
-</section>
+<div id="agenda-container"></div>
 
 <footer class="site-footer" id="contacto">
   <a href="index.html" aria-label="Inicio">
@@ -632,6 +515,81 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 
 
 
+<script>
+(function(){
+  var container = document.getElementById('agenda-container');
+  if(!container) return;
+
+  var MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
+  var DIAS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+  fetch('/api/agenda', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list'})})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var eventos = (data.eventos||[]).filter(function(e){ return e.publicado !== false; });
+      if(!eventos.length){ container.innerHTML = '<p style="text-align:center;opacity:0.5;padding:3rem">No hay eventos programados todavía.</p>'; return; }
+
+      // Ordenar por fecha
+      eventos.sort(function(a,b){ return a.fecha.localeCompare(b.fecha); });
+
+      // Agrupar por mes
+      var meses = {};
+      eventos.forEach(function(ev){
+        var parts = ev.fecha.split('-');
+        var key = parts[0] + '-' + parts[1]; // YYYY-MM
+        if(!meses[key]) meses[key] = [];
+        meses[key].push(ev);
+      });
+
+      // Renderizar meses
+      Object.keys(meses).sort().forEach(function(key){
+        var evs = meses[key];
+        var parts = key.split('-');
+        var mesIdx = parseInt(parts[1],10) - 1;
+        var year = parts[0];
+
+        var html = '<section class="month reveal"><div class="month__header">';
+        html += '<span class="month__name">' + MESES[mesIdx] + '</span>';
+        html += '<span class="month__year">' + year + '</span>';
+        html += '</div><div class="event-list">';
+
+        evs.forEach(function(ev){
+          var fecha = new Date(ev.fecha + 'T00:00:00');
+          var dia = fecha.getDate();
+          var diaSem = DIAS[fecha.getDay()];
+          var btnClass = ev.texto_boton === 'Estreno' || ev.texto_boton === 'Entradas' ? 'btn--gold' : 'btn--ghost';
+          var link = ev.link_tickets || '#';
+          var blank = link.startsWith('http') ? ' target="_blank" rel="noopener"' : '';
+
+          html += '<article class="event-item">';
+          html += '<div class="event-date"><span class="event-date__day">' + dia + '</span><span class="event-date__rest">' + diaSem + '</span></div>';
+          html += '<div class="event-info"><h3>' + esc(ev.titulo) + '</h3>';
+          html += '<p class="event-info__type">' + esc(ev.tipo||'') + (ev.categoria ? ' · ' + esc(ev.categoria) : '') + '</p>';
+          html += '<p>' + esc(ev.descripcion||'') + '</p></div>';
+          html += '<div class="event-action"><a href="' + escAttr(link) + '" class="btn ' + btnClass + '"' + blank + '>' + esc(ev.texto_boton||'Ver más') + '</a></div>';
+          html += '</article>';
+        });
+
+        html += '</div></section>';
+        container.innerHTML += html;
+      });
+
+      // Re-trigger reveal animations
+      setTimeout(function(){
+        document.querySelectorAll('.month.reveal').forEach(function(el){
+          var obs = new IntersectionObserver(function(entries){
+            entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('is-visible'); });
+          },{threshold:0.1});
+          obs.observe(el);
+        });
+      },100);
+    })
+    .catch(function(){ container.innerHTML = ''; });
+
+  function esc(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+  function escAttr(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+})();
+</script>
 <script src="/assets/js/push.js" defer></script>
 </body>
 </html>

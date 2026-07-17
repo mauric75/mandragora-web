@@ -306,6 +306,10 @@ a:hover { text-decoration: underline; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span>Docentes</span>
     </button>
+    <button data-tab="agenda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Agenda</span>
+    </button>
     <button data-tab="push">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       <span>Push</span>
@@ -387,6 +391,37 @@ a:hover { text-decoration: underline; }
 
     <h2 style="margin-top:2rem">Docentes existentes</h2>
     <div id="docentes-list"></div>
+  </section>
+
+  <!-- ====== TAB: AGENDA ====== -->
+  <section class="tab-panel" id="tab-agenda">
+    <h2>Nuevo evento</h2>
+    <label>Título</label>
+    <input type="text" id="age-titulo" placeholder="Nombre del evento" maxlength="120">
+    <label>Fecha</label>
+    <input type="text" id="age-fecha" placeholder="YYYY-MM-DD (ej: 2026-08-15)">
+    <label>Hora (opcional)</label>
+    <input type="text" id="age-hora" placeholder="20:00">
+    <label>Tipo</label>
+    <input type="text" id="age-tipo" placeholder="Teatro · Evento especial">
+    <label>Categoría</label>
+    <input type="text" id="age-categoria" placeholder="Compañía Mandrágora">
+    <label>Descripción</label>
+    <textarea id="age-descripcion" placeholder="Descripción del evento" maxlength="500"></textarea>
+    <label>Link de tickets</label>
+    <input type="text" id="age-link" placeholder="https://... o pagar.html">
+    <label>Texto del botón</label>
+    <input type="text" id="age-boton" placeholder="Entradas">
+    <label class="inline"><input type="checkbox" id="age-publicado" checked> Publicado</label>
+    <input type="hidden" id="age-id">
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <button class="primary" id="age-save">Guardar evento</button>
+      <button class="secondary" id="age-cancel" style="display:none">Cancelar edición</button>
+    </div>
+    <div class="msg" id="age-msg"></div>
+
+    <h2 style="margin-top:2rem">Eventos existentes</h2>
+    <div id="agenda-list"></div>
   </section>
 
   <!-- ====== TAB: PUSH ====== -->
@@ -481,6 +516,7 @@ a:hover { text-decoration: underline; }
     if(tabName==='reservas') loadReservas();
     if(tabName==='noticias') loadNoticias();
     if(tabName==='docentes') loadDocentes();
+    if(tabName==='agenda') loadAgenda();
   }
 
   document.querySelectorAll('.tabs button').forEach(function(btn){
@@ -778,6 +814,111 @@ a:hover { text-decoration: underline; }
   });
 
   document.getElementById('doce-cancel').addEventListener('click', resetDoceForm);
+
+  // ─────────────────────────────────────
+  //  TAB: AGENDA
+  // ─────────────────────────────────────
+  var agendaData = [];
+
+  function resetAgeForm(){
+    document.getElementById('age-id').value = '';
+    document.getElementById('age-titulo').value = '';
+    document.getElementById('age-fecha').value = '';
+    document.getElementById('age-hora').value = '';
+    document.getElementById('age-tipo').value = '';
+    document.getElementById('age-categoria').value = '';
+    document.getElementById('age-descripcion').value = '';
+    document.getElementById('age-link').value = '';
+    document.getElementById('age-boton').value = '';
+    document.getElementById('age-publicado').checked = true;
+    document.getElementById('age-cancel').style.display = 'none';
+    document.getElementById('age-save').textContent = 'Guardar evento';
+  }
+
+  function loadAgenda(){
+    api('/api/agenda', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list'})}).then(function(r){
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(r.data.error){ document.getElementById('agenda-list').innerHTML = '<p class="msg error">Error: '+r.data.error+'</p>'; return; }
+      agendaData = r.data.eventos || [];
+      renderAgenda();
+    });
+  }
+
+  function renderAgenda(){
+    var el = document.getElementById('agenda-list');
+    if(!agendaData.length){ el.innerHTML = '<p style="opacity:0.6">No hay eventos todavia.</p>'; return; }
+    agendaData.sort(function(a,b){ return a.fecha.localeCompare(b.fecha); });
+    el.innerHTML = agendaData.map(function(e){
+      var pubClass = e.publicado !== false ? 'badge--publicada' : 'badge--borrador';
+      var pubText = e.publicado !== false ? 'Publicado' : 'Borrador';
+      return '<div class="card" data-id="'+esc(e.id)+'">'+
+        '<span class="badge '+pubClass+'">'+pubText+'</span>'+
+        '<div class="card__title">'+esc(e.titulo)+'</div>'+
+        '<div class="card__meta">'+esc(e.fecha)+(e.hora?' · '+esc(e.hora):'')+' — '+esc(e.tipo||'')+'</div>'+
+        '<div class="card__actions">'+
+          '<button class="secondary age-edit">Editar</button>'+
+          '<button class="danger age-delete">Borrar</button>'+
+        '</div></div>';
+    }).join('');
+
+    el.querySelectorAll('.card').forEach(function(card){
+      var id = card.dataset.id;
+      var ev = agendaData.find(function(e){ return e.id===id; });
+      card.querySelector('.age-edit').addEventListener('click',function(){
+        document.getElementById('age-id').value = ev.id;
+        document.getElementById('age-titulo').value = ev.titulo||'';
+        document.getElementById('age-fecha').value = ev.fecha||'';
+        document.getElementById('age-hora').value = ev.hora||'';
+        document.getElementById('age-tipo').value = ev.tipo||'';
+        document.getElementById('age-categoria').value = ev.categoria||'';
+        document.getElementById('age-descripcion').value = ev.descripcion||'';
+        document.getElementById('age-link').value = ev.link_tickets||'';
+        document.getElementById('age-boton').value = ev.texto_boton||'';
+        document.getElementById('age-publicado').checked = ev.publicado !== false;
+        document.getElementById('age-cancel').style.display = 'inline-block';
+        document.getElementById('age-save').textContent = 'Guardar cambios';
+        document.getElementById('tab-agenda').scrollIntoView({behavior:'smooth'});
+      });
+      card.querySelector('.age-delete').addEventListener('click',function(){
+        if(!confirm('¿Borrar "'+ev.titulo+'"? No se deshace.')) return;
+        api('/api/agenda', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'delete',id:id})}).then(function(r){
+          if(r.data.error){ alert('Error: '+r.data.error); return; }
+          loadAgenda();
+        });
+      });
+    });
+  }
+
+  document.getElementById('age-save').addEventListener('click',function(){
+    var titulo = document.getElementById('age-titulo').value.trim();
+    var fecha = document.getElementById('age-fecha').value.trim();
+    if(!titulo||!fecha){ document.getElementById('age-msg').className='msg error'; document.getElementById('age-msg').textContent='Falta titulo o fecha.'; return; }
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(fecha)){ document.getElementById('age-msg').className='msg error'; document.getElementById('age-msg').textContent='Fecha invalida (YYYY-MM-DD).'; return; }
+    var ev = {
+      id: document.getElementById('age-id').value || undefined,
+      titulo:titulo, fecha:fecha,
+      hora: document.getElementById('age-hora').value.trim(),
+      tipo: document.getElementById('age-tipo').value.trim(),
+      categoria: document.getElementById('age-categoria').value.trim(),
+      descripcion: document.getElementById('age-descripcion').value.trim(),
+      link_tickets: document.getElementById('age-link').value.trim(),
+      texto_boton: document.getElementById('age-boton').value.trim(),
+      publicado: document.getElementById('age-publicado').checked
+    };
+    var btn = document.getElementById('age-save');
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    document.getElementById('age-msg').className='msg'; document.getElementById('age-msg').textContent='';
+
+    api('/api/agenda', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'save',evento:ev})}).then(function(r){
+      btn.disabled = false;
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(r.data.error){ document.getElementById('age-msg').className='msg error'; document.getElementById('age-msg').textContent='Error: '+r.data.error; btn.textContent=ev.id?'Guardar cambios':'Guardar evento'; return; }
+      document.getElementById('age-msg').className='msg ok'; document.getElementById('age-msg').textContent='Guardado.';
+      resetAgeForm(); loadAgenda();
+    });
+  });
+
+  document.getElementById('age-cancel').addEventListener('click', resetAgeForm);
 
   // ─────────────────────────────────────
   //  TAB: PUSH
