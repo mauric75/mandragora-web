@@ -280,64 +280,36 @@ Respondé siempre en español, con claridad y precisión.`
     let data = await response.json();
     let choice = data.choices?.[0];
     let reply = choice?.message?.content || '';
-    console.error('[CHAT] content:', JSON.stringify(reply?.substring(0,300)));
-    console.error('[CHAT] tool_calls:', JSON.stringify(choice?.message?.tool_calls));
+    console.error('[CHAT] content:', JSON.stringify(reply?.substring(0,200)));
     console.error('[CHAT] finish_reason:', choice?.finish_reason);
 
-    // Function calling: detectar JSON tool calls o nativos
-    let loops = 0;
-    while (loops < 3) {
-      // Intentar JSON: {"tool": "...", "args": {...}}
-      const jsonMatch = reply?.match(/\{\s*"tool"\s*:\s*"([^"]+)"\s*,\s*"args"\s*:\s*(\{[\s\S]*?\})\s*\}/);
-      // Intentar nativo OpenAI
-      const nativeCalls = choice?.message?.tool_calls;
+    // Si DeepSeek quiere llamar una herramienta (nativo OpenAI)
+    const nativeCalls = choice?.message?.tool_calls;
+    if (nativeCalls && nativeCalls.length > 0) {
+      console.error('[CHAT] executing nativeCalls:', nativeCalls.length);
+      messages.push(choice.message);
 
-      if (!jsonMatch && !nativeCalls) break;
-      loops++;
-
-      if (jsonMatch) {
-        const fnName = jsonMatch[1];
+      for (const tc of nativeCalls) {
+        const fnName = tc.function?.name;
         let fnArgs = {};
-        try { fnArgs = JSON.parse(jsonMatch[2]); } catch(e) {}
+        try { fnArgs = JSON.parse(tc.function?.arguments || '{}'); } catch(e) {}
         fnArgs._role = role;
+        console.error('[CHAT] tool:', fnName);
         const result = await executeTool(fnName, fnArgs);
-        messages.push({ role: 'assistant', content: reply });
-        messages.push({ role: 'tool', tool_call_id: fnName, content: result });
-      } else if (nativeCalls) {
-        for (const tc of nativeCalls) {
-          const fnName = tc.function?.name;
-          let fnArgs = {};
-          try { fnArgs = JSON.parse(tc.function?.arguments || '{}'); } catch(e) {}
-          fnArgs._role = role;
-          const result = await executeTool(fnName, fnArgs);
-          messages.push(choice.message);
-          messages.push({ role: 'tool', tool_call_id: tc.id, content: result });
-        }
+        messages.push({ role: 'tool', tool_call_id: tc.id, content: result });
       }
 
-      console.error('[CHAT] 2nd call, messages count:', messages.length);
-      try {
-        response = await fetch(DEEPSEEK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-          body: JSON.stringify({
-            model: 'deepseek-chat',
-            messages,
-            temperature: 0.3,
-            max_tokens: 600,
-          }),
-        });
+      // Segunda llamada con el resultado
+      response = await fetch(DEEPSEEK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({ model: 'deepseek-chat', messages, temperature: 0.3, max_tokens: 600 }),
+      });
 
-        data = await response.json();
-        console.error('[CHAT] 2nd response status:', response.status);
-        choice = data.choices?.[0];
-        reply = choice?.message?.content || '';
-        console.error('[CHAT] 2nd reply:', JSON.stringify(reply?.substring(0,200)));
-      } catch(e) {
-        console.error('[CHAT] 2nd call error:', e.message);
-        reply = 'Error al procesar la respuesta.';
-        break;
-      }
+      data = await response.json();
+      choice = data.choices?.[0];
+      reply = choice?.message?.content || '';
+      console.error('[CHAT] final reply:', JSON.stringify(reply?.substring(0,200)));
     }
 
     if (!reply || !reply.trim()) {
