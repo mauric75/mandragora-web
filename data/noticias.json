@@ -1,5 +1,15 @@
 [
   {
+    "titulo": "test",
+    "texto": "varrrr",
+    "tipo": "anuncio",
+    "link": "",
+    "imagen": "",
+    "publicada": true,
+    "id": "noticia-1784318940800",
+    "fecha": "2026-07-17"
+  },
+  {
     "titulo": "NOCHES CRIMINALES",
     "texto": "Sábado 18 de julio - La HUELLA del culpable & 7 más\n\nTeatro MANDRÁGORA Escuela de Artes - Dr Javier Barrios Amorín 1312, 11200 Mon\n\n¿UN ESCAPE ROOM?... NO EXACTAMENTE, ES MUCHO MÁS!\n\nActores en vivo, desafíos, teatro, competencia y misterio se combinan en una experiencia donde nada es lo que parece.\nNoches Criminales es una propuesta teatral lúdica e interactiva, compuesta por microescenas en formato de juego. Podés participar solo o en equipo y poner a prueba tu capacidad de observación, deducción e ingenio.\n\nEl legendario detective Vidocq abre las puertas de su academia para ofrecer un exclusivo máster nocturno basado en los casos más impactantes de toda su carrera.\nAl llegar, sus alumnos más destacados te recibirán con una bebida caliente, una serie de acertijos para entrenar tu mente y todo lo necesario para convertirte en un verdadero detective.\nSolo queda una decisión…\n\nLA HUELLA DEL CULPABLE\nTres escenas. Tres crímenes diferentes. Tres historias que esconden un detalle imposible de ignorar.\nAlguien está mintiendo.\n¿Serás capaz de descubrir la huella que delata al culpable?\n \n\nBAJO LA LUPA\nTres escenas. Tres crímenes absurdos. Cada historia se representará dos veces.\nSolo quienes observen hasta el más mínimo detalle podrán detectar las siete diferencias ocultas en cada caso.\n¿Tenés el ojo de un verdadero detective?\n \n\nPero cuidado…\nLa investigación comienza mucho antes de cruzar la puerta.\nUn día antes de la función recibirás instrucciones en tu celular. Leelas con atención.\nPodrían contener la primera pista.",
     "tipo": "anuncio",
