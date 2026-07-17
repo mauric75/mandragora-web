@@ -1,26 +1,26 @@
 [
   {
     "nombre": "Pancho",
-    "rol": "Actuaci�n . Direcci�n",
-    "foto": "assets/images/elenco/pancho.jpeg",
-    "frase": "El teatro es el lugar donde podemos equivocarnos en voz alta",
-    "trayectoria": "Teatro Sol�s . Comedia Nacional . Fundaci�n Teatro a Mil",
+    "rol": "Actuación . Dirección",
+    "foto": "assets/images/elenco/WhatsApp Image 2026-06-14 at 1.22.29 PM.jpeg",
+    "frase": "El escenario es nuestra segunda casa",
+    "trayectoria": "Teatro Solís . Comedia Nacional . Fundación Teatro a Mil",
     "instagram": "@pancho.actor",
     "whatsapp": "59898914088",
     "precio": 2500,
     "activo": true,
-    "id": "docente-1784265292884"
+    "id": "docente-1784266319276"
   },
   {
-    "nombre": "Pancho",
-    "rol": "Actuaci�n . Direcci�n",
-    "foto": "assets/images/elenco/pancho.jpeg",
-    "frase": "El teatro es el lugar donde podemos equivocarnos en voz alta",
-    "trayectoria": "Teatro Sol�s . Comedia Nacional . Fundaci�n Teatro a Mil",
-    "instagram": "@pancho.actor",
-    "whatsapp": "59898914088",
+    "id": "docente-1784270155621",
+    "nombre": "Fefa",
+    "rol": "Clown y Voz",
+    "foto": "",
+    "frase": "",
+    "trayectoria": "",
+    "instagram": "",
+    "whatsapp": "",
     "precio": 2500,
-    "activo": true,
-    "id": "docente-1784265799413"
+    "activo": true
   }
 ]

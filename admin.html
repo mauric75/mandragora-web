@@ -4,95 +4,847 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Mandrágora</title>
+<link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
 <style>
-:root { --c-bg:#f8f4ed; --c-cream:#1a1512; --c-gold:#b8892e; --c-red:#c0432a; }
-body { background:var(--c-bg); color:var(--c-cream); font-family:system-ui,sans-serif; margin:0; padding:2rem; }
-h1 { font-size:1.5rem; margin-bottom:1.5rem; }
-.login { max-width:400px; margin:4rem auto; text-align:center; }
-.login input { width:100%; padding:0.8rem; margin:0.5rem 0; border:1px solid #ddd; border-radius:4px; font-size:1rem; }
-.login button { width:100%; padding:0.8rem; background:var(--c-gold); color:#fff; border:none; border-radius:4px; font-size:1rem; cursor:pointer; }
-table { width:100%; border-collapse:collapse; margin-top:1rem; }
-th,td { padding:0.6rem; text-align:left; border-bottom:1px solid #ddd; font-size:0.9rem; }
-th { font-weight:600; color:var(--c-gold); text-transform:uppercase; letter-spacing:0.05em; font-size:0.75rem; }
-.actions { margin-bottom:1rem; display:flex; gap:0.5rem; }
-.actions button { padding:0.4em 1em; border-radius:4px; cursor:pointer; border:1px solid #ddd; background:#fff; font-size:0.85rem; }
-.actions button.active { background:var(--c-gold); color:#fff; border-color:var(--c-gold); }
-.no-data { text-align:center; padding:3rem; opacity:0.5; }
-a.back { color:var(--c-gold); font-size:0.85rem; }
-@keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+/* ============================================================
+   MANDRÁGORA ADMIN — Design System
+   ============================================================ */
+@font-face {
+  font-family: 'Schrifted'; src: url('assets/fonts/SFTSchriftedRoundTRIAL-Medium.ttf') format('truetype');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+
+:root {
+  --c-bg: #0c1012;
+  --c-surface: #14181b;
+  --c-surface2: #1a1f23;
+  --c-gold: #CE9A47;
+  --c-gold-bright: #e0b85a;
+  --c-gold-faint: rgba(206,154,71,0.10);
+  --c-gold-dim: rgba(206,154,71,0.25);
+  --c-text: #e6ded5;
+  --c-dim: rgba(230,222,213,0.6);
+  --c-faint: rgba(230,222,213,0.25);
+  --c-border: rgba(230,222,213,0.08);
+  --c-red: #e0554a;
+  --c-green: #5cb85c;
+  --c-blue: #5b9bd5;
+  --c-yellow: #d4a843;
+  --radius: 6px;
+  --ease: cubic-bezier(0.22,1,0.36,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--c-bg); color: var(--c-text);
+  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh; line-height: 1.6;
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+.login {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 2rem;
+  background: radial-gradient(ellipse 60% 40% at 50% 35%, rgba(206,154,71,0.06), transparent 60%);
+}
+.login__logo { height: 48px; margin-bottom: 2rem; opacity: 0.85; }
+.login h1 { font-family: 'Schrifted', 'Cinzel', serif; font-size: 1.2rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--c-gold); margin-bottom: 2rem; font-weight: 500; }
+.login input {
+  width: 100%; max-width: 320px; padding: 0.85rem 1rem;
+  border: 1px solid var(--c-border); border-radius: var(--radius);
+  background: var(--c-surface); color: var(--c-text); font-size: 1rem;
+  outline: none; transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.login input:focus { border-color: var(--c-gold); box-shadow: 0 0 0 3px var(--c-gold-faint); }
+.login button {
+  width: 100%; max-width: 320px; margin-top: 1rem;
+  padding: 0.85rem; background: var(--c-gold); color: #0a0a0a;
+  border: none; border-radius: var(--radius); font-size: 0.95rem;
+  font-weight: 600; cursor: pointer; transition: background 0.3s var(--ease), transform 0.2s var(--ease);
+}
+.login button:hover { background: var(--c-gold-bright); transform: translateY(-1px); }
+.login button:disabled { opacity: 0.5; cursor: wait; transform: none; }
+.login__msg { margin-top: 0.8rem; font-size: 0.85rem; color: var(--c-red); }
+.login__back { color: var(--c-dim); font-size: 0.8rem; margin-top: 2rem; transition: color 0.2s; }
+.login__back:hover { color: var(--c-gold); }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.5rem; background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+  position: sticky; top: 0; z-index: 10;
+}
+.header__brand { display: flex; align-items: center; gap: 0.75rem; }
+.header__logo { height: 28px; opacity: 0.9; }
+.header__title { font-family: 'Schrifted', 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-dim); }
+.header__logout { background: none; border: 1px solid var(--c-border); color: var(--c-dim); padding: 0.4em 1em; border-radius: var(--radius); cursor: pointer; font-size: 0.78rem; transition: all 0.2s; }
+.header__logout:hover { border-color: var(--c-red); color: var(--c-red); }
+
+/* ============================================================
+   STATS
+   ============================================================ */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; padding: 1.25rem 1.5rem; }
+.stat-card {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: var(--radius); padding: 1rem 1.2rem;
+  transition: border-color 0.3s var(--ease);
+}
+.stat-card:hover { border-color: var(--c-gold-dim); }
+.stat-card__value { font-size: 1.8rem; font-weight: 700; color: var(--c-gold-bright); line-height: 1.1; }
+.stat-card__label { font-size: 0.72rem; color: var(--c-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.3rem; }
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs {
+  display: flex; gap: 0; padding: 0 1.5rem;
+  background: var(--c-surface); border-bottom: 1px solid var(--c-border);
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tabs button {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.7em 1.1em; border: none; background: none; cursor: pointer;
+  font-size: 0.8rem; color: var(--c-dim); white-space: nowrap;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: all 0.2s var(--ease);
+}
+.tabs button svg { width: 14px; height: 14px; opacity: 0.5; }
+.tabs button:hover { color: var(--c-text); }
+.tabs button.active { color: var(--c-gold); border-bottom-color: var(--c-gold); }
+.tabs button.active svg { opacity: 1; }
+
+/* ============================================================
+   CONTENT
+   ============================================================ */
+.content { padding: 1.5rem; max-width: 1200px; }
+.tab-panel { display: none; animation: fade-in 0.25s var(--ease); }
+.tab-panel.is-active { display: block; }
+
+/* ============================================================
+   TABLE (Reservas)
+   ============================================================ */
+.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--c-border); }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th { text-align: left; padding: 0.7rem 0.8rem; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--c-dim); background: var(--c-surface); border-bottom: 1px solid var(--c-border); }
+td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--c-border); color: var(--c-text); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--c-gold-faint); }
+
+.filters { margin-bottom: 0.75rem; display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.filters button {
+  padding: 0.35em 0.9em; border-radius: 20px; cursor: pointer;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+  color: var(--c-dim); font-size: 0.78rem; transition: all 0.2s var(--ease);
+}
+.filters button:hover { border-color: var(--c-gold-dim); color: var(--c-text); }
+.filters button.active { background: var(--c-gold); color: #0a0a0a; border-color: var(--c-gold); font-weight: 600; }
+
+.no-data { text-align: center; padding: 3rem; opacity: 0.4; font-style: italic; }
+
+/* Status badges */
+.status { font-size: 0.7rem; padding: 0.2em 0.6em; border-radius: 12px; font-weight: 500; }
+.status--pendiente { background: rgba(212,168,67,0.15); color: var(--c-yellow); }
+.status--contactada { background: rgba(91,155,213,0.15); color: var(--c-blue); }
+.status--confirmada { background: rgba(92,184,92,0.15); color: var(--c-green); }
+.status--cancelada { background: rgba(224,85,74,0.15); color: var(--c-red); }
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+input[type="text"], input[type="url"], input[type="number"], textarea, select {
+  width: 100%; padding: 0.7rem 0.9rem; border: 1px solid var(--c-border);
+  border-radius: var(--radius); background: var(--c-surface);
+  color: var(--c-text); font-size: 0.9rem; font-family: inherit;
+  outline: none; transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  margin: 0.25rem 0 0.9rem;
+}
+textarea { resize: vertical; min-height: 80px; }
+select { cursor: pointer; }
+input:focus, textarea:focus, select:focus { border-color: var(--c-gold); box-shadow: 0 0 0 3px var(--c-gold-faint); }
+label { font-size: 0.78rem; font-weight: 500; color: var(--c-dim); display: block; margin-top: 0.5rem; }
+label.inline { display: inline-flex; align-items: center; gap: 0.4rem; margin: 0.3rem 1rem 0.9rem 0; color: var(--c-text); font-weight: 400; cursor: pointer; }
+label.inline input[type="checkbox"] { width: auto; margin: 0; accent-color: var(--c-gold); }
+
+button.primary {
+  padding: 0.65em 1.5em; background: var(--c-gold); color: #0a0a0a;
+  border: none; border-radius: var(--radius); font-size: 0.85rem;
+  font-weight: 600; cursor: pointer; transition: all 0.2s var(--ease);
+}
+button.primary:hover { background: var(--c-gold-bright); transform: translateY(-1px); }
+button.primary:disabled { opacity: 0.5; cursor: wait; transform: none; }
+button.secondary {
+  padding: 0.45em 0.9em; border: 1px solid var(--c-border); border-radius: var(--radius);
+  cursor: pointer; background: var(--c-surface); color: var(--c-text); font-size: 0.78rem;
+  transition: all 0.2s;
+}
+button.secondary:hover { border-color: var(--c-dim); }
+button.danger {
+  padding: 0.45em 0.9em; border-radius: var(--radius); cursor: pointer;
+  background: none; border: 1px solid rgba(224,85,74,0.3); color: var(--c-red); font-size: 0.78rem;
+  transition: all 0.2s;
+}
+button.danger:hover { background: rgba(224,85,74,0.1); border-color: var(--c-red); }
+
+/* ============================================================
+   CARDS (Noticias, Docentes)
+   ============================================================ */
+.card {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 0.6rem;
+  transition: border-color 0.3s var(--ease);
+}
+.card:hover { border-color: var(--c-gold-dim); }
+.card__title { font-weight: 600; color: var(--c-text); margin-bottom: 0.2rem; }
+.card__meta { font-size: 0.78rem; color: var(--c-dim); margin-bottom: 0.4rem; }
+.card__actions { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
+
+/* Badges */
+.badge { font-size: 0.68rem; padding: 0.15em 0.55em; border-radius: 10px; font-weight: 500; display: inline-block; margin-right: 0.3rem; }
+.badge--publicada, .badge--anuncio { background: rgba(92,184,92,0.15); color: var(--c-green); }
+.badge--borrador { background: rgba(230,222,213,0.08); color: var(--c-dim); }
+.badge--prensa { background: rgba(91,155,213,0.15); color: var(--c-blue); }
+
+/* ============================================================
+   CHAT
+   ============================================================ */
+.chat-log {
+  height: 350px; overflow-y: auto; margin-bottom: 1rem; font-size: 0.9rem;
+  line-height: 1.6; border: 1px solid var(--c-border); border-radius: var(--radius);
+  padding: 1rem; background: var(--c-surface);
+}
+.chat-wrap { display: flex; gap: 0.5rem; }
+.chat-wrap input { flex: 1; margin: 0 !important; }
+
+/* ============================================================
+   MISC
+   ============================================================ */
+h2 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.8rem; color: var(--c-text); }
+h2:first-child { margin-top: 0; }
+.msg { font-size: 0.82rem; margin-top: 0.4rem; }
+.msg.ok { color: var(--c-green); }
+.msg.error { color: var(--c-red); }
+a { color: var(--c-gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+@keyframes fade-in { from { opacity:0; } to { opacity:1; } }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .stats { grid-template-columns: repeat(2, 1fr); padding: 0.75rem 1rem; }
+  .stat-card { padding: 0.75rem 1rem; }
+  .stat-card__value { font-size: 1.4rem; }
+  .content { padding: 1rem; }
+  .table-wrap { font-size: 0.8rem; }
+  th, td { padding: 0.5rem 0.6rem; }
+  .tabs { padding: 0 0.5rem; }
+  .tabs button { font-size: 0.72rem; padding: 0.5em 0.7em; }
+  .header { padding: 0.75rem 1rem; }
+}
+
+@media (max-width: 480px) {
+  .stats { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+  .stat-card__value { font-size: 1.2rem; }
+  .tabs button span { display: none; }
+  .tabs button svg { width: 16px; height: 16px; }
+}
+
+@media (min-width: 1200px) {
+  .content { margin: 0 auto; }
 }
 </style>
 </head>
 <body>
+
+<!-- ========== LOGIN ========== -->
 <div class="login" id="login-box">
-  <h1>Admin · Mandrágora</h1>
+  <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="login__logo">
+  <h1>Panel de Administración</h1>
   <input type="password" id="password" placeholder="Contraseña" autofocus>
   <button id="login-btn">Entrar</button>
-  <div id="login-msg" style="margin-top:0.5rem;font-size:0.85rem;color:var(--c-red)"></div>
-  <a href="index.html" class="back">← Volver al inicio</a>
+  <div class="login__msg" id="login-msg"></div>
+  <a href="index.html" class="login__back">← Volver al inicio</a>
 </div>
 
+<!-- ========== DASHBOARD ========== -->
 <div id="dashboard" style="display:none">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
-    <h1 style="margin:0">Reservas</h1>
-    <a href="index.html" class="back">← Salir</a>
-  </div>
-  <div class="actions">
-    <button class="active" data-filter="all">Todas</button>
-    <button data-filter="sala">Sala</button>
-    <button data-filter="taller">Talleres</button>
-    <button data-filter="entrada">Entradas</button>
-    <button data-filter="otro">Consultas</button>
-  </div>
-  <div id="reservas-table"></div>
-  <div class="no-data" id="no-data">No hay reservas todavía.</div>
-</div>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__brand">
+      <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="header__logo">
+      <span class="header__title">Admin</span>
+    </div>
+    <button class="header__logout" id="logout-btn">Cerrar sesión</button>
+  </header>
 
+  <!-- Stats -->
+  <div class="stats" id="stats-bar">
+    <div class="stat-card"><div class="stat-card__value" id="stat-reservas">—</div><div class="stat-card__label">Reservas totales</div></div>
+    <div class="stat-card"><div class="stat-card__value" id="stat-pendientes">—</div><div class="stat-card__label">Pendientes</div></div>
+    <div class="stat-card"><div class="stat-card__value" id="stat-noticias">—</div><div class="stat-card__label">Noticias publicadas</div></div>
+    <div class="stat-card"><div class="stat-card__value" id="stat-docentes">—</div><div class="stat-card__label">Docentes activos</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <nav class="tabs" id="tabs">
+    <button class="active" data-tab="reservas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      <span>Reservas</span>
+    </button>
+    <button data-tab="noticias">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Noticias</span>
+    </button>
+    <button data-tab="docentes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Docentes</span>
+    </button>
+    <button data-tab="push">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span>Push</span>
+    </button>
+    <button data-tab="chat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Chat IA</span>
+    </button>
+  </nav>
+
+  <!-- Content -->
+  <div class="content">
+  <!-- ====== TAB: RESERVAS ====== -->
+  <section class="tab-panel is-active" id="tab-reservas">
+    <p id="reservas-msg" style="font-size:0.82rem;color:var(--c-dim);margin-bottom:0.75rem"></p>
+    <div class="filters" id="reservas-filters">
+      <button class="active" data-filter="all">Todas</button>
+      <button data-filter="sala">Sala</button>
+      <button data-filter="taller">Talleres</button>
+      <button data-filter="entrada">Entradas</button>
+      <button data-filter="otro">Consultas</button>
+    </div>
+    <div class="table-wrap"><div id="reservas-table"></div></div>
+    <div class="no-data" id="reservas-empty">No hay reservas todavía.</div>
+  </section>
+
+  <!-- ====== TAB: NOTICIAS ====== -->
+  <section class="tab-panel" id="tab-noticias">
+    <h2>Nueva noticia</h2>
+    <label>Título</label>
+    <input type="text" id="noti-titulo" placeholder="Título de la noticia" maxlength="200">
+    <label>Texto</label>
+    <textarea id="noti-texto" placeholder="Cuerpo de la noticia" maxlength="5000"></textarea>
+    <label>Tipo</label>
+    <select id="noti-tipo"><option value="anuncio">Anuncio</option><option value="prensa">Prensa</option></select>
+    <label>Link externo (opcional)</label>
+    <input type="url" id="noti-link" placeholder="https://...">
+    <label>Imagen (URL, opcional)</label>
+    <input type="text" id="noti-imagen" placeholder="assets/images/...">
+    <label class="inline"><input type="checkbox" id="noti-publicada" checked> Publicada</label>
+    <label class="inline"><input type="checkbox" id="noti-push"> Avisar por push al guardar</label>
+    <input type="hidden" id="noti-id">
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <button class="primary" id="noti-save">Guardar noticia</button>
+      <button class="secondary" id="noti-cancel" style="display:none">Cancelar edición</button>
+    </div>
+    <div class="msg" id="noti-msg"></div>
+
+    <h2 style="margin-top:2rem">Noticias existentes</h2>
+    <div id="noticias-list"></div>
+  </section>
+
+  <!-- ====== TAB: DOCENTES ====== -->
+  <section class="tab-panel" id="tab-docentes">
+    <h2>Nuevo docente</h2>
+    <label>Nombre</label>
+    <input type="text" id="doce-nombre" placeholder="Nombre del docente" maxlength="80">
+    <label>Rol / Disciplinas</label>
+    <input type="text" id="doce-rol" placeholder="Actuación . Dirección" maxlength="120">
+    <label>Foto (URL o path)</label>
+    <input type="text" id="doce-foto" placeholder="assets/images/elenco/nombre.jpeg">
+    <label>Frase</label>
+    <textarea id="doce-frase" placeholder="Cita personal del docente" maxlength="200"></textarea>
+    <label>Trayectoria</label>
+    <textarea id="doce-trayectoria" placeholder="Teatro Solís . Comedia Nacional" maxlength="300"></textarea>
+    <label>Instagram</label>
+    <input type="text" id="doce-instagram" placeholder="@usuario">
+    <label>WhatsApp</label>
+    <input type="text" id="doce-whatsapp" placeholder="598XXXXXXXXX">
+    <label>Precio del taller ($)</label>
+    <input type="number" id="doce-precio" placeholder="2500" min="0">
+    <label class="inline"><input type="checkbox" id="doce-activo" checked> Activo (visible en el sitio)</label>
+    <input type="hidden" id="doce-id">
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <button class="primary" id="doce-save">Guardar docente</button>
+      <button class="secondary" id="doce-cancel" style="display:none">Cancelar edición</button>
+    </div>
+    <div class="msg" id="doce-msg"></div>
+
+    <h2 style="margin-top:2rem">Docentes existentes</h2>
+    <div id="docentes-list"></div>
+  </section>
+
+  <!-- ====== TAB: PUSH ====== -->
+  <section class="tab-panel" id="tab-push">
+    <h2>Enviar notificación push</h2>
+    <label>Título</label>
+    <input type="text" id="push-title" placeholder="Ej: Nueva función este sábado" maxlength="60">
+    <label>Mensaje</label>
+    <textarea id="push-body" placeholder="Cuerpo de la notificación" maxlength="200"></textarea>
+    <label>Link (opcional)</label>
+    <input type="text" id="push-url" placeholder="/agenda.html">
+    <button class="primary" id="push-send-btn">Enviar a todos los suscriptos</button>
+    <div class="msg" id="push-msg"></div>
+  </section>
+
+  <!-- ====== TAB: CHAT IA ====== -->
+  <section class="tab-panel" id="tab-chat">
+    <div class="chat-log" id="ai-chat-log"></div>
+    <div class="chat-wrap">
+      <input type="text" id="ai-input" placeholder="Ej: cuántas reservas hay esta semana?">
+      <button class="primary" id="ai-send">Enviar</button>
+    </div>
+  </section>
+  </div><!-- /content -->
+</div><!-- /dashboard -->
+
+<!-- ========== SCRIPTS ========== -->
 <script>
 (function(){
-  var PASSWORD = 'mandragora2026';
-  var reservas = JSON.parse(localStorage.getItem('mandragora-reservas') || '[]');
+  "use strict";
 
-  document.getElementById('login-btn').addEventListener('click',function(){
-    if(document.getElementById('password').value === PASSWORD){
-      document.getElementById('login-box').style.display='none';
-      document.getElementById('dashboard').style.display='block';
-      renderReservas('all');
-    } else {
-      document.getElementById('login-msg').textContent='Contraseña incorrecta';
-    }
-  });
+  // ── DOM refs ──────────────────────────
+  var loginBox = document.getElementById('login-box');
+  var dashboard = document.getElementById('dashboard');
+  var passwordInput = document.getElementById('password');
+  var loginButton = document.getElementById('login-btn');
+  var loginMessage = document.getElementById('login-msg');
+  var statsReservas = document.getElementById('stat-reservas');
+  var statsPendientes = document.getElementById('stat-pendientes');
+  var statsNoticias = document.getElementById('stat-noticias');
+  var statsDocentes = document.getElementById('stat-docentes');
 
-  function renderReservas(filter){
-    var filtered = filter==='all' ? reservas : reservas.filter(function(r){return r.servicio===filter;});
-    var table = document.getElementById('reservas-table');
-    var noData = document.getElementById('no-data');
-    if(!filtered.length){ table.innerHTML=''; noData.style.display='block'; return; }
-    noData.style.display='none';
-    var labels = {sala:'Reserva de sala',taller:'Inscripción a taller',entrada:'Entrada',otro:'Consulta'};
-    var html = '<table><thead><tr><th>Fecha</th><th>Tipo</th><th>Nombre</th><th>WhatsApp</th><th>Email</th><th>Mensaje</th></tr></thead><tbody>';
-    filtered.forEach(function(r){
-      html += '<tr><td>'+new Date(r.fecha).toLocaleDateString('es-UY')+'</td>'
-        +'<td>'+(labels[r.servicio]||r.servicio)+'</td>'
-        +'<td>'+r.nombre+'</td>'
-        +'<td>'+r.whatsapp+'</td>'
-        +'<td>'+(r.email||'')+'</td>'
-        +'<td>'+(r.mensaje||'')+'</td></tr>';
-    });
-    html += '</tbody></table>';
-    table.innerHTML = html;
+  // ── Auth ─────────────────────────────
+  function showLogin(message){
+    loginBox.style.display = 'flex';
+    dashboard.style.display = 'none';
+    loginMessage.textContent = message || '';
+    loginMessage.style.display = message ? 'block' : 'none';
   }
 
-  document.querySelectorAll('.actions button').forEach(function(btn){
+  async function checkSession(){
+    try {
+      var r = await fetch('/api/admin-auth', {credentials:'same-origin', headers:{Accept:'application/json'}});
+      if(r.ok) { showDashboard(); }
+    } catch(e) { showLogin('No se pudo conectar.'); }
+  }
+
+  async function login(){
+    loginButton.disabled = true;
+    loginMessage.textContent = '';
+    try {
+      var r = await fetch('/api/admin-auth?action=login', {
+        method:'POST', credentials:'same-origin',
+        headers:{'Content-Type':'application/json', Accept:'application/json'},
+        body:JSON.stringify({password:passwordInput.value})
+      });
+      if(!r.ok){
+        var d = await r.json().catch(function(){ return {}; });
+        throw new Error(d.error || 'No se pudo iniciar sesión');
+      }
+      passwordInput.value = '';
+      await showDashboard();
+    } catch(e) { loginMessage.textContent = e.message; }
+    finally { loginButton.disabled = false; }
+  }
+
+  async function logout(){
+    await fetch('/api/admin-auth?action=logout', {method:'POST', credentials:'same-origin'}).catch(function(){});
+    showLogin('Sesión cerrada.');
+  }
+
+  loginButton.addEventListener('click', login);
+  passwordInput.addEventListener('keydown', function(e){ if(e.key==='Enter') login(); });
+  document.getElementById('logout-btn').addEventListener('click', logout);
+
+  // ── Tabs ─────────────────────────────
+  function switchTab(tabName){
+    document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelector('.tabs button[data-tab="'+tabName+'"]').classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('is-active'); });
+    document.getElementById('tab-'+tabName).classList.add('is-active');
+    if(tabName==='reservas') loadReservas();
+    if(tabName==='noticias') loadNoticias();
+    if(tabName==='docentes') loadDocentes();
+  }
+
+  document.querySelectorAll('.tabs button').forEach(function(btn){
+    btn.addEventListener('click', function(){ switchTab(btn.dataset.tab); });
+  });
+
+  // ── Shared API helper ────────────────
+  function api(url, opts){
+    opts = opts || {};
+    opts.credentials = 'same-origin';
+    opts.headers = Object.assign({Accept:'application/json'}, opts.headers || {});
+    return fetch(url, opts).then(function(r){
+      return r.json().then(function(data){ return {status:r.status, data:data}; });
+    });
+  }
+
+  // ─────────────────────────────────────
+  //  TAB: RESERVAS
+  // ─────────────────────────────────────
+  var reservas = [];
+  var labels = {sala:'Reserva de sala',taller:'Inscripción a taller',entrada:'Entrada',otro:'Consulta'};
+
+  async function loadReservas(){
+    document.getElementById('reservas-msg').textContent = 'Cargando…';
+    try {
+      var r = await api('/api/reservas');
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(!r.data || r.data.error) throw new Error(r.data&&r.data.error||'Error');
+      reservas = Array.isArray(r.data.data) ? r.data.data : [];
+      document.getElementById('reservas-msg').textContent = '';
+      renderReservas('all');
+    } catch(e){
+      reservas = [];
+      renderReservas('all');
+      document.getElementById('reservas-msg').textContent = e.message;
+    }
+  }
+
+  function renderReservas(filter){
+    var filtered = filter==='all' ? reservas : reservas.filter(function(r){ return r.servicio===filter; });
+    var container = document.getElementById('reservas-table');
+    var empty = document.getElementById('reservas-empty');
+    container.replaceChildren();
+    if(!filtered.length){ empty.style.display='block'; return; }
+    empty.style.display='none';
+
+    var tbl = document.createElement('table');
+    tbl.innerHTML = '<thead><tr><th>Fecha</th><th>Tipo</th><th>Detalle</th><th>Nombre</th><th>WhatsApp</th><th>Email</th><th>Mensaje</th><th>Estado</th></tr></thead>';
+    var tbody = document.createElement('tbody');
+    filtered.forEach(function(item){
+      var tr = document.createElement('tr');
+      var cols = [
+        item.fecha ? new Date(item.fecha).toLocaleDateString('es-UY') : '',
+        labels[item.servicio] || item.servicio || '',
+        item.detalle || '',
+        item.nombre || '',
+        item.whatsapp || '',
+        item.email || '',
+        item.mensaje || '',
+        item.estado || 'pendiente'
+      ];
+      cols.forEach(function(v, i){
+        var td = document.createElement('td');
+        if(i === 7){ // estado column
+          var estado = (item.estado || 'pendiente').toLowerCase();
+          td.innerHTML = '<span class="status status--' + estado + '">' + esc(v) + '</span>';
+        } else {
+          td.textContent = v == null ? '' : String(v);
+        }
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    tbl.appendChild(tbody);
+    container.appendChild(tbl);
+
+    // Update stats
+    statsReservas.textContent = reservas.length;
+    statsPendientes.textContent = reservas.filter(function(r){ return r.estado === 'pendiente'; }).length;
+  }
+
+  document.querySelectorAll('#reservas-filters button').forEach(function(btn){
     btn.addEventListener('click',function(){
-      document.querySelectorAll('.actions button').forEach(function(b){b.classList.remove('active');});
+      document.querySelectorAll('#reservas-filters button').forEach(function(b){ b.classList.remove('active'); });
       btn.classList.add('active');
       renderReservas(btn.dataset.filter);
     });
   });
+
+  // ─────────────────────────────────────
+  //  TAB: NOTICIAS
+  // ─────────────────────────────────────
+  var noticiasData = [];
+
+  function resetNotiForm(){
+    document.getElementById('noti-id').value = '';
+    document.getElementById('noti-titulo').value = '';
+    document.getElementById('noti-texto').value = '';
+    document.getElementById('noti-tipo').value = 'anuncio';
+    document.getElementById('noti-link').value = '';
+    document.getElementById('noti-imagen').value = '';
+    document.getElementById('noti-publicada').checked = true;
+    document.getElementById('noti-push').checked = false;
+    document.getElementById('noti-cancel').style.display = 'none';
+    document.getElementById('noti-save').textContent = 'Guardar noticia';
+  }
+
+  function loadNoticias(){
+    api('/api/noticias-save', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list'})}).then(function(r){
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(r.data.error){ document.getElementById('noticias-list').innerHTML = '<p class="msg error">Error: '+r.data.error+'</p>'; return; }
+      noticiasData = r.data.noticias || [];
+      renderNoticias();
+      statsNoticias.textContent = noticiasData.filter(function(n){ return n.publicada; }).length;
+    });
+  }
+
+  function renderNoticias(){
+    var el = document.getElementById('noticias-list');
+    if(!noticiasData.length){ el.innerHTML = '<p style="opacity:0.6">No hay noticias todavía.</p>'; return; }
+    el.innerHTML = noticiasData.map(function(n){
+      var pubClass = n.publicada ? 'badge--publicada' : 'badge--borrador';
+      var pubText = n.publicada ? 'Publicada' : 'Borrador';
+      var tipoClass = n.tipo==='prensa' ? 'badge--prensa' : 'badge--anuncio';
+      var tipoText = n.tipo==='prensa' ? 'Prensa' : 'Anuncio';
+      return '<div class="card" data-id="'+esc(n.id)+'">'+
+        '<span class="badge '+pubClass+'">'+pubText+'</span> <span class="badge '+tipoClass+'">'+tipoText+'</span>'+
+        '<div class="card__title">'+esc(n.titulo)+'</div>'+
+        '<div class="card__meta">'+esc(n.fecha||'')+'</div>'+
+        '<div class="card__actions">'+
+          '<button class="secondary noti-edit">Editar</button>'+
+          '<button class="danger noti-delete">Borrar</button>'+
+        '</div></div>';
+    }).join('');
+
+    el.querySelectorAll('.card').forEach(function(card){
+      var id = card.dataset.id;
+      var noti = noticiasData.find(function(n){ return n.id===id; });
+      card.querySelector('.noti-edit').addEventListener('click',function(){
+        document.getElementById('noti-id').value = noti.id;
+        document.getElementById('noti-titulo').value = noti.titulo||'';
+        document.getElementById('noti-texto').value = noti.texto||'';
+        document.getElementById('noti-tipo').value = noti.tipo||'anuncio';
+        document.getElementById('noti-link').value = noti.link||'';
+        document.getElementById('noti-imagen').value = noti.imagen||'';
+        document.getElementById('noti-publicada').checked = !!noti.publicada;
+        document.getElementById('noti-cancel').style.display = 'inline-block';
+        document.getElementById('noti-save').textContent = 'Guardar cambios';
+        document.getElementById('tab-noticias').scrollIntoView({behavior:'smooth'});
+      });
+      card.querySelector('.noti-delete').addEventListener('click',function(){
+        if(!confirm('¿Borrar "'+noti.titulo+'"? No se deshace.')) return;
+        api('/api/noticias-save', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'delete',id:id})}).then(function(r){
+          if(r.data.error){ alert('Error: '+r.data.error); return; }
+          loadNoticias();
+        });
+      });
+    });
+  }
+
+  function esc(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+
+  document.getElementById('noti-save').addEventListener('click',function(){
+    var titulo = document.getElementById('noti-titulo').value.trim();
+    var texto = document.getElementById('noti-texto').value.trim();
+    if(!titulo||!texto){ document.getElementById('noti-msg').className='msg error'; document.getElementById('noti-msg').textContent='Falta título o texto.'; return; }
+    var noti = {
+      id: document.getElementById('noti-id').value || undefined,
+      titulo:titulo, texto:texto,
+      tipo: document.getElementById('noti-tipo').value,
+      link: document.getElementById('noti-link').value.trim(),
+      imagen: document.getElementById('noti-imagen').value.trim(),
+      publicada: document.getElementById('noti-publicada').checked
+    };
+    var avisarPush = document.getElementById('noti-push').checked;
+    var btn = document.getElementById('noti-save');
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    document.getElementById('noti-msg').className='msg'; document.getElementById('noti-msg').textContent='';
+
+    api('/api/noticias-save', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'save',noticia:noti})}).then(function(r){
+      btn.disabled = false;
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(r.data.error){ document.getElementById('noti-msg').className='msg error'; document.getElementById('noti-msg').textContent='Error: '+r.data.error; btn.textContent=noti.id?'Guardar cambios':'Guardar noticia'; return; }
+      document.getElementById('noti-msg').className='msg ok'; document.getElementById('noti-msg').textContent='Guardado.';
+      resetNotiForm(); loadNoticias();
+      if(avisarPush && noti.publicada){
+        api('/api/push-send', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title:titulo, body:texto.slice(0,120), url:'/noticias.html'})});
+      }
+    });
+  });
+
+  document.getElementById('noti-cancel').addEventListener('click', resetNotiForm);
+
+  // ─────────────────────────────────────
+  //  TAB: DOCENTES
+  // ─────────────────────────────────────
+  var docentesData = [];
+
+  function resetDoceForm(){
+    document.getElementById('doce-id').value = '';
+    document.getElementById('doce-nombre').value = '';
+    document.getElementById('doce-rol').value = '';
+    document.getElementById('doce-foto').value = '';
+    document.getElementById('doce-frase').value = '';
+    document.getElementById('doce-trayectoria').value = '';
+    document.getElementById('doce-instagram').value = '';
+    document.getElementById('doce-whatsapp').value = '';
+    document.getElementById('doce-precio').value = '';
+    document.getElementById('doce-activo').checked = true;
+    document.getElementById('doce-cancel').style.display = 'none';
+    document.getElementById('doce-save').textContent = 'Guardar docente';
+  }
+
+  function loadDocentes(){
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list'})}).then(function(r){
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(r.data.error){ document.getElementById('docentes-list').innerHTML = '<p class="msg error">Error: '+r.data.error+'</p>'; return; }
+      docentesData = r.data.docentes || [];
+      renderDocentes();
+      statsDocentes.textContent = docentesData.filter(function(d){ return d.activo !== false; }).length;
+    });
+  }
+
+  function renderDocentes(){
+    var el = document.getElementById('docentes-list');
+    if(!docentesData.length){ el.innerHTML = '<p style="opacity:0.6">No hay docentes todavia.</p>'; return; }
+    el.innerHTML = docentesData.map(function(d){
+      var activoClass = d.activo !== false ? 'badge--publicada' : 'badge--borrador';
+      var activoText = d.activo !== false ? 'Activo' : 'Inactivo';
+      return '<div class="card" data-id="'+esc(d.id)+'">'+
+        '<span class="badge '+activoClass+'">'+activoText+'</span>'+
+        '<div class="card__title">'+esc(d.nombre)+'</div>'+
+        '<div class="card__meta">'+esc(d.rol||'')+'</div>'+
+        (d.frase ? '<div style="font-style:italic;font-size:0.85rem;margin:0.3rem 0;opacity:0.7;">"'+esc(d.frase)+'"</div>' : '')+
+        '<div class="card__actions">'+
+          '<button class="secondary doce-edit">Editar</button>'+
+          '<button class="danger doce-delete">Borrar</button>'+
+        '</div></div>';
+    }).join('');
+
+    el.querySelectorAll('.card').forEach(function(card){
+      var id = card.dataset.id;
+      var doce = docentesData.find(function(d){ return d.id===id; });
+      card.querySelector('.doce-edit').addEventListener('click',function(){
+        document.getElementById('doce-id').value = doce.id;
+        document.getElementById('doce-nombre').value = doce.nombre||'';
+        document.getElementById('doce-rol').value = doce.rol||'';
+        document.getElementById('doce-foto').value = doce.foto||'';
+        document.getElementById('doce-frase').value = doce.frase||'';
+        document.getElementById('doce-trayectoria').value = doce.trayectoria||'';
+        document.getElementById('doce-instagram').value = doce.instagram||'';
+        document.getElementById('doce-whatsapp').value = doce.whatsapp||'';
+        document.getElementById('doce-precio').value = doce.precio||'';
+        document.getElementById('doce-activo').checked = doce.activo !== false;
+        document.getElementById('doce-cancel').style.display = 'inline-block';
+        document.getElementById('doce-save').textContent = 'Guardar cambios';
+        document.getElementById('tab-docentes').scrollIntoView({behavior:'smooth'});
+      });
+      card.querySelector('.doce-delete').addEventListener('click',function(){
+        if(!confirm('¿Borrar a "'+doce.nombre+'"? No se deshace.')) return;
+        api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'delete',id:id})}).then(function(r){
+          if(r.data.error){ alert('Error: '+r.data.error); return; }
+          loadDocentes();
+        });
+      });
+    });
+  }
+
+  document.getElementById('doce-save').addEventListener('click',function(){
+    var nombre = document.getElementById('doce-nombre').value.trim();
+    var rol = document.getElementById('doce-rol').value.trim();
+    if(!nombre||!rol){ document.getElementById('doce-msg').className='msg error'; document.getElementById('doce-msg').textContent='Falta nombre o rol.'; return; }
+    var doce = {
+      id: document.getElementById('doce-id').value || undefined,
+      nombre:nombre, rol:rol,
+      foto: document.getElementById('doce-foto').value.trim(),
+      frase: document.getElementById('doce-frase').value.trim(),
+      trayectoria: document.getElementById('doce-trayectoria').value.trim(),
+      instagram: document.getElementById('doce-instagram').value.trim(),
+      whatsapp: document.getElementById('doce-whatsapp').value.trim(),
+      precio: document.getElementById('doce-precio').value ? Number(document.getElementById('doce-precio').value) : null,
+      activo: document.getElementById('doce-activo').checked
+    };
+    var btn = document.getElementById('doce-save');
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    document.getElementById('doce-msg').className='msg'; document.getElementById('doce-msg').textContent='';
+
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'save',docente:doce})}).then(function(r){
+      btn.disabled = false;
+      if(r.status===401){ showLogin('Sesión expirada.'); return; }
+      if(r.data.error){ document.getElementById('doce-msg').className='msg error'; document.getElementById('doce-msg').textContent='Error: '+r.data.error; btn.textContent=doce.id?'Guardar cambios':'Guardar docente'; return; }
+      document.getElementById('doce-msg').className='msg ok'; document.getElementById('doce-msg').textContent='Guardado.';
+      resetDoceForm(); loadDocentes();
+    });
+  });
+
+  document.getElementById('doce-cancel').addEventListener('click', resetDoceForm);
+
+  // ─────────────────────────────────────
+  //  TAB: PUSH
+  // ─────────────────────────────────────
+  document.getElementById('push-send-btn').addEventListener('click',function(){
+    var title = document.getElementById('push-title').value.trim();
+    var body = document.getElementById('push-body').value.trim();
+    var url = document.getElementById('push-url').value.trim() || '/';
+    if(!title||!body){ document.getElementById('push-msg').className='msg error'; document.getElementById('push-msg').textContent='Falta título o mensaje.'; return; }
+    var btn = document.getElementById('push-send-btn');
+    btn.disabled = true; btn.textContent = 'Enviando…';
+    document.getElementById('push-msg').className='msg'; document.getElementById('push-msg').textContent='';
+
+    api('/api/push-send', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title:title,body:body,url:url})}).then(function(r){
+      btn.disabled = false; btn.textContent = 'Enviar a todos los suscriptos';
+      if(r.status===401){ document.getElementById('push-msg').className='msg error'; document.getElementById('push-msg').textContent='Sesión expirada.'; return; }
+      if(r.data.error){ document.getElementById('push-msg').className='msg error'; document.getElementById('push-msg').textContent='Error: '+r.data.error; return; }
+      document.getElementById('push-msg').className='msg ok';
+      document.getElementById('push-msg').textContent = 'Enviado a '+r.data.sent+' de '+r.data.total+' suscriptos.';
+      document.getElementById('push-title').value = '';
+      document.getElementById('push-body').value = '';
+      document.getElementById('push-url').value = '';
+    });
+  });
+
+  // ─────────────────────────────────────
+  //  TAB: CHAT IA
+  // ─────────────────────────────────────
+  (function(){
+    var log = document.getElementById('ai-chat-log');
+    var input = document.getElementById('ai-input');
+    var send = document.getElementById('ai-send');
+
+    function addMsg(text, who){
+      var div = document.createElement('div');
+      div.style.marginBottom = '0.5rem';
+      div.innerHTML = '<strong>'+(who==='user'?'Vos':'IA')+':</strong> '+text;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    send.addEventListener('click', function(){
+      var msg = input.value.trim();
+      if(!msg) return;
+      addMsg(msg, 'user');
+      input.value = '';
+      addMsg('Pensando…', 'ia');
+      api('/api/ai-admin/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg})}).then(function(r){
+        log.lastChild.innerHTML = '<strong>IA:</strong> '+(r.data.reply||'Sin respuesta');
+      }).catch(function(){
+        log.lastChild.innerHTML = '<strong>IA:</strong> Error de conexión';
+      });
+    });
+
+    input.addEventListener('keydown', function(e){ if(e.key==='Enter') send.click(); });
+  })();
+
+  // ── Init ─────────────────────────────
+  function showDashboard(){
+    loginBox.style.display = 'none';
+    dashboard.style.display = 'block';
+    switchTab('reservas');
+  }
+
+  checkSession();
 })();
 </script>
+
 </body>
 </html>

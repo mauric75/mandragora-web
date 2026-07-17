@@ -7,7 +7,6 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="description" content="Reservá la sala de Mandrágora o inscribite a talleres.">
 <link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -279,15 +278,6 @@ img{max-width:100%;display:block}
   <div class="step" id="step-taller-opciones">
     <p class="step-title">Elegí docente y disciplina</p>
     <div class="options" id="taller-opciones-list">
-      <div class="option-card" data-sub="actuacion" data-price="2500" data-wa="598XXXXXXXX">
-        <div class="option-card__title">Docente de Actuación</div><div class="option-card__price">Actuación · Dirección · $2.500</div>
-      </div>
-      <div class="option-card" data-sub="clown" data-price="2500" data-wa="598XXXXXXXX">
-        <div class="option-card__title">Docente de Clown</div><div class="option-card__price">Clown · Voz · $2.500</div>
-      </div>
-      <div class="option-card" data-sub="dramaturgia" data-price="2500" data-wa="598XXXXXXXX">
-        <div class="option-card__title">Docente de Dramaturgia</div><div class="option-card__price">Dramaturgia · Escritura · $2.500</div>
-      </div>
       <div class="option-card" data-sub="otro-taller" data-price="0">
         <div class="option-card__title">Consultar por otro taller</div><div class="option-card__price">a convenir</div>
       </div>
@@ -507,11 +497,15 @@ img{max-width:100%;display:block}
 
   // STEP 3: Contact + WhatsApp
   document.getElementById('back-3').addEventListener('click', function(){ showStep(2); });
-  document.getElementById('next-3').addEventListener('click', function(){
+  document.getElementById('next-3').addEventListener('click', async function(){
     var nombre = document.getElementById('nombre').value.trim();
     var whatsapp = document.getElementById('whatsapp').value.trim();
     if (!nombre || !whatsapp) {
       document.getElementById('status').textContent = 'Completá nombre y WhatsApp';
+      return;
+    }
+    if (!state.date) {
+      document.getElementById('status').textContent = 'Elegí una fecha';
       return;
     }
 
@@ -533,29 +527,38 @@ img{max-width:100%;display:block}
       + (mensaje ? 'Mensaje: ' + mensaje + '%0A' : '')
       + '%0AGracias!';
 
-    // Save to localStorage as backup (Supabase optional)
-    var reservas = JSON.parse(localStorage.getItem('mandragora-reservas') || '[]');
-    reservas.push({ servicio:state.service, fecha:state.date.toISOString(), nombre, whatsapp, email, mensaje, creado:new Date().toISOString() });
-    localStorage.setItem('mandragora-reservas', JSON.stringify(reservas));
+    var waNumber = state.wa || '59898914088'; // general Mandrágora number as fallback
+    var dateValue = [state.date.getFullYear(), String(state.date.getMonth() + 1).padStart(2, '0'), String(state.date.getDate()).padStart(2, '0')].join('-');
+    var whatsappWindow = window.open('https://wa.me/' + waNumber + '?text=' + msg, '_blank');
+    var submitButton = document.getElementById('next-3');
+    submitButton.disabled = true;
 
-    // Try Supabase if configured
-    var SUPABASE_URL = localStorage.getItem('sb-url') || '';
-    var SUPABASE_KEY = localStorage.getItem('sb-key') || '';
-    if (SUPABASE_URL && SUPABASE_KEY) {
-      var sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      sb.from('reservas').insert([{
-        servicio: state.service, fecha: state.date.toISOString().split('T')[0],
-        nombre: nombre, whatsapp: whatsapp, email: email, mensaje: mensaje
-      }]).then(function(r){
-        if (r.error) console.warn('Supabase error:', r.error);
+    var saved = false;
+    try {
+      var response = await fetch('/api/reservas', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', Accept: 'application/json'},
+        body: JSON.stringify({
+          servicio: state.service,
+          detalle: state.sub ? (subLabels[state.sub] || state.sub) : '',
+          fecha: dateValue,
+          nombre: nombre,
+          whatsapp: whatsapp,
+          email: email,
+          mensaje: mensaje
+        })
       });
+      saved = response.ok;
+    } catch (error) {
+      saved = false;
     }
 
-    var waNumber = state.wa || '59898914088'; // general Mandrágora number as fallback
     showStep(4);
-    setTimeout(function(){
-      window.open('https://wa.me/' + waNumber + '?text=' + msg, '_blank');
-    }, 600);
+    document.getElementById('confirmation-message').textContent = saved
+      ? 'Te llevamos a WhatsApp para confirmar los detalles.'
+      : 'WhatsApp se abrió, pero no pudimos registrar la reserva. Por favor, avisá al equipo al escribirnos.';
+    submitButton.disabled = false;
+    if (!whatsappWindow) document.getElementById('confirmation-message').textContent += ' Si no se abrió, revisá el bloqueo de ventanas emergentes.';
   });
 
   // lightbox
@@ -587,5 +590,30 @@ img{max-width:100%;display:block}
 </script>
 
 <script src="/assets/js/push.js" defer></script>
+<script>
+(function(){
+  var list = document.getElementById('taller-opciones-list');
+  if(!list) return;
+
+  fetch('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list'})})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var docentes = data.docentes || [];
+      var activos = (docentes||[]).filter(function(d){ return d.activo !== false; });
+      activos.forEach(function(d){
+        var card = document.createElement('div');
+        card.className = 'option-card';
+        card.setAttribute('data-sub', (d.nombre||'docente').toLowerCase().replace(/\s+/g,'-'));
+        card.setAttribute('data-price', d.precio || 2500);
+        if(d.whatsapp) card.setAttribute('data-wa', d.whatsapp);
+        card.innerHTML = '<div class="option-card__title">' + escHtml(d.nombre) + '</div>' +
+          '<div class="option-card__price">' + escHtml(d.rol) + ' · $' + (d.precio||2500) + '</div>';
+        list.insertBefore(card, list.firstChild);
+      });
+    });
+
+  function escHtml(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+})();
+</script>
 </body>
 </html>

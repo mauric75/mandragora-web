@@ -1,8 +1,10 @@
 // Vercel Serverless Function — gestiona data/noticias.json escribiendo directo al repo de GitHub.
 // No usa base de datos externa: el propio archivo JSON en el repo es la fuente de datos.
-// Protegida con NOTICIAS_ADMIN_SECRET (header: Authorization: Bearer <secreto>)
+// Auth: cookie mandragora_admin_session (admin/editor/consulta) o Bearer token (transición)
 //
 // POST body: { action: "list" | "save" | "delete", noticia?: {...}, id?: "..." }
+
+import { hasValidAdminSession } from './lib/admin-auth.js';
 
 const GITHUB_OWNER = 'mauric75';
 const GITHUB_REPO = 'mandragora-web';
@@ -45,9 +47,12 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
+  // Auth: cookie session (admin unificado) o Bearer token (compatibilidad)
+  const sessionRole = hasValidAdminSession(req);
   const adminSecret = process.env.NOTICIAS_ADMIN_SECRET;
   const authHeader = req.headers['authorization'] || '';
-  if (!adminSecret || authHeader !== `Bearer ${adminSecret}`) {
+
+  if (!sessionRole && (!adminSecret || authHeader !== `Bearer ${adminSecret}`)) {
     return res.status(401).json({ error: 'No autorizado' });
   }
 
