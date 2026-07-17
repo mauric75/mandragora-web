@@ -266,6 +266,40 @@ h1, h2, h3, h4, h5 {
 .back-to-top.is-visible { opacity: 1; pointer-events: auto; }
 .back-to-top:hover { border-color: var(--c-gold); transform: translateY(-2px); }
 
+/* cartelera de noticias (papel pegado) */
+.cartelera {
+  position: absolute;
+  background: #f3ece0;
+  color: #2a2115;
+  max-width: 200px;
+  padding: 1.1rem 1.2rem 1.3rem;
+  transform: rotate(-2.5deg);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.28), 0 2px 4px rgba(0,0,0,0.15);
+  font-family: 'Courier New', 'Courier', monospace;
+  display: none;
+  z-index: 15;
+}
+.cartelera.is-visible { display: block; }
+.cartelera--hero { top: 6.5rem; right: 1.5rem; }
+.cartelera::before {
+  content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(6deg);
+  width: 20px; height: 20px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e0473f, #8f1f1f);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+.cartelera__kicker {
+  font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+  opacity: 0.6; margin-bottom: 0.5rem; border-bottom: 1px dashed rgba(42,33,21,0.3); padding-bottom: 0.4rem;
+}
+.cartelera__title { font-size: 0.88rem; line-height: 1.35; font-weight: 700; margin-bottom: 0.5rem; }
+.cartelera__date { font-size: 0.64rem; opacity: 0.55; margin-bottom: 0.6rem; }
+.cartelera__link { font-size: 0.72rem; text-decoration: underline; color: #2a2115; }
+.cartelera__link:hover { color: #8f1f1f; }
+@media (max-width: 700px) {
+  .cartelera--hero { top: 5.5rem; right: 1rem; max-width: 150px; padding: 0.8rem 0.9rem 1rem; transform: rotate(-2deg); }
+  .cartelera__title { font-size: 0.8rem; }
+}
+
 /* cookie banner */
 .cookie-banner {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 9998;
@@ -746,6 +780,7 @@ h1, h2, h3, h4, h5 {
   border-top: 1px solid var(--c-border);
 }
 @media (min-width: 700px) { .casa-strip { grid-template-columns: 1fr 1fr; } }
+.casa-strip__media { position: relative; }
 .casa-strip img {
   width: 100%; aspect-ratio: 4/3; object-fit: cover;
   border: 1px solid var(--c-gold-faint);
@@ -974,6 +1009,13 @@ h1, h2, h3, h4, h5 {
     </div>
   </div>
 
+  <div class="cartelera cartelera--hero" id="cartelera">
+    <p class="cartelera__kicker">Recién pegado</p>
+    <p class="cartelera__title" id="cartelera-title">Cargando…</p>
+    <p class="cartelera__date" id="cartelera-date"></p>
+    <a href="noticias.html" class="cartelera__link">Leer más →</a>
+  </div>
+
   <a href="#threshold" class="hero__scroll-cue" aria-label="Entrar a Mandrágora">
     <span>Entrar</span>
     <i aria-hidden="true"></i>
@@ -1092,7 +1134,9 @@ h1, h2, h3, h4, h5 {
 
 <!-- ============ LA CASA ============ -->
 <section class="casa-strip reveal">
-  <img src="assets/images/fachada.jpg" alt="Fachada de Mandrágora" loading="lazy">
+  <div class="casa-strip__media">
+    <img src="assets/images/fachada.jpg" alt="Fachada de Mandrágora" loading="lazy">
+  </div>
   <div class="casa-strip__text">
     <p class="casa-strip__kicker">La casa</p>
     <p>Una casa antigua reconvertida en teatro, escuela y comunidad. <br>Montevideo, Uruguay.</p>
@@ -1325,6 +1369,31 @@ h1, h2, h3, h4, h5 {
 
   // PWA
   if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  fetch('data/noticias.json?t=' + Date.now(), { cache: 'no-store' })
+    .then(function(r){ return r.json(); })
+    .then(function(noticias){
+      var publicadas = (noticias || []).filter(function(n){ return n.publicada; });
+      if (!publicadas.length) return;
+      publicadas.sort(function(a,b){ return (b.fecha || '').localeCompare(a.fecha || ''); });
+
+      var ultima = publicadas[0];
+      var cartelera = document.getElementById('cartelera');
+      var titleEl = document.getElementById('cartelera-title');
+      var dateEl = document.getElementById('cartelera-date');
+      if (!cartelera || !titleEl || !dateEl) return;
+
+      titleEl.textContent = ultima.titulo;
+      dateEl.textContent = ultima.fecha ? new Date(ultima.fecha + 'T12:00:00').toLocaleDateString('es-UY', { day: 'numeric', month: 'long' }) : '';
+      cartelera.classList.add('is-visible');
+    })
+    .catch(function(){ /* si falla, la portada sigue funcionando igual sin noticias */ });
 })();
 </script>
 
