@@ -282,7 +282,7 @@ Respondé siempre en español, con claridad y precisión.`
     let loops = 0;
     while (loops < 3) {
       // Detectar tool calls en formato DeepSeek (usa <\|tool_calls\|> con pipes)
-      const dsMatch = reply?.match(/<\|tool_calls\|>([\s\S]*?)<\|tool_calls\|>/);
+      const dsMatch = reply?.match(/<\|tool_calls\|>([\s\S]*?)<\/tool_calls>/);
       // Detectar tool calls en formato nativo (OpenAI style)
       const nativeCalls = choice?.message?.tool_calls;
 
