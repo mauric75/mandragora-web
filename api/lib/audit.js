@@ -1,8 +1,9 @@
-import { createClient } from './supabase.js';
+import { getSupabaseAdmin } from './supabase.js';
 
 export async function logAdminAction(role, action, resource, details, req) {
   try {
-    const supabase = createClient();
+    const supabase = getSupabaseAdmin();
+    if (!supabase) return;
     const { error } = await supabase.from('admin_logs').insert({
       user_role: role || 'admin',
       action,

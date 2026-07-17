@@ -315,20 +315,29 @@ Respondé siempre en español, con claridad y precisión.`
         }
       }
 
-      response = await fetch(DEEPSEEK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-        body: JSON.stringify({
-          model: 'deepseek-chat',
-          messages,
-          temperature: 0.3,
-          max_tokens: 600,
-        }),
-      });
+      console.error('[CHAT] 2nd call, messages count:', messages.length);
+      try {
+        response = await fetch(DEEPSEEK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+          body: JSON.stringify({
+            model: 'deepseek-chat',
+            messages,
+            temperature: 0.3,
+            max_tokens: 600,
+          }),
+        });
 
-      data = await response.json();
-      choice = data.choices?.[0];
-      reply = choice?.message?.content || '';
+        data = await response.json();
+        console.error('[CHAT] 2nd response status:', response.status);
+        choice = data.choices?.[0];
+        reply = choice?.message?.content || '';
+        console.error('[CHAT] 2nd reply:', JSON.stringify(reply?.substring(0,200)));
+      } catch(e) {
+        console.error('[CHAT] 2nd call error:', e.message);
+        reply = 'Error al procesar la respuesta.';
+        break;
+      }
     }
 
     if (!reply || !reply.trim()) {
