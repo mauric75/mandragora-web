@@ -1,6 +1,6 @@
-import { checkAdminPassword, createSessionCookie, isAdminConfigured, hasValidAdminSession, clearSessionCookie } from '../lib/admin-auth.js';
-import { logAdminAction } from '../lib/audit.js';
-import { checkRateLimit } from '../lib/rate-limit.js';
+import { checkAdminPassword, createSessionCookie, isAdminConfigured, hasValidAdminSession, clearSessionCookie } from './lib/admin-auth.js';
+import { logAdminAction } from './lib/audit.js';
+import { checkRateLimit } from './lib/rate-limit.js';
 
 // Ruta unificada: /api/admin-auth
 // POST con ?action=login → login
