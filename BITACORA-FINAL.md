@@ -1,8 +1,10 @@
 # Bitácora completa — Admin unificado + Docentes + Chat IA
 
-**Rama:** `feature/admin-unificado` (desde `main` + merge `codex/ia-admin-pruebas`)  
+**Rama:** `feature/admin-unificado` → mergeado a `main`  
 **Fecha:** 2026-07-17  
-**URL Preview:** https://deploy-i6qygltd5-mauricio-s-projects1.vercel.app/admin.html
+**URL Producción:** https://deploy-phi-wheat.vercel.app/admin.html  
+**URL Preview:** https://deploy-i6qygltd5-mauricio-s-projects1.vercel.app/admin.html  
+**Commit merge:** `dd344f6` — "merge admin unificado docentes y chat IA a produccion"
 
 ---
 
@@ -152,21 +154,25 @@ El endpoint implementa un loop de hasta 3 rondas:
 
 ## 4. Variables de entorno en Vercel
 
-### Production y Preview (feature/admin-unificado)
+### Production + Preview
 
 | Variable | Estado |
 |----------|--------|
-| `ADMIN_PASSWORD` | ✅ |
-| `ADMIN_PASSWORD_EDITOR` | ✅ |
-| `ADMIN_PASSWORD_CONSULTA` | ✅ |
-| `ADMIN_SESSION_SECRET` | ✅ |
-| `DEEPSEEK_API_KEY` | ✅ |
-| `SUPABASE_URL` | ✅ |
-| `SUPABASE_SERVICE_ROLE_KEY` | ✅ |
+| `ADMIN_PASSWORD` | ✅ Production + Preview |
+| `ADMIN_PASSWORD_EDITOR` | ✅ Production + Preview |
+| `ADMIN_PASSWORD_CONSULTA` | ✅ Production + Preview |
+| `ADMIN_SESSION_SECRET` | ✅ Production + Preview |
+| `DEEPSEEK_API_KEY` | ✅ Production + Preview |
+| `SUPABASE_URL` | ✅ Production + Preview |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ Production + Preview |
 | `GITHUB_TOKEN` | ✅ Production + Preview |
-| `GITHUB_BRANCH` | `feature/admin-unificado` (Preview) |
+| `GITHUB_BRANCH` | `main` (Production) / `feature/admin-unificado` (Preview) |
 | `NOTICIAS_ADMIN_SECRET` | ✅ (compatibilidad) |
 | `PUSH_ADMIN_SECRET` | ✅ (compatibilidad) |
+| `VAPID_PUBLIC_KEY` | ⚠️ Solo Preview |
+| `VAPID_PRIVATE_KEY` | ⚠️ Solo Preview |
+| `VAPID_SUBJECT` | ⚠️ Solo Preview |
+| `MERCADOPAGO_ACCESS_TOKEN` | ⚠️ No configurado |
 
 ---
 
@@ -214,3 +220,33 @@ fe2d4f9 admin unificado con 4 pestanas y cookie auth
 | `GITHUB_BRANCH` no configurado → leía de `main` | Agregada variable en Preview |
 | Vercel Authentication bloqueaba producción | Desactivado en Deployment Protection |
 | Límite de 12 funciones Vercel | Unificado MercadoPago (2→1) |
+
+---
+
+## 8. Deploy a producción
+
+**Fecha:** 2026-07-17  
+**Commit:** `dd344f6`  
+**URL:** https://deploy-phi-wheat.vercel.app
+
+### Resultados
+
+| Endpoint | Estado |
+|----------|--------|
+| Login | ✅ 204 |
+| Reservas | ✅ 200 |
+| Noticias | ✅ 200 |
+| Docentes (público) | ✅ 200 |
+| Chat IA | ✅ 200 |
+| Push | ⚠️ 500 (faltan VAPID keys en Production) |
+| MercadoPago | ⚠️ 500 (falta token en Production) |
+| Escuela | ✅ 200 |
+| Compañía | ✅ 200 |
+| Admin | ✅ 200 |
+
+### Pendientes para producción 100%
+
+- Agregar `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` en Production para Push
+- Agregar `MERCADOPAGO_ACCESS_TOKEN` real en Production
+- Probar chat IA con escritura en producción (puede necesitar GITHUB_BRANCH=main)
+
