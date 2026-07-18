@@ -29,5 +29,17 @@
     "link_tickets": "https://redtickets.uy/evento/BODAS-DE-SANGRE/31186/",
     "texto_boton": "Entradas",
     "publicado": true
+  },
+  {
+    "id": "evento-1784334539999",
+    "titulo": "Atrapada en la Pantalla",
+    "fecha": "2025-06-27",
+    "hora": "",
+    "tipo": "Teatro",
+    "categoria": "Compañía Mandrágora",
+    "descripcion": "Vuelve renovada en su segunda temporada. Campus y Galatea emprenden una nueva aventura para salvar a su tía Dafne de una misteriosa y loca inteligencia artificial. Nominada a 3 premios Florencio: mejor texto, escenografía y obra educativa. Del 27 de junio al 5 de julio en Teatro Mandrágora.",
+    "link_tickets": "https://redtickets.com",
+    "texto_boton": "Entradas",
+    "publicado": true
   }
 ]
