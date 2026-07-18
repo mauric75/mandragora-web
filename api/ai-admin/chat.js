@@ -77,6 +77,34 @@ async function writeAgendaJSON(eventos, sha, message) {
   return 'OK';
 }
 
+// ── Helpers para noticias.json ────────────────────────────────
+
+const NOTICIAS_PATH = 'data/noticias.json';
+
+async function readNoticiasJSON() {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) throw new Error('GITHUB_TOKEN no configurado');
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${NOTICIAS_PATH}?ref=${GITHUB_BRANCH}`, {
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json' },
+  });
+  if (!res.ok) return { noticias: [], sha: null };
+  const json = await res.json();
+  const content = Buffer.from(json.content, 'base64').toString('utf-8');
+  return { noticias: JSON.parse(content), sha: json.sha };
+}
+
+async function writeNoticiasJSON(noticias, sha, message) {
+  const token = process.env.GITHUB_TOKEN;
+  const encoded = Buffer.from(JSON.stringify(noticias, null, 2) + '\n', 'utf-8').toString('base64');
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${NOTICIAS_PATH}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, content: encoded, sha, branch: GITHUB_BRANCH }),
+  });
+  if (!res.ok) throw new Error('No se pudo escribir noticias.json');
+  return 'OK';
+}
+
 // ── Helper genérico para GitHub API ─────────────────────────
 
 async function githubRequest(path, options = {}) {
@@ -237,6 +265,52 @@ const TOOLS = [
       },
     },
   },
+  {
+    type: 'function',
+    function: {
+      name: 'listar_noticias',
+      description: 'Lista las noticias. Se puede filtrar por publicadas o borrador.',
+      parameters: {
+        type: 'object',
+        properties: {
+          estado: { type: 'string', enum: ['publicada', 'borrador'], description: 'Filtrar por estado' },
+        },
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'crear_noticia',
+      description: 'Crea una nueva noticia. Solo admin y editor. Si el usuario te da un texto informal, redactalo como noticia formal antes de crearla. Elegí un buen título.',
+      parameters: {
+        type: 'object',
+        properties: {
+          titulo: { type: 'string', description: 'Título de la noticia' },
+          texto: { type: 'string', description: 'Cuerpo de la noticia' },
+          tipo: { type: 'string', enum: ['anuncio', 'prensa'], description: 'anuncio (propio) o prensa (nota externa)' },
+          imagen: { type: 'string', description: 'URL de imagen opcional' },
+          link: { type: 'string', description: 'Link externo opcional' },
+        },
+        required: ['titulo', 'texto'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'actualizar_noticia',
+      description: 'Actualiza una noticia existente. Buscala por título. Solo admin y editor.',
+      parameters: {
+        type: 'object',
+        properties: {
+          titulo: { type: 'string', description: 'Título de la noticia a buscar' },
+          cambios: { type: 'object', description: 'Campos a cambiar: titulo, texto, tipo, imagen, link, publicada' },
+        },
+        required: ['titulo', 'cambios'],
+      },
+    },
+  },
 ];
 
 // ── Ejecutar herramienta contra datos reales ──────────────────
@@ -369,6 +443,73 @@ async function executeTool(name, args) {
     }
   }
 
+  // ── Noticias ─────────────────────────
+
+  if (name === 'listar_noticias') {
+    try {
+      const { noticias } = await readNoticiasJSON();
+      let items = noticias || [];
+      if (args?.estado === 'publicada') items = items.filter(n => n.publicada !== false);
+      if (args?.estado === 'borrador') items = items.filter(n => !n.publicada);
+      if (!items.length) return 'No hay noticias' + (args?.estado ? ' en estado ' + args.estado : '') + '.';
+      return JSON.stringify(items.map(n => ({
+        titulo: n.titulo, texto: n.texto, tipo: n.tipo, fecha: n.fecha,
+        publicada: n.publicada, imagen: n.imagen, link: n.link, id: n.id
+      })));
+    } catch (e) {
+      return 'Error al consultar noticias: ' + e.message;
+    }
+  }
+
+  if (name === 'crear_noticia') {
+    const role = args?._role;
+    if (role !== 'admin' && role !== 'editor') return 'Solo admin y editor pueden crear noticias.';
+    if (!args?.titulo || !args?.texto) return 'Falta título o texto.';
+    try {
+      const { noticias, sha } = await readNoticiasJSON();
+      const nueva = {
+        id: 'noticia-' + Date.now(),
+        titulo: args.titulo, texto: args.texto,
+        tipo: args.tipo || 'anuncio', imagen: args.imagen || '', link: args.link || '',
+        fecha: new Date().toISOString().slice(0,10), publicada: true,
+      };
+      noticias.unshift(nueva);
+      const msg = `IA: crear noticia "${nueva.titulo}"`;
+      if (sha) {
+        await writeNoticiasJSON(noticias, sha, msg);
+      } else {
+        const encoded = Buffer.from(JSON.stringify(noticias, null, 2) + '\n', 'utf-8').toString('base64');
+        await githubRequest(`contents/data/noticias.json`, {
+          method: 'PUT',
+          headers: { Authorization: `token ${process.env.GITHUB_TOKEN}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg, content: encoded, branch: GITHUB_BRANCH }),
+        });
+      }
+      return 'Noticia "' + nueva.titulo + '" creada.';
+    } catch (e) {
+      return 'Error al crear noticia: ' + e.message;
+    }
+  }
+
+  if (name === 'actualizar_noticia') {
+    const role = args?._role;
+    if (role !== 'admin' && role !== 'editor') return 'Solo admin y editor pueden modificar noticias.';
+    try {
+      const { noticias, sha } = await readNoticiasJSON();
+      const tituloBuscado = (args?.titulo || '').toLowerCase();
+      const idx = noticias.findIndex(n => n.titulo.toLowerCase().includes(tituloBuscado));
+      if (idx === -1) return 'No encontré una noticia que coincida con "' + (args?.titulo || '') + '".';
+      const cambios = args?.cambios || {};
+      Object.keys(cambios).forEach(k => {
+        if (cambios[k] !== undefined) noticias[idx][k] = cambios[k];
+      });
+      await writeNoticiasJSON(noticias, sha, `IA: actualizar noticia "${noticias[idx].titulo}"`);
+      return 'Noticia "' + noticias[idx].titulo + '" actualizada.';
+    } catch (e) {
+      return 'Error al actualizar: ' + e.message;
+    }
+  }
+
   if (name === 'actualizar_docente') {
     const role = args?._role;
     if (role !== 'admin' && role !== 'editor') return 'Solo admin y editor pueden modificar docentes.';
@@ -479,11 +620,15 @@ Podés consultar y modificar datos reales usando las herramientas disponibles:
 - crear_evento: crea un nuevo evento (requiere título y fecha YYYY-MM-DD)
 - actualizar_evento: modifica un evento existente
 - proximo_evento: muestra el próximo evento
+- listar_noticias: lista las noticias (filtrar por publicada/borrador)
+- crear_noticia: crea una noticia. Si te pasan texto informal, redactalo como noticia formal con buen título
+- actualizar_noticia: modifica una noticia existente
 Si el usuario te pide hacer algo, respondé ÚNICAMENTE con un bloque JSON así:
 \`\`\`json
 {"tool": "nombre_de_herramienta", "args": {"campo1": "valor1", ...}}
 \`\`\`
-Para actualizar_docente usá el id o nombre del docente y los campos a cambiar directamente en args (sin wrapper cambios).
+Para actualizar_docente y actualizar_noticia usá el id o nombre y los campos a cambiar directamente en args (sin wrapper cambios).
+Para crear_noticia, si el usuario te da un texto crudo (ej: "este finde hay función"), convertilo en una noticia bien redactada con un título atractivo.
 No agregues texto antes ni después del bloque JSON cuando uses una herramienta.
 Respondé siempre en español, con claridad y precisión.`
       },
