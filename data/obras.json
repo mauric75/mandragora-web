@@ -1,0 +1,32 @@
+[
+  {
+    "id": "obra-1",
+    "titulo": "Atrapada en la pantalla",
+    "descripcion": "Una aventura interactiva para infancias. Dos hermanos rescatan a su tía atrapada en un celular. Nominada a 3 premios Florencio.",
+    "estado": "presente",
+    "fecha_texto": "Julio 2026 · Funciones los sábados",
+    "imagenes": [
+      "assets/images/obra-atrapada.jpg"
+    ]
+  },
+  {
+    "id": "obra-2",
+    "titulo": "Con las manos atadas",
+    "descripcion": "La impotencia como punto de partida. Un ejercicio escénico sobre lo que no podemos controlar y lo que elegimos soltar.",
+    "estado": "futura",
+    "fecha_texto": "Agosto 2026",
+    "imagenes": [
+      "assets/images/obra-manos-atadas.jpg"
+    ]
+  },
+  {
+    "id": "obra-3",
+    "titulo": "La inevitable crisis del actor",
+    "descripcion": "Detrás del personaje hay una persona. Detrás de la persona, una pregunta que no se deja de hacer. Un biodrama sobre el oficio.",
+    "estado": "futura",
+    "fecha_texto": "Setiembre 2026",
+    "imagenes": [
+      "assets/images/obra-crisis-actor.jpg"
+    ]
+  }
+]
