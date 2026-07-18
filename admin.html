@@ -1061,7 +1061,7 @@ a:hover { text-decoration: underline; }
   })();
 
   // ── Upload de imágenes ────────────────
-  function uploadFile(input, textId, previewId){
+  window.uploadFile = function(input, textId, previewId){
     var file = input.files && input.files[0];
     if(!file) return;
 
