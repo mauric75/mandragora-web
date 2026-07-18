@@ -311,6 +311,48 @@ const TOOLS = [
       },
     },
   },
+  {
+    type: 'function',
+    function: {
+      name: 'borrar_noticia',
+      description: 'Borra una noticia existente. Buscala por título. SOLO admin. Pedí confirmación antes de ejecutar.',
+      parameters: {
+        type: 'object',
+        properties: {
+          titulo: { type: 'string', description: 'Título de la noticia a borrar' },
+        },
+        required: ['titulo'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'borrar_evento',
+      description: 'Borra un evento de la agenda. Buscalo por título. SOLO admin. Pedí confirmación antes de ejecutar.',
+      parameters: {
+        type: 'object',
+        properties: {
+          titulo: { type: 'string', description: 'Título del evento a borrar' },
+        },
+        required: ['titulo'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'cruzar_evento_reservas',
+      description: 'Busca en las reservas aquellas que coincidan con el nombre de un evento. Devuelve cuántas reservas hay y sus estados.',
+      parameters: {
+        type: 'object',
+        properties: {
+          evento: { type: 'string', description: 'Nombre del evento a buscar en las reservas' },
+        },
+        required: ['evento'],
+      },
+    },
+  },
 ];
 
 // ── Ejecutar herramienta contra datos reales ──────────────────
@@ -515,6 +557,65 @@ async function executeTool(name, args) {
     }
   }
 
+  if (name === 'borrar_noticia') {
+    if (args?._role !== 'admin') return 'Solo el admin puede borrar noticias.';
+    try {
+      const { noticias, sha } = await readNoticiasJSON();
+      const tituloBuscado = (args?.titulo || '').toLowerCase();
+      const idx = noticias.findIndex(n => n.titulo.toLowerCase().includes(tituloBuscado));
+      if (idx === -1) return 'No encontré una noticia que coincida con "' + (args?.titulo || '') + '".';
+      const borrada = noticias[idx];
+      const filtered = noticias.filter((_, i) => i !== idx);
+      await writeNoticiasJSON(filtered, sha, `IA: borrar noticia "${borrada.titulo}"`);
+      return 'Noticia "' + borrada.titulo + '" borrada.';
+    } catch (e) {
+      return 'Error al borrar: ' + e.message;
+    }
+  }
+
+  if (name === 'borrar_evento') {
+    if (args?._role !== 'admin') return 'Solo el admin puede borrar eventos.';
+    try {
+      const { eventos, sha } = await readAgendaJSON();
+      if (!sha) return 'No hay eventos para borrar.';
+      const tituloBuscado = (args?.titulo || '').toLowerCase();
+      const idx = eventos.findIndex(e => e.titulo.toLowerCase().includes(tituloBuscado));
+      if (idx === -1) return 'No encontré un evento que coincida con "' + (args?.titulo || '') + '".';
+      const borrado = eventos[idx];
+      const filtered = eventos.filter((_, i) => i !== idx);
+      await writeAgendaJSON(filtered, sha, `IA: borrar evento "${borrado.titulo}"`);
+      return 'Evento "' + borrado.titulo + '" borrado.';
+    } catch (e) {
+      return 'Error al borrar: ' + e.message;
+    }
+  }
+
+  if (name === 'cruzar_evento_reservas') {
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+      const termino = (args?.evento || '').toLowerCase();
+      const { data, error } = await supabase.from('reservas').select('*').order('fecha', { ascending: false }).limit(100);
+      if (error) return 'Error al consultar reservas: ' + error.message;
+      const coincidencias = (data || []).filter(r => {
+        const texto = ((r.detalle || '') + ' ' + (r.mensaje || '')).toLowerCase();
+        return texto.includes(termino);
+      });
+      if (!coincidencias.length) return 'No hay reservas que coincidan con "' + (args?.evento || '') + '".';
+      const porEstado = {};
+      coincidencias.forEach(r => { porEstado[r.estado] = (porEstado[r.estado] || 0) + 1; });
+      return JSON.stringify({
+        total: coincidencias.length,
+        porEstado,
+        reservas: coincidencias.map(r => ({
+          fecha: r.fecha, nombre: r.nombre, estado: r.estado, detalle: r.detalle
+        }))
+      });
+    } catch (e) {
+      return 'Error: ' + e.message;
+    }
+  }
+
   if (name === 'actualizar_docente') {
     const role = args?._role;
     if (role !== 'admin' && role !== 'editor') return 'Solo admin y editor pueden modificar docentes.';
@@ -628,6 +729,10 @@ Podés consultar y modificar datos reales usando las herramientas disponibles:
 - listar_noticias: lista las noticias (filtrar por publicada/borrador)
 - crear_noticia: crea una noticia. Si te pasan texto informal, redactalo como noticia formal con buen título
 - actualizar_noticia: modifica una noticia existente
+- borrar_noticia: borra una noticia (solo admin, pedí confirmación antes)
+- borrar_evento: borra un evento (solo admin, pedí confirmación antes)
+- cruzar_evento_reservas: busca reservas que coincidan con el nombre de un evento
+También podés ayudar redactando textos para redes sociales o descripciones si el usuario te lo pide. En ese caso no uses herramientas, solo respondé con el texto sugerido.
 Si el usuario te pide hacer algo, respondé ÚNICAMENTE con un bloque JSON así:
 \`\`\`json
 {"tool": "nombre_de_herramienta", "args": {"campo1": "valor1", ...}}
