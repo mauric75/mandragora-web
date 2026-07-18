@@ -39,6 +39,7 @@
 - reservar.html → carga opciones de docente desde /api/docentes
 - agenda.html → carga eventos desde /api/agenda (agrupados por mes)
 - noticias.html → carga desde data/noticias.json (estático, requiere deploy)
+- **noticias.html edit inline**: si hay sesión admin activa (cookie), muestra link "✎ Editar" en cada noticia que redirige al panel admin. Detecta con fetch('/api/admin-auth'), sin contraseña extra.
 
 ## Auth
 - Cookie HMAC (mandragora_admin_session, 30 min)
