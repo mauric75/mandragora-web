@@ -17,5 +17,17 @@
     "fecha": "2026-08-10",
     "publicado": true,
     "id": "evento-1784330821022"
+  },
+  {
+    "id": "evento-1784332908652",
+    "titulo": "Bodas de Sangre",
+    "fecha": "2026-08-01",
+    "hora": "21:00",
+    "tipo": "Teatro",
+    "categoria": "Compañía de Teatro Independiente",
+    "descripcion": "En el marco del aniversario N° 90 del fallecimiento de Federico García Lorca, Leneas Teatro Independiente elije una de las tragedias más emblemáticas del teatro universal. Bajo la dirección de Matías Sosa, con un elenco de 16 artistas en escena, esta versión de Bodas de Sangre propone un recorrido intenso por el amor, la pasión, el destino y las traiciones. Autor: Federico García Lorca. Género: Tragedia. Dirección: Matías Sosa.",
+    "link_tickets": "",
+    "texto_boton": "Entradas",
+    "publicado": true
   }
 ]
