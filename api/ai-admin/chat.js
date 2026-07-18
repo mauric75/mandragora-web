@@ -500,6 +500,11 @@ async function executeTool(name, args) {
       const idx = noticias.findIndex(n => n.titulo.toLowerCase().includes(tituloBuscado));
       if (idx === -1) return 'No encontré una noticia que coincida con "' + (args?.titulo || '') + '".';
       const cambios = args?.cambios || {};
+      // También aceptar campos directos como cambios
+      const camposDirectos = ['titulo','texto','tipo','imagen','link','publicada','fecha'];
+      camposDirectos.forEach(k => {
+        if (args[k] !== undefined) cambios[k] = args[k];
+      });
       Object.keys(cambios).forEach(k => {
         if (cambios[k] !== undefined) noticias[idx][k] = cambios[k];
       });
