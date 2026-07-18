@@ -73,7 +73,13 @@
 - Botones de estado en reservas (pendiente → contactada → confirmada → cancelada)
 - UI con restricciones por rol (esconder botón borrar para no-admin)
 - Schema.org SEO
-- Reels en menú
 - Migrar a hosting con dominio mandragora.uy
 - MercadoPago con token real
 - Chat IA con memoria de conversación
+- Galería de obras (plan en docs/PLAN-GALERIA-OBRAS.md)
+
+## Completado reciente
+- ✅ Reels en menú y footer de las 14 páginas
+- ✅ Noticias con edit inline (si hay sesión admin, muestra "✎ Editar")
+- ✅ Sistema de obras (data/obras.json + api/docentes.js extendido por Claude)
+- ✅ Upload de imágenes a Supabase Storage
