@@ -592,7 +592,9 @@ a:hover { text-decoration: underline; }
   document.getElementById('logout-btn').addEventListener('click', logout);
 
   // ── Tabs ─────────────────────────────
+  var VALID_TABS = ['reservas','noticias','docentes','agenda','push','chat'];
   function switchTab(tabName){
+    if(VALID_TABS.indexOf(tabName)===-1) tabName = 'reservas';
     document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.remove('active'); });
     document.querySelector('.tabs button[data-tab="'+tabName+'"]').classList.add('active');
     document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('is-active'); });
@@ -708,6 +710,21 @@ a:hover { text-decoration: underline; }
     document.getElementById('noti-save').textContent = 'Guardar noticia';
   }
 
+  function fillNotiForm(noti){
+    document.getElementById('noti-id').value = noti.id;
+    document.getElementById('noti-titulo').value = noti.titulo||'';
+    document.getElementById('noti-texto').value = noti.texto||'';
+    document.getElementById('noti-tipo').value = noti.tipo||'anuncio';
+    document.getElementById('noti-link').value = noti.link||'';
+    document.getElementById('noti-imagen').value = noti.imagen||'';
+    document.getElementById('noti-publicada').checked = !!noti.publicada;
+    document.getElementById('noti-cancel').style.display = 'inline-block';
+    document.getElementById('noti-save').textContent = 'Guardar cambios';
+    document.getElementById('tab-noticias').scrollIntoView({behavior:'smooth'});
+  }
+
+  var pendingEditId = new URLSearchParams(location.search).get('edit');
+
   function loadNoticias(){
     api('/api/noticias-save', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list'})}).then(function(r){
       if(r.status===401){ showLogin('Sesión expirada.'); return; }
@@ -715,6 +732,11 @@ a:hover { text-decoration: underline; }
       noticiasData = r.data.noticias || [];
       renderNoticias();
       statsNoticias.textContent = noticiasData.filter(function(n){ return n.publicada; }).length;
+      if(pendingEditId){
+        var target = noticiasData.find(function(n){ return n.id===pendingEditId; });
+        if(target) fillNotiForm(target);
+        pendingEditId = null;
+      }
     });
   }
 
@@ -740,16 +762,7 @@ a:hover { text-decoration: underline; }
       var id = card.dataset.id;
       var noti = noticiasData.find(function(n){ return n.id===id; });
       card.querySelector('.noti-edit').addEventListener('click',function(){
-        document.getElementById('noti-id').value = noti.id;
-        document.getElementById('noti-titulo').value = noti.titulo||'';
-        document.getElementById('noti-texto').value = noti.texto||'';
-        document.getElementById('noti-tipo').value = noti.tipo||'anuncio';
-        document.getElementById('noti-link').value = noti.link||'';
-        document.getElementById('noti-imagen').value = noti.imagen||'';
-        document.getElementById('noti-publicada').checked = !!noti.publicada;
-        document.getElementById('noti-cancel').style.display = 'inline-block';
-        document.getElementById('noti-save').textContent = 'Guardar cambios';
-        document.getElementById('tab-noticias').scrollIntoView({behavior:'smooth'});
+        fillNotiForm(noti);
       });
       card.querySelector('.noti-delete').addEventListener('click',function(){
         if(!confirm('¿Borrar "'+noti.titulo+'"? No se deshace.')) return;
@@ -1102,7 +1115,8 @@ a:hover { text-decoration: underline; }
   function showDashboard(){
     loginBox.style.display = 'none';
     dashboard.style.display = 'block';
-    switchTab('reservas');
+    var urlTab = new URLSearchParams(location.search).get('tab');
+    switchTab(urlTab || 'reservas');
   }
 
   checkSession();
