@@ -427,8 +427,10 @@ a:hover { text-decoration: underline; }
     <select id="noti-tipo"><option value="anuncio">Anuncio</option><option value="prensa">Prensa</option></select>
     <label>Link externo (opcional)</label>
     <input type="url" id="noti-link" placeholder="https://...">
-    <label>Imagen (URL, opcional)</label>
+    <label>Imagen (URL, subir archivo o pegar link)</label>
     <input type="text" id="noti-imagen" placeholder="assets/images/...">
+    <input type="file" id="noti-imagen-file" accept="image/*" style="margin-bottom:0.5rem" onchange="uploadFile(this,'noti-imagen','noti-imagen-preview')">
+    <img id="noti-imagen-preview" style="max-width:120px;max-height:120px;display:none;border-radius:4px;margin-bottom:0.5rem">
     <label class="inline"><input type="checkbox" id="noti-publicada" checked> Publicada</label>
     <label class="inline"><input type="checkbox" id="noti-push"> Avisar por push al guardar</label>
     <input type="hidden" id="noti-id">
@@ -449,8 +451,10 @@ a:hover { text-decoration: underline; }
     <input type="text" id="doce-nombre" placeholder="Nombre del docente" maxlength="80">
     <label>Rol / Disciplinas</label>
     <input type="text" id="doce-rol" placeholder="Actuación . Dirección" maxlength="120">
-    <label>Foto (URL o path)</label>
+    <label>Foto (URL o subir archivo)</label>
     <input type="text" id="doce-foto" placeholder="assets/images/elenco/nombre.jpeg">
+    <input type="file" id="doce-foto-file" accept="image/*" style="margin-bottom:0.5rem" onchange="uploadFile(this,'doce-foto','doce-foto-preview')">
+    <img id="doce-foto-preview" style="max-width:120px;max-height:120px;display:none;border-radius:4px;margin-bottom:0.5rem">
     <label>Frase</label>
     <textarea id="doce-frase" placeholder="Cita personal del docente" maxlength="200"></textarea>
     <label>Trayectoria</label>
@@ -1055,6 +1059,45 @@ a:hover { text-decoration: underline; }
 
     input.addEventListener('keydown', function(e){ if(e.key==='Enter') send.click(); });
   })();
+
+  // ── Upload de imágenes ────────────────
+  function uploadFile(input, textId, previewId){
+    var file = input.files && input.files[0];
+    if(!file) return;
+
+    // Mostrar preview local
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var preview = document.getElementById(previewId);
+      if(preview){ preview.src = e.target.result; preview.style.display = 'block'; }
+    };
+    reader.readAsDataURL(file);
+
+    // Subir al servidor
+    var formData = new FormData();
+    formData.append('file', file);
+
+    // Cambiar el placeholder mientras sube
+    var textInput = document.getElementById(textId);
+    if(textInput) textInput.placeholder = 'Subiendo...';
+
+    fetch('/api/docentes', {
+      method: 'POST',
+      credentials: 'same-origin',
+      body: formData,
+      headers: { 'X-Action': 'upload' }
+    }).then(function(r){ return r.json(); })
+      .then(function(data){
+        if(data.url){
+          if(textInput){ textInput.value = data.url; textInput.placeholder = ''; }
+        } else {
+          if(textInput) textInput.placeholder = 'Error: ' + (data.error || 'desconocido');
+          alert('Error al subir: ' + (data.error || 'desconocido'));
+        }
+      }).catch(function(e){
+        if(textInput) textInput.placeholder = 'Error de conexión';
+      });
+  }
 
   // ── Init ─────────────────────────────
   function showDashboard(){

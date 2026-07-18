@@ -57,39 +57,25 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
-  const branch = process.env.GITHUB_BRANCH || 'main';
+  // upload — detectado por Content-Type multipart
+  const contentType = req.headers['content-type'] || '';
+  if (contentType.includes('multipart/form-data')) {
+    const role = hasValidAdminSession(req);
+    if (!role) return res.status(401).json({ error: 'No autorizado' });
 
-  if (!process.env.GITHUB_TOKEN) {
-    return res.status(500).json({ error: 'Falta la variable de entorno GITHUB_TOKEN' });
-  }
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !serviceKey) return res.status(500).json({ error: 'Supabase no configurado' });
 
-  try {
-    const { action, docente, id } = req.body || {};
-
-    // list es público — lo usan las páginas del sitio
-    if (action === 'list') {
-      const { docentes } = await readDocentes(branch);
-      return res.status(200).json({ ok: true, docentes, branch });
-    }
-
-    // upload — subir imagen a Supabase Storage
-    if (action === 'upload') {
-      const supabaseUrl = process.env.SUPABASE_URL;
-      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-      if (!supabaseUrl || !serviceKey) {
-        return res.status(500).json({ error: 'Supabase no configurado' });
-      }
-
+    try {
       const buffers = [];
       for await (const chunk of req) { buffers.push(chunk); }
       const rawBody = Buffer.concat(buffers);
-      const ct = req.headers['content-type'] || '';
-      const bm = ct.match(/boundary=(.+)/);
+      const bm = contentType.match(/boundary=(.+)/);
       if (!bm) return res.status(400).json({ error: 'multipart requerido' });
 
       const boundary = bm[1].trim();
       const parts = rawBody.toString('binary').split('--' + boundary);
-
       let fileBuffer = null, fileName = 'img-' + Date.now() + '.jpg', fileType = 'image/jpeg';
       for (const part of parts) {
         if (!part.includes('filename=')) continue;
@@ -104,13 +90,8 @@ export default async function handler(req, res) {
         fileBuffer = Buffer.from(bin.substring(0, cleanEnd), 'binary');
         break;
       }
-
-      if (!fileBuffer || fileBuffer.length === 0) {
-        return res.status(400).json({ error: 'Archivo no encontrado' });
-      }
-      if (fileBuffer.length > 5 * 1024 * 1024) {
-        return res.status(400).json({ error: 'Máximo 5 MB' });
-      }
+      if (!fileBuffer || fileBuffer.length === 0) return res.status(400).json({ error: 'Archivo no encontrado' });
+      if (fileBuffer.length > 5 * 1024 * 1024) return res.status(400).json({ error: 'Máximo 5 MB' });
 
       const supabase = createClient(supabaseUrl, serviceKey);
       const filePath = 'public/' + Date.now() + '-' + fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -120,6 +101,24 @@ export default async function handler(req, res) {
 
       logAdminAction(getAdminSessionRole(req), 'upload', 'imagen', { path: filePath }, req);
       return res.status(200).json({ ok: true, url: urlData?.publicUrl || '', path: filePath });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  const branch = process.env.GITHUB_BRANCH || 'main';
+
+  if (!process.env.GITHUB_TOKEN) {
+    return res.status(500).json({ error: 'Falta la variable de entorno GITHUB_TOKEN' });
+  }
+
+  try {
+    const { action, docente, id } = req.body || {};
+
+    // list es público — lo usan las páginas del sitio
+    if (action === 'list') {
+      const { docentes } = await readDocentes(branch);
+      return res.status(200).json({ ok: true, docentes, branch });
     }
 
     // save y delete requieren auth
