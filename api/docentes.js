@@ -2,10 +2,12 @@
 // Auth: cookie mandragora_admin_session (admin/editor/consulta)
 // Solo admin puede hacer delete.
 //
-// POST body: { action: "list" | "save" | "delete", docente?: {...}, id?: "..." }
+// POST body: { action: "list" | "save" | "delete" | "upload", docente?: {...}, id?: "..." }
+// upload: multipart/form-data con campo "file"
 
 import { hasValidAdminSession, getAdminSessionRole } from './lib/admin-auth.js';
 import { logAdminAction } from './lib/audit.js';
+import { createClient } from '@supabase/supabase-js';
 
 const GITHUB_OWNER = 'mauric75';
 const GITHUB_REPO = 'mandragora-web';
@@ -68,6 +70,56 @@ export default async function handler(req, res) {
     if (action === 'list') {
       const { docentes } = await readDocentes(branch);
       return res.status(200).json({ ok: true, docentes, branch });
+    }
+
+    // upload — subir imagen a Supabase Storage
+    if (action === 'upload') {
+      const supabaseUrl = process.env.SUPABASE_URL;
+      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (!supabaseUrl || !serviceKey) {
+        return res.status(500).json({ error: 'Supabase no configurado' });
+      }
+
+      const buffers = [];
+      for await (const chunk of req) { buffers.push(chunk); }
+      const rawBody = Buffer.concat(buffers);
+      const ct = req.headers['content-type'] || '';
+      const bm = ct.match(/boundary=(.+)/);
+      if (!bm) return res.status(400).json({ error: 'multipart requerido' });
+
+      const boundary = bm[1].trim();
+      const parts = rawBody.toString('binary').split('--' + boundary);
+
+      let fileBuffer = null, fileName = 'img-' + Date.now() + '.jpg', fileType = 'image/jpeg';
+      for (const part of parts) {
+        if (!part.includes('filename=')) continue;
+        const fnMatch = part.match(/filename="([^"]+)"/);
+        if (fnMatch) fileName = fnMatch[1];
+        const ctMatch = part.match(/Content-Type:\s*([^\r\n]+)/);
+        if (ctMatch) fileType = ctMatch[1].trim();
+        const headerEnd = part.indexOf('\r\n\r\n');
+        if (headerEnd === -1) continue;
+        const bin = part.substring(headerEnd + 4);
+        const cleanEnd = bin.endsWith('\r\n') ? bin.length - 2 : bin.length;
+        fileBuffer = Buffer.from(bin.substring(0, cleanEnd), 'binary');
+        break;
+      }
+
+      if (!fileBuffer || fileBuffer.length === 0) {
+        return res.status(400).json({ error: 'Archivo no encontrado' });
+      }
+      if (fileBuffer.length > 5 * 1024 * 1024) {
+        return res.status(400).json({ error: 'Máximo 5 MB' });
+      }
+
+      const supabase = createClient(supabaseUrl, serviceKey);
+      const filePath = 'public/' + Date.now() + '-' + fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const { error } = await supabase.storage.from('imagenes').upload(filePath, fileBuffer, { contentType: fileType, upsert: true });
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from('imagenes').getPublicUrl(filePath);
+
+      logAdminAction(getAdminSessionRole(req), 'upload', 'imagen', { path: filePath }, req);
+      return res.status(200).json({ ok: true, url: urlData?.publicUrl || '', path: filePath });
     }
 
     // save y delete requieren auth
