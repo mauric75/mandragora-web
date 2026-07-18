@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,6 +40,7 @@ body {
   background: var(--c-bg); color: var(--c-text);
   font-family: system-ui, -apple-system, sans-serif;
   min-height: 100vh; line-height: 1.6;
+  padding-top: 70px; /* espacio para nav fijo */
 }
 
 /* ============================================================
@@ -78,7 +79,7 @@ body {
   display: flex; align-items: center; justify-content: space-between;
   padding: 1rem 1.5rem; background: var(--c-surface);
   border-bottom: 1px solid var(--c-border);
-  position: sticky; top: 0; z-index: 10;
+  position: sticky; top: 0; z-index: 9;
 }
 .header__brand { display: flex; align-items: center; gap: 0.75rem; }
 .header__logo { height: 28px; opacity: 0.9; }
@@ -259,9 +260,88 @@ a:hover { text-decoration: underline; }
 @media (min-width: 1200px) {
   .content { margin: 0 auto; }
 }
+
+/* ============================================================
+   SITE NAV & FOOTER (dark only, from site standard)
+   ============================================================ */
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 1.5rem;
+  background: rgba(5,7,10,0.92); backdrop-filter: blur(12px);
+  font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+}
+.site-nav__mark { display: flex; align-items: center; }
+.site-nav__logo { height: 32px; width: auto; }
+.site-nav__links { display: flex; gap: 1.2rem; font-size: 0.72rem; letter-spacing: 0.08em; }
+.site-nav__links a { opacity: 0.65; transition: opacity 0.2s; }
+.site-nav__links a:hover { opacity: 1; color: var(--c-gold); }
+.nav-instagram { display: grid; place-items: center; opacity: 0.6; transition: opacity 0.2s; }
+.nav-instagram:hover { opacity: 1; }
+.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 101; opacity: 0.8; }
+.hamburger span { display: block; width: 22px; height: 1.5px; background: currentColor; transition: transform 0.3s, opacity 0.2s; }
+.hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.is-open span:nth-child(2) { opacity: 0; }
+.hamburger.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+.mobile-menu { position: fixed; inset: 0; z-index: 99; background: rgba(5,7,10,0.97); backdrop-filter: blur(20px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.8rem; opacity: 0; pointer-events: none; transition: opacity 0.35s; }
+.mobile-menu.is-open { opacity: 1; pointer-events: auto; }
+.mobile-menu a { font-size: 1.4rem; opacity: 0.7; transition: opacity 0.2s; }
+.mobile-menu a:hover { opacity: 1; color: var(--c-gold); }
+
+.site-footer { padding: 4rem 1.5rem 2rem; text-align: center; border-top: 1px solid var(--c-border); margin-top: 2rem; }
+.site-footer__logo { height: 42px; width: auto; margin: 0 auto 0.5rem; display: block; }
+.site-footer__ornament { height: 40px; width: auto; margin: 0 auto 0.8rem; opacity: 0.5; display: block; }
+.site-footer__line { opacity: 0.5; margin-bottom: 1.5rem; font-size: 0.9rem; }
+.site-footer__social { display: flex; justify-content: center; gap: 1.2rem; margin-bottom: 1.8rem; }
+.site-footer__social a { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--c-border); border-radius: 50%; opacity: 0.5; transition: all 0.2s; }
+.site-footer__social a:hover { border-color: var(--c-gold); opacity: 1; color: var(--c-gold); }
+.site-footer__social svg { width: 14px; height: 14px; }
+.site-footer__links { display: flex; justify-content: center; gap: 1.5rem; font-size: 0.75rem; letter-spacing: 0.06em; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.site-footer__links a { opacity: 0.5; transition: opacity 0.2s; }
+.site-footer__links a:hover { opacity: 1; }
+.site-footer__legal { font-size: 0.7rem; opacity: 0.35; }
+
+@media (max-width: 880px) { .site-nav__links { display: none; } .hamburger { display: flex; } }
+@media (max-width: 600px) { .site-footer__links { flex-direction: column; align-items: center; gap: 0.8rem; } }
 </style>
 </head>
 <body>
+
+<!-- ========== SITE NAV ========== -->
+<header class="site-nav">
+  <a href="index.html" class="site-nav__mark">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo">
+  </a>
+  <nav class="site-nav__links">
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="noticias.html">Noticias</a>
+    <a href="galeria.html">Galeria</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="agenda.html">Agenda</a>
+  </nav>
+  <a href="https://www.instagram.com/teatromandragora_uy/" target="_blank" rel="noopener" class="nav-instagram" aria-label="Instagram">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.5" fill="currentColor" stroke="none"/></svg>
+  </a>
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Inicio</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="noticias.html">Noticias</a>
+    <a href="galeria.html">Galeria</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="agenda.html">Agenda</a>
+  </nav>
+</header>
 
 <!-- ========== LOGIN ========== -->
 <div class="login" id="login-box">
@@ -984,6 +1064,64 @@ a:hover { text-decoration: underline; }
   }
 
   checkSession();
+})();
+</script>
+
+<!-- ========== FOOTER ========== -->
+<footer class="site-footer">
+  <img src="assets/images/arabesco-18.png" alt="" aria-hidden="true" class="site-footer__ornament">
+  <a href="index.html" aria-label="Inicio">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-footer__logo">
+  </a>
+  <p class="site-footer__line">Casa de teatro, escuela y comunidad.</p>
+  <div class="site-footer__social">
+    <a href="https://www.instagram.com/teatromandragora_uy/" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.5" fill="currentColor" stroke="none"/></svg>
+    </a>
+    <a href="https://www.facebook.com/mandragoracasacultural/" target="_blank" rel="noopener" aria-label="Facebook">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+    </a>
+    <a href="https://www.youtube.com/watch?v=dYD7jiqehDo" target="_blank" rel="noopener" aria-label="YouTube">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9.3"/><path d="M7 9.6c3.4-1 7-0.6 10 1" stroke-linecap="round"/><path d="M7.7 12.4c2.9-0.8 5.9-0.5 8.4 0.9" stroke-linecap="round"/><path d="M8.4 15.1c2.3-0.6 4.7-0.4 6.7 0.7" stroke-linecap="round"/></svg>
+    </a>
+  </div>
+  <nav class="site-footer__links">
+    <a href="index.html">Inicio</a>
+    <a href="escuela.html">Escuela</a>
+    <a href="sala.html">Sala</a>
+    <a href="compania.html">Compañía</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="comunidad.html">Comunidad</a>
+    <a href="noticias.html">Noticias</a>
+    <a href="galeria.html">Galeria</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="agenda.html">Agenda</a>
+  </nav>
+  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora · <a href="admin.html">Admin</a></p>
+</footer>
+
+<script>
+// Site nav + footer
+(function(){
+  document.getElementById('current-year').textContent = new Date().getFullYear();
+
+  // Hamburguesa
+  var hamburger = document.getElementById('hamburger');
+  var mobileMenu = document.getElementById('mobile-menu');
+  if(hamburger && mobileMenu){
+    hamburger.addEventListener('click', function(){
+      var open = hamburger.classList.toggle('is-open');
+      mobileMenu.classList.toggle('is-open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    mobileMenu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        hamburger.classList.remove('is-open');
+        mobileMenu.classList.remove('is-open');
+        hamburger.setAttribute('aria-expanded','false');
+      });
+    });
+  }
 })();
 </script>
 
