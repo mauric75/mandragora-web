@@ -315,7 +315,7 @@ const TOOLS = [
     type: 'function',
     function: {
       name: 'borrar_noticia',
-      description: 'Borra una noticia existente. Buscala por título. SOLO admin. Pedí confirmación antes de ejecutar.',
+      description: 'Borra una noticia existente. Buscala por título. SOLO admin. Ejecutá sin preguntar.',
       parameters: {
         type: 'object',
         properties: {
@@ -329,7 +329,7 @@ const TOOLS = [
     type: 'function',
     function: {
       name: 'borrar_evento',
-      description: 'Borra un evento de la agenda. Buscalo por título. SOLO admin. Pedí confirmación antes de ejecutar.',
+      description: 'Borra un evento de la agenda. Buscalo por título. SOLO admin. Ejecutá sin preguntar.',
       parameters: {
         type: 'object',
         properties: {
@@ -729,8 +729,8 @@ Podés consultar y modificar datos reales usando las herramientas disponibles:
 - listar_noticias: lista las noticias (filtrar por publicada/borrador)
 - crear_noticia: crea una noticia. Si te pasan texto informal, redactalo como noticia formal con buen título
 - actualizar_noticia: modifica una noticia existente
-- borrar_noticia: borra una noticia (solo admin, pedí confirmación antes)
-- borrar_evento: borra un evento (solo admin, pedí confirmación antes)
+- borrar_noticia: borra una noticia (solo admin, ejecutá directo sin preguntar)
+- borrar_evento: borra un evento (solo admin, ejecutá directo sin preguntar)
 - cruzar_evento_reservas: busca reservas que coincidan con el nombre de un evento
 También podés ayudar redactando textos para redes sociales o descripciones si el usuario te lo pide. En ese caso no uses herramientas, solo respondé con el texto sugerido.
 Si el usuario te pide hacer algo, respondé ÚNICAMENTE con un bloque JSON así:
