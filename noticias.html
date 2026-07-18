@@ -125,6 +125,9 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 .noticia-card p { color: var(--c-cream-dim); font-size: 1rem; margin-bottom: 0.8rem; }
 .noticia-card a.noticia-card__link { color: var(--c-gold); font-size: 0.9rem; }
 .noticia-card a.noticia-card__link:hover { color: var(--c-gold-bright); }
+.noticia-card__edit { display: none; margin-left: 1rem; color: var(--c-cream-faint); font-size: 0.9rem; }
+body.is-admin .noticia-card__edit { display: inline-block; }
+.noticia-card__edit:hover { color: var(--c-gold); }
 
 .site-footer { padding: 5rem var(--gutter) 2.5rem; text-align: center; background: var(--c-bg); border-top: 1px solid var(--c-border); }
 .site-footer__logo { height: 56px; width: auto; margin: 0 auto 1rem; display: block; }
@@ -275,13 +278,14 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
       var fechaFmt = n.fecha ? new Date(n.fecha + 'T12:00:00').toLocaleDateString('es-UY', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
       var imagen = n.imagen ? '<img class="noticia-card__imagen" src="' + escapeHtml(n.imagen) + '" alt="" loading="lazy">' : '';
       var link = n.link ? '<a class="noticia-card__link" href="' + escapeHtml(n.link) + '" target="_blank" rel="noopener">Ver más →</a>' : '';
+      var editLink = '<a class="noticia-card__edit" href="/admin.html?tab=noticias&edit=' + encodeURIComponent(n.id || '') + '">✎ Editar</a>';
       return (
         '<article class="noticia-card reveal">' +
           '<div class="noticia-card__meta"><span class="noticia-card__badge">' + badge + '</span><span>' + fechaFmt + '</span></div>' +
           '<h2>' + escapeHtml(n.titulo) + '</h2>' +
           imagen +
           '<p>' + escapeHtml(n.texto) + '</p>' +
-          link +
+          link + editLink +
         '</article>'
       );
     }).join('');
@@ -291,6 +295,12 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
     }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
     document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
   }
+
+  // Si hay sesión de admin activa (cookie httpOnly, se valida en el servidor),
+  // se muestran los links de "Editar" en cada noticia.
+  fetch('/api/admin-auth', { credentials: 'same-origin' })
+    .then(function(r){ if (r.ok) document.body.classList.add('is-admin'); })
+    .catch(function(){});
 
   fetch('data/noticias.json?t=' + Date.now(), { cache: 'no-store' })
     .then(function(r){ return r.json(); })
