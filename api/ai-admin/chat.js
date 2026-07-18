@@ -701,10 +701,12 @@ Respondé siempre en español, con claridad y precisión.`
     }
 
     // Si no hay reply pero se ejecutaron herramientas, dar confirmación
-    if ((!reply || !reply.trim() || reply.trim().length < 5) && messages.length > 2) {
+    if (reply && reply.trim().length > 5) {
+      // La IA respondió con texto, todo bien
+    } else if (messages.length > 2) {
       reply = '¡Listo! La acción se completó correctamente.';
-    } else if (!reply || !reply.trim()) {
-      reply = 'Lo siento, no pude procesar esa acción. Intentá decirlo de otra forma.';
+    } else {
+      reply = 'No pude ejecutar esa acción. ¿Podés intentarlo de otra forma?';
     }
 
     logAdminAction(role, 'ai-chat', 'ai-admin', { message: message.slice(0, 200), reply: reply.slice(0, 200) }, req);
