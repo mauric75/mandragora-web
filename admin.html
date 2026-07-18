@@ -1084,8 +1084,7 @@ a:hover { text-decoration: underline; }
     fetch('/api/docentes', {
       method: 'POST',
       credentials: 'same-origin',
-      body: formData,
-      headers: { 'X-Action': 'upload' }
+      body: formData
     }).then(function(r){ return r.json(); })
       .then(function(data){
         if(data.url){
