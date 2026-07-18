@@ -5,7 +5,8 @@
 - Admin: https://deploy-phi-wheat.vercel.app/admin.html
 - Rama: main
 - Vercel Hobby (límite 12 funciones — estamos en 11/12 justo)
-- Pass admin: MandragoraAdmin2026!
+- Pass admin: <ver en Vercel — Settings → Environment Variables → ADMIN_PASSWORD>
+- **IMPORTANTE:** si esta doc mostraba antes la contraseña real, esa contraseña ya estuvo pública en un repo público y debe considerarse comprometida — rotarla.
 
 ## Arquitectura
 - HTML estático + serverless functions en api/
