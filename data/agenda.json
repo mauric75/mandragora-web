@@ -41,5 +41,17 @@
     "link_tickets": "https://redtickets.com",
     "texto_boton": "Entradas",
     "publicado": true
+  },
+  {
+    "id": "evento-1784346841325",
+    "titulo": "Estreno: [Obra de Germán Madrid]",
+    "fecha": "2025-08-08",
+    "hora": "20:00",
+    "tipo": "Teatro",
+    "categoria": "Compañía Mandrágora",
+    "descripcion": "Estreno de la nueva obra con dramaturgia de Germán Madrid y dirección general de Freddy González. Un drama introspectivo y social que analiza las conductas humanas en entornos de presión, explorando la ambición, las necesidades de subsistencia y los dilemas éticos profundos. Bajo el sello oficial del Teatro Mandrágora Escuela de Artes.",
+    "link_tickets": "",
+    "texto_boton": "Entradas",
+    "publicado": true
   }
 ]
