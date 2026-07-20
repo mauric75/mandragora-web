@@ -2,9 +2,9 @@
   {
     "id": "obra-1",
     "titulo": "Atrapada en la pantalla",
-    "descripcion": "Una aventura interactiva para infancias. Dos hermanos rescatan a su tía atrapada en un celular. Nominada a 3 premios Florencio.",
+    "descripcion": "Canopus y Galatea, dos hermanos divertidos y disparatados, deben rescatar a su tía Dafne, atrapada dentro de su propio teléfono por una tecnología misteriosa. Una misión de rescate inmersiva y llena de fantasía. Nominada a 3 premios Florencio. Obra interactiva para infancias (+5 años) que invita a reflexionar sobre el uso responsable de las pantallas.",
     "estado": "presente",
-    "fecha_texto": "Julio 2026 · Funciones los sábados",
+    "fecha_texto": "Julio 2026 · Funciones los sábados · Teatro Mandrágora",
     "imagenes": [
       "assets/images/obra-atrapada.jpg"
     ]
@@ -12,9 +12,9 @@
   {
     "id": "obra-2",
     "titulo": "Con las manos atadas",
-    "descripcion": "La impotencia como punto de partida. Un ejercicio escénico sobre lo que no podemos controlar y lo que elegimos soltar.",
+    "descripcion": "La impotencia como punto de partida. Un ejercicio escénico sobre lo que no podemos controlar y lo que elegimos soltar. Dirigida por el elenco estable.",
     "estado": "futura",
-    "fecha_texto": "Agosto 2026",
+    "fecha_texto": "Agosto 2026 · Estreno",
     "imagenes": [
       "assets/images/obra-manos-atadas.jpg"
     ]
@@ -22,9 +22,9 @@
   {
     "id": "obra-3",
     "titulo": "La inevitable crisis del actor",
-    "descripcion": "Detrás del personaje hay una persona. Detrás de la persona, una pregunta que no se deja de hacer. Un biodrama sobre el oficio.",
+    "descripcion": "Detrás del personaje hay una persona. Detrás de la persona, una pregunta que no se deja de hacer. Un biodrama sobre el oficio de actuar.",
     "estado": "futura",
-    "fecha_texto": "Setiembre 2026",
+    "fecha_texto": "Setiembre 2026 · Estreno",
     "imagenes": [
       "assets/images/obra-crisis-actor.jpg"
     ]
