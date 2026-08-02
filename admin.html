@@ -1294,9 +1294,12 @@ a:hover { text-decoration: underline; }
 
       var formData = new FormData();
       formData.append('file', file);
-      fetch('/api/docentes', { method:'POST', credentials:'same-origin', body:formData })
-        .then(function(r){ return r.json(); })
-        .then(function(data){
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/docentes', true);
+      xhr.withCredentials = true;
+      xhr.onload = function(){
+        try {
+          var data = JSON.parse(xhr.responseText);
           if(data.url){
             previewDiv.innerHTML = '<strong>Vos:</strong> <img src="'+data.url+'" style="max-width:120px;max-height:120px;border-radius:6px;vertical-align:middle;margin-right:0.5rem;"> ✅ Lista';
             log.scrollTop = log.scrollHeight;
@@ -1305,10 +1308,16 @@ a:hover { text-decoration: underline; }
             previewDiv.innerHTML = '<strong>Vos:</strong> ❌ Error: '+(data.error||'desconocido');
             cb(null);
           }
-        }).catch(function(){
-          previewDiv.innerHTML = '<strong>Vos:</strong> ❌ Error de conexión';
+        } catch(e){
+          previewDiv.innerHTML = '<strong>Vos:</strong> ❌ Error: respuesta inválida ('+xhr.status+')';
           cb(null);
-        });
+        }
+      };
+      xhr.onerror = function(){
+        previewDiv.innerHTML = '<strong>Vos:</strong> ❌ Error de conexión (status '+xhr.status+')';
+        cb(null);
+      };
+      xhr.send(formData);
     }
 
     // ── Enviar mensaje a la IA ───────────
