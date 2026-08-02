@@ -157,7 +157,13 @@ export default async function handler(req, res) {
       if (obra.id) {
         const idx = obras.findIndex((o) => o.id === obra.id);
         if (idx === -1) return res.status(404).json({ error: 'Obra no encontrada' });
-        obras[idx] = { ...obras[idx], ...obra, id: obras[idx].id };
+        // Merge selectivo: solo pisa campos definidos en el payload
+        const obraActualizada = { ...obras[idx] };
+        for (const key of Object.keys(obra)) {
+          if (obra[key] !== undefined) obraActualizada[key] = obra[key];
+        }
+        obraActualizada.id = obras[idx].id;
+        obras[idx] = obraActualizada;
       } else {
         obra.id = 'obra-' + Date.now();
         obra.imagenes = obra.imagenes || [];
@@ -222,7 +228,13 @@ export default async function handler(req, res) {
       if (docente.id) {
         const idx = docentes.findIndex((d) => d.id === docente.id);
         if (idx === -1) return res.status(404).json({ error: 'Docente no encontrado' });
-        docentes[idx] = { ...docentes[idx], ...docente, id: docentes[idx].id };
+        // Merge selectivo: solo pisa campos definidos en el payload
+        const docenteActualizado = { ...docentes[idx] };
+        for (const key of Object.keys(docente)) {
+          if (docente[key] !== undefined) docenteActualizado[key] = docente[key];
+        }
+        docenteActualizado.id = docentes[idx].id;
+        docentes[idx] = docenteActualizado;
       } else {
         docente.id = 'docente-' + Date.now();
         docente.activo = docente.activo !== false;
