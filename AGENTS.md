@@ -121,6 +121,8 @@ Todos los endpoints aceptan solo POST (excepto OPTIONS para CORS).
 2. **Supabase plan gratuito:** se pausa tras 7 días de inactividad. Hay que resumirlo manualmente.
 3. **Roles admin/editor/consulta:** implementados parcialmente (ver `docs/DIAGNOSTICO-ROLES.md`). En la práctica solo se usa admin.
 4. **Merge bug en docentes.js:** ya arreglado (merge selectivo, no borra campos ausentes).
+5. **⚠️ `vercel --prod` desde feature branch pisa producción.** Ocurrió el 2/8/2026: un deploy desde `feature/foto-freddy` tomó el alias `deploy-phi-wheat.vercel.app` y rompió el upload de imágenes porque las env vars de Supabase no estaban en ese preview. **Solución:** siempre hacer `vercel --prod` desde `main`.
+6. **Archivos pesados en el repo saturan ZCode.** PDFs >10MB, MP3 y OGG en `docs/` causan errores de contexto. El `.gitignore` ya excluye `docs/*.mp3`, `docs/*.ogg`, `docs/*.pdf` y `assets/docs/`. Si agregás archivos pesados, asegurate de que estén en `.gitignore`.
 
 ## Contacto
 
