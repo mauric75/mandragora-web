@@ -544,6 +544,37 @@ a:hover { text-decoration: underline; }
     <div id="obras-list"></div>
   </section>
 
+  <!-- ====== TAB: OBRAS ====== -->
+  <section class="tab-panel" id="tab-obras">
+    <h2>Nueva obra</h2>
+    <label>Título</label>
+    <input type="text" id="obra-titulo" placeholder="Nombre de la obra" maxlength="100">
+    <label>Descripción</label>
+    <textarea id="obra-descripcion" placeholder="Descripción general" maxlength="500"></textarea>
+    <label>Sinopsis</label>
+    <textarea id="obra-sinopsis" placeholder="Sinopsis breve" maxlength="300"></textarea>
+    <label>Elenco</label>
+    <input type="text" id="obra-elenco" placeholder="Nombres del elenco">
+    <label>Dirección</label>
+    <input type="text" id="obra-direccion" placeholder="Nombre del director/a">
+    <label>Estado</label>
+    <select id="obra-estado">
+      <option value="presente">En cartel</option>
+      <option value="futura">Próximo estreno</option>
+      <option value="pasada">Histórica</option>
+    </select>
+    <label>Fecha / Temporada</label>
+    <input type="text" id="obra-fecha" placeholder="Julio 2026 · Sábados 16hs">
+    <input type="hidden" id="obra-id">
+    <div style="display:flex;gap:0.5rem">
+      <button class="primary" id="obra-save">Guardar obra</button>
+      <button class="secondary" id="obra-cancel" style="display:none">Cancelar</button>
+    </div>
+    <div class="msg" id="obra-msg"></div>
+    <h2 style="margin-top:2rem">Obras existentes</h2>
+    <div id="obras-list"></div>
+  </section>
+
   <!-- ====== TAB: PUSH ====== -->
   <section class="tab-panel" id="tab-push">
     <h2>Enviar notificación push</h2>
@@ -639,6 +670,7 @@ a:hover { text-decoration: underline; }
     if(tabName==='noticias') loadNoticias();
     if(tabName==='docentes') loadDocentes();
     if(tabName==='agenda') loadAgenda();
+    if(tabName==='obras') loadObras();
     if(tabName==='obras') loadObras();
   }
 
@@ -1064,6 +1096,9 @@ a:hover { text-decoration: underline; }
     document.getElementById('obra-id').value = '';
     document.getElementById('obra-titulo').value = '';
     document.getElementById('obra-descripcion').value = '';
+    document.getElementById('obra-sinopsis').value = '';
+    document.getElementById('obra-elenco').value = '';
+    document.getElementById('obra-direccion').value = '';
     document.getElementById('obra-estado').value = 'presente';
     document.getElementById('obra-fecha').value = '';
     document.getElementById('obra-imagen-staging').value = '';
@@ -1133,6 +1168,9 @@ a:hover { text-decoration: underline; }
         document.getElementById('obra-id').value = obra.id;
         document.getElementById('obra-titulo').value = obra.titulo||'';
         document.getElementById('obra-descripcion').value = obra.descripcion||'';
+        document.getElementById('obra-sinopsis').value = obra.sinopsis||'';
+        document.getElementById('obra-elenco').value = obra.elenco||'';
+        document.getElementById('obra-direccion').value = obra.direccion||'';
         document.getElementById('obra-estado').value = obra.estado||'presente';
         document.getElementById('obra-fecha').value = obra.fecha_texto||'';
         obraImagenesPendientes = (obra.imagenes||[]).slice();
@@ -1155,14 +1193,17 @@ a:hover { text-decoration: underline; }
     var titulo = document.getElementById('obra-titulo').value.trim();
     var estado = document.getElementById('obra-estado').value;
     if(!titulo){ document.getElementById('obra-msg').className='msg error'; document.getElementById('obra-msg').textContent='Falta el título.'; return; }
-    var obra = {
-      id: document.getElementById('obra-id').value || undefined,
-      titulo: titulo,
-      descripcion: document.getElementById('obra-descripcion').value.trim(),
-      estado: estado,
-      fecha_texto: document.getElementById('obra-fecha').value.trim(),
-      imagenes: obraImagenesPendientes.slice()
-    };
+      var obra = {
+        id: document.getElementById('obra-id').value || undefined,
+        titulo: titulo,
+        descripcion: document.getElementById('obra-descripcion').value.trim(),
+        sinopsis: document.getElementById('obra-sinopsis').value.trim(),
+        elenco: document.getElementById('obra-elenco').value.trim(),
+        direccion: document.getElementById('obra-direccion').value.trim(),
+        estado: estado,
+        fecha_texto: document.getElementById('obra-fecha').value.trim(),
+        imagenes: obraImagenesPendientes.slice()
+      };
     var btn = document.getElementById('obra-save');
     btn.disabled = true; btn.textContent = 'Guardando…';
     document.getElementById('obra-msg').className='msg'; document.getElementById('obra-msg').textContent='';
