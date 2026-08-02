@@ -46,5 +46,13 @@
     "whatsapp": "",
     "precio": 2500,
     "activo": true
+  },
+  {
+    "nombre": "Freddy González",
+    "rol": "Dirección · Actuación · Escenografía",
+    "frase": "Más de 70 espectáculos dirigidos desde los años 80.",
+    "trayectoria": "Premios Florencio · Carnaval de Uruguay · Teatro del Notariado · Ser Humana · Onírika",
+    "activo": true,
+    "id": "docente-1785639120520"
   }
 ]
