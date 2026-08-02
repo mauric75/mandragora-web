@@ -335,6 +335,10 @@ h1, h2, h3, h4 {
   letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--c-gold);
 }
+.elenco-card__toggle { background: none; border: 1px solid var(--c-gold-dim); color: var(--c-gold); padding: 0.25em 0.8em; border-radius: 4px; cursor: pointer; font-size: 0.72rem; margin-top: 0.4rem; transition: all 0.2s; }
+.elenco-card__toggle:hover { background: var(--c-gold-faint); }
+.elenco-card__extra { display: none; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--c-border); }
+.elenco-card__extra.is-open { display: block; }
 
 /* ============================================================
    MANIFIESTO
@@ -713,14 +717,27 @@ h1, h2, h3, h4 {
 
       grid.innerHTML = activos.map(function(d){
         var foto = d.foto || 'assets/images/elenco/WhatsApp Image 2026-06-14 at 1.22.29 PM.jpeg';
+        var trayect = d.trayectoria ? '<p style="font-size:0.82rem;color:var(--c-gold);margin-top:0.4rem">' + escHtml(d.trayectoria) + '</p>' : '';
+        var ig = d.instagram
+          ? '<a href="https://www.instagram.com/' + escAttr(d.instagram.replace('@','')) + '" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--c-cream-faint);display:inline-flex;align-items:center;gap:0.3rem;margin-top:0.3rem">📷 ' + escAttr(d.instagram) + '</a>'
+          : '';
+        var tieneExtra = d.trayectoria || d.instagram || d.whatsapp;
         return '<article class="elenco-card reveal">' +
           '<div class="elenco-card__photo"><img src="' + escAttr(foto) + '" alt="' + escAttr(d.nombre) + '" loading="lazy"></div>' +
           '<h4>' + escHtml(d.nombre) + '</h4>' +
           '<p class="elenco-card__rol">' + escHtml(d.rol) + '</p>' +
+          (tieneExtra ? '<button class="elenco-card__toggle">+ M\u00e1s info</button><div class="elenco-card__extra">' + trayect + ig + '</div>' : (trayect + ig)) +
         '</article>';
       }).join('');
 
       setTimeout(function(){
+        document.querySelectorAll('.elenco-card__toggle').forEach(function(btn){
+          btn.addEventListener('click', function(){
+            var extra = btn.parentElement.querySelector('.elenco-card__extra');
+            var open = extra.classList.toggle('is-open');
+            btn.textContent = open ? '− Menos info' : '+ Más info';
+          });
+        });
         document.querySelectorAll('.elenco-card.reveal').forEach(function(c){
           var obs = new IntersectionObserver(function(e){
             e.forEach(function(entry){ if(entry.isIntersecting) entry.target.classList.add('is-visible'); });
