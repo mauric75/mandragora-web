@@ -244,9 +244,6 @@ h1, h2, h3, h4, h5 {
   border: 1px solid currentColor; padding: 0.45em 1em; border-radius: 2px;
 }
 
-.theme-toggle:hover { opacity: 1; transform: rotate(15deg); }
-.theme-toggle:active { transform: rotate(180deg); }
-
 /* back to top */
 .back-to-top {
   position: fixed; bottom: 2rem; right: 1.5rem; z-index: 90;
@@ -1396,7 +1393,7 @@ h1, h2, h3, h4, h5 {
   });
 
   // theme toggle
-  var toggle = document.getElementById('theme-toggle');
+  var toggle = document.getElementById('theme-toggle'); if(toggle){
   var html = document.documentElement;
   var saved = localStorage.getItem('mandragora-theme');
   if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; }
@@ -1404,7 +1401,8 @@ h1, h2, h3, h4, h5 {
     var isDark = html.getAttribute('data-theme') === 'dark';
     if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '\u2600'; localStorage.setItem('mandragora-theme','light'); }
     else { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; localStorage.setItem('mandragora-theme','dark'); }
-  });
+  })
+  };
 
   // hamburger
   var hamburger = document.getElementById('hamburger');

@@ -142,8 +142,6 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 .site-nav__links a:hover { opacity: 1; }
 .site-nav__links a.is-active { opacity: 1; color: var(--c-gold); }
 
-.theme-toggle:hover { opacity: 1; transform: rotate(15deg); }
-.theme-toggle:active { transform: rotate(180deg); }
 @media (min-width: 880px) { .site-nav__links { display: flex; } }
 @media (max-width: 600px) { .site-nav__logo { height: 28px; } }
 /* hamburger */
@@ -470,7 +468,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 
   document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
 
-  var toggle = document.getElementById('theme-toggle');
+  var toggle = document.getElementById('theme-toggle'); if(toggle){
   var html = document.documentElement;
   var saved = localStorage.getItem('mandragora-theme');
   if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; }
@@ -478,7 +476,8 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
     var isDark = html.getAttribute('data-theme') === 'dark';
     if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '\u2600'; localStorage.setItem('mandragora-theme','light'); }
     else { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; localStorage.setItem('mandragora-theme','dark'); }
-  });
+  })
+  };
 
   // hamburger
   var hamburger = document.getElementById('hamburger');

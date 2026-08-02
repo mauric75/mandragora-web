@@ -143,8 +143,6 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 [data-theme="dark"] .site-nav__logo-light { display: none; }
 [data-theme="dark"] .site-nav__logo-dark { display: block; }
 
-.theme-toggle:hover { opacity: 1; transform: rotate(15deg); }
-.theme-toggle:active { transform: rotate(180deg); }
 .site-nav__links { display: none; gap: 2rem; font-family: var(--f-body); letter-spacing: 0.08em; font-size: 0.74rem; }
 .site-nav__links a { opacity: 0.72; transition: opacity 0.3s var(--ease); }
 .site-nav__links a:hover { opacity: 1; }
@@ -507,7 +505,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
   document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
 
   // theme toggle
-  var toggle = document.getElementById('theme-toggle');
+  var toggle = document.getElementById('theme-toggle'); if(toggle){
   var html = document.documentElement;
   var saved = localStorage.getItem('mandragora-theme');
   if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; }
@@ -515,7 +513,8 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
     var isDark = html.getAttribute('data-theme') === 'dark';
     if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '☀'; localStorage.setItem('mandragora-theme','light'); }
     else { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; localStorage.setItem('mandragora-theme','dark'); }
-  });
+  })
+  };
 
   // hamburger
   var hamburger = document.getElementById('hamburger');

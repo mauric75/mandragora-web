@@ -95,8 +95,6 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 .site-nav__links a:hover { opacity: 1; }
 .site-nav__links a.is-active { opacity: 1; color: var(--c-gold); }
 
-.theme-toggle:hover { opacity: 1; transform: rotate(15deg); }
-.theme-toggle:active { transform: rotate(180deg); }
 .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 101; opacity: 0.8; }
 .hamburger span { display: block; width: 24px; height: 1.5px; background: currentColor; transition: transform 0.3s var(--ease), opacity 0.2s; }
 .hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
@@ -335,7 +333,7 @@ body.is-admin .noticia-card__edit { display: inline-block; }
   "use strict";
   document.getElementById('current-year').textContent = new Date().getFullYear();
 
-  var toggle = document.getElementById('theme-toggle');
+  var toggle = document.getElementById('theme-toggle'); if(toggle){
   var html = document.documentElement;
   var saved = localStorage.getItem('mandragora-theme');
   if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; }
@@ -343,7 +341,8 @@ body.is-admin .noticia-card__edit { display: inline-block; }
     var isDark = html.getAttribute('data-theme') === 'dark';
     if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '\u2600'; localStorage.setItem('mandragora-theme','light'); }
     else { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; localStorage.setItem('mandragora-theme','dark'); }
-  });
+  })
+  };
 
   var hamburger = document.getElementById('hamburger');
   var mobileMenu = document.getElementById('mobile-menu');
