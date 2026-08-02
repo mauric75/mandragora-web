@@ -3,6 +3,9 @@
     "id": "obra-1",
     "titulo": "Atrapada en la pantalla",
     "descripcion": "Canopus y Galatea, dos hermanos divertidos y disparatados, deben rescatar a su tía Dafne, atrapada dentro de su propio teléfono por una tecnología misteriosa. Una misión de rescate inmersiva y llena de fantasía. Nominada a 3 premios Florencio. Obra interactiva para infancias (+5 años) que invita a reflexionar sobre el uso responsable de las pantallas.",
+    "sinopsis": "Dos hermanos se embarcan en una misión de rescate cuando su tía queda atrapada dentro de un teléfono. Una aventura interactiva que mezcla teatro, tecnología y humor para toda la familia.",
+    "elenco": "Fefa Galípolo, Pancho Bethencourt, Chú Salvatierra",
+    "direccion": "Pancho Bethencourt",
     "estado": "presente",
     "fecha_texto": "Julio 2026 · Funciones los sábados · Teatro Mandrágora",
     "imagenes": [
@@ -13,6 +16,9 @@
     "id": "obra-2",
     "titulo": "Con las manos atadas",
     "descripcion": "La impotencia como punto de partida. Un ejercicio escénico sobre lo que no podemos controlar y lo que elegimos soltar. Dirigida por el elenco estable.",
+    "sinopsis": "Un grupo de personajes enfrenta situaciones donde no pueden actuar. La obra explora qué hacemos cuando no tenemos control sobre lo que nos rodea.",
+    "elenco": "Compañía Teatral Mandrágora",
+    "direccion": "Pancho Bethencourt",
     "estado": "futura",
     "fecha_texto": "Agosto 2026 · Estreno",
     "imagenes": [
@@ -23,6 +29,9 @@
     "id": "obra-3",
     "titulo": "La inevitable crisis del actor",
     "descripcion": "Detrás del personaje hay una persona. Detrás de la persona, una pregunta que no se deja de hacer. Un biodrama sobre el oficio de actuar.",
+    "sinopsis": "Un actor se enfrenta a la pregunta que todo intérprete se hace en algún momento: ¿quién soy cuando no estoy actuando? Un viaje íntimo por el oficio teatral.",
+    "elenco": "Compañía Teatral Mandrágora",
+    "direccion": "Pancho Bethencourt",
     "estado": "futura",
     "fecha_texto": "Setiembre 2026 · Estreno",
     "imagenes": [

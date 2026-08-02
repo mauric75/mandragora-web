@@ -280,6 +280,12 @@ h1, h2, h3, h4 {
   letter-spacing: 0.06em; color: var(--c-cream-faint);
   text-transform: uppercase;
 }
+.obra-card__toggle { background: none; border: 1px solid var(--c-gold-dim); color: var(--c-gold); padding: 0.3em 1em; border-radius: 4px; cursor: pointer; font-size: 0.78rem; margin-top: 0.4rem; transition: all 0.2s; }
+.obra-card__toggle:hover { background: var(--c-gold-faint); }
+.obra-card__extra { display: none; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--c-border); font-size: 0.9rem; line-height: 1.6; }
+.obra-card__extra.is-open { display: block; }
+.obra-card__extra h4 { font-family: var(--f-mark); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--c-gold); margin: 0.6rem 0 0.2rem; }
+.obra-card__extra p { font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--c-cream-dim); }
 
 /* ============================================================
    ELENCO
@@ -496,42 +502,7 @@ h1, h2, h3, h4 {
     <h2 class="obras__title">Nuestras obras</h2>
   </div>
 
-  <article class="obra-card reveal">
-    <div class="obra-card__image">
-      <img src="assets/images/obra-atrapada.jpg" alt="Atrapada en la pantalla" loading="lazy">
-    </div>
-    <div class="obra-card__body">
-      <div class="obra-card__tag">En cartel</div>
-      <h3>Atrapada en la pantalla</h3>
-      <p>Canopus y Galatea, dos hermanos divertidos y disparatados, deben rescatar a su tía Dafne, atrapada dentro de su propio teléfono por una tecnología misteriosa. Una misión de rescate inmersiva y llena de fantasía.</p>
-      <p>Nominada a 3 premios Florencio. Obra interactiva para infancias (+5 años) que invita a reflexionar sobre el uso responsable de las pantallas.</p>
-      <p class="obra-card__meta">Julio 2026 · Funciones los sábados · Teatro Mandrágora</p>
-    </div>
-  </article>
-
-  <article class="obra-card reveal">
-    <div class="obra-card__image">
-      <img src="assets/images/obra-manos-atadas.jpg" alt="Con las manos atadas" loading="lazy">
-    </div>
-    <div class="obra-card__body">
-      <div class="obra-card__tag">Próximamente</div>
-      <h3>Con las manos atadas</h3>
-      <p>La impotencia como punto de partida. Un ejercicio escénico sobre lo que no podemos controlar y lo que elegimos soltar. Dirigida por el elenco estable.</p>
-      <p class="obra-card__meta">Agosto 2026 · Estreno</p>
-    </div>
-  </article>
-
-  <article class="obra-card reveal">
-    <div class="obra-card__image">
-      <img src="assets/images/obra-crisis-actor.jpg" alt="La inevitable crisis del actor" loading="lazy">
-    </div>
-    <div class="obra-card__body">
-      <div class="obra-card__tag">Próximamente</div>
-      <h3>La inevitable crisis del actor</h3>
-      <p>Detrás del personaje hay una persona. Detrás de la persona, una pregunta que no se deja de hacer. Un biodrama sobre el oficio de actuar.</p>
-      <p class="obra-card__meta">Setiembre 2026 · Estreno</p>
-    </div>
-  </article>
+  <div id="obras-grid"></div>
 </section>
 
 <!-- ============ ELENCO ============ -->
@@ -660,6 +631,76 @@ h1, h2, h3, h4 {
 
 
 
+
+<script>
+(function(){
+  var grid = document.getElementById('obras-grid');
+  if(!grid) return;
+
+  fetch('/api/docentes', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({resource: 'obra', action: 'list'})
+  })
+  .then(r => r.json())
+  .then(data => {
+    var obras = data.obras || [];
+    if(!obras.length){ grid.innerHTML = '<p style="text-align:center;opacity:0.5;padding:2rem">Obras próximamente.</p>'; return; }
+
+    var labels = { presente: 'En cartel', futura: 'Próximamente', pasada: 'Histórica' };
+
+    obras.forEach(function(obra){
+      var img = obra.imagenes && obra.imagenes[0] ? '<img src="' + escAttr(obra.imagenes[0]) + '" alt="' + escAttr(obra.titulo) + '" loading="lazy">' : '';
+      var sinopsis = obra.sinopsis || '';
+      var elenco = obra.elenco || '';
+      var direccion = obra.direccion || '';
+      var tieneExtra = sinopsis || elenco || direccion;
+
+      var card = document.createElement('article');
+      card.className = 'obra-card reveal';
+      card.innerHTML =
+        '<div class="obra-card__image">' + img + '</div>' +
+        '<div class="obra-card__body">' +
+          '<div class="obra-card__tag">' + (labels[obra.estado] || obra.estado) + '</div>' +
+          '<h3>' + escHtml(obra.titulo) + '</h3>' +
+          '<p>' + escHtml(obra.descripcion || '') + '</p>' +
+          (tieneExtra ? '<button class="obra-card__toggle">+ Más info</button>' : '') +
+          '<div class="obra-card__extra">' +
+            (sinopsis ? '<h4>Sinopsis</h4><p>' + escHtml(sinopsis) + '</p>' : '') +
+            (elenco ? '<h4>Elenco</h4><p>' + escHtml(elenco) + '</p>' : '') +
+            (direccion ? '<h4>Dirección</h4><p>' + escHtml(direccion) + '</p>' : '') +
+          '</div>' +
+          '<div class="obra-card__meta">' + escHtml(obra.fecha_texto || '') + '</div>' +
+        '</div>';
+
+      if (tieneExtra) {
+        var toggle = card.querySelector('.obra-card__toggle');
+        var extra = card.querySelector('.obra-card__extra');
+        toggle.addEventListener('click', function(){
+          var open = extra.classList.toggle('is-open');
+          toggle.textContent = open ? '− Menos info' : '+ Más info';
+        });
+      }
+
+      grid.appendChild(card);
+    });
+
+    // Re-trigger reveals
+    setTimeout(function(){
+      document.querySelectorAll('.obra-card.reveal').forEach(function(el){
+        var obs = new IntersectionObserver(function(entries){
+          entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('is-visible'); });
+        },{threshold:0.1});
+        obs.observe(el);
+      });
+    },100);
+  })
+  .catch(function(){ grid.innerHTML = ''; });
+
+  function escHtml(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+  function escAttr(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+})();
+</script>
 
 <script src="/assets/js/push.js" defer></script>
 <script>
