@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -37,7 +37,7 @@ a{color:inherit;text-decoration:none}h1,h2{font-family:var(--f-display);font-wei
 .site-nav__links{display:flex;gap:1.5rem;font-family:var(--f-body);letter-spacing:0.08em;font-size:0.74rem}
 .site-nav__links a{opacity:0.72;transition:opacity 0.3s,color 0.3s}.site-nav__links a:hover{opacity:1;color:var(--c-gold)}
 .site-nav__links a.is-active{opacity:1;color:var(--c-gold)}
-.theme-toggle{background:none;border:1px solid currentColor;cursor:pointer;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:0.9rem;opacity:0.7;transition:opacity 0.3s,transform 0.4s}.theme-toggle:hover{opacity:1;transform:rotate(15deg)}
+.theme-toggle:hover{opacity:1;transform:rotate(15deg)}
 .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:101;opacity:0.85}.hamburger span{width:22px;height:1.5px;background:currentColor;display:block}@media(max-width:900px){.site-nav__links{display:none}.hamburger{display:flex}}
 .mobile-menu{position:fixed;inset:0;z-index:99;background:rgba(248,244,237,0.97);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;opacity:0;pointer-events:none;transition:opacity 0.4s}[data-theme="dark"] .mobile-menu{background:rgba(5,7,10,0.97)}
 .mobile-menu.is-open{opacity:1;pointer-events:auto}.mobile-menu a{font-family:var(--f-display);font-size:1.5rem;color:var(--c-dim)}
@@ -121,10 +121,17 @@ a{color:inherit;text-decoration:none}h1,h2{font-family:var(--f-display);font-wei
       </div>
     </div>
     <a href="agenda.html">Agenda</a>
+    <div class="nav-item">
+      <a href="#" class="nav-item__trigger">Convenios <span class="nav-arrow">▾</span></a>
+      <div class="nav-item__dropdown">
+        <a href="cine-viajero.html">Cine Viajero</a>
+        <a href="#">Atrapasueños Recreación</a>
+      </div>
+    </div>
     <a href="noticias.html">Noticias</a>
     <a href="galeria.html">Galería</a>
   </nav>
-  <button class="theme-toggle" id="theme-toggle" aria-label="Tema">☀</button>
+  
   <button class="hamburger" id="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
   <nav class="mobile-menu" id="mobile-menu">
     <a href="index.html">Inicio</a><a href="escuela.html">Escuela</a><a href="sala.html">Sala</a><a href="compania.html">Compañía</a><a href="cine-viajero.html">Cine Viajero</a><a href="comunidad.html">Comunidad</a><a href="noticias.html">Noticias</a><a href="galeria.html">Galería</a><a href="contacto.html">Contacto</a><a href="agenda.html">Agenda</a>
