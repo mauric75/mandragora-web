@@ -53,5 +53,17 @@
     "link_tickets": "",
     "texto_boton": "Entradas",
     "publicado": true
+  },
+  {
+    "titulo": "La Sed",
+    "tipo": "Teatro � Thriller psicol�gico",
+    "categoria": "Compa��a Mandr�gora",
+    "descripcion": "Dos hombres. Una deuda. Un enfrentamiento que crece hasta el borde. Dirigida por Freddy Gonz�lez, con Pablo Bethencourt y Fabi�n Silva.",
+    "fecha": "2026-08-15",
+    "hora": "21:00",
+    "link_tickets": "reservar.html",
+    "texto_boton": "Entradas",
+    "publicado": true,
+    "id": "evento-1785636258253"
   }
 ]
