@@ -43,5 +43,17 @@
     "whatsapp": "",
     "precio": 2500,
     "activo": true
+  },
+  {
+    "id": "docente-1785654550270",
+    "nombre": "Pablo Bentancur",
+    "rol": "Coordinador del Taller de Introducción a las Artes",
+    "foto": "",
+    "frase": "Buscamos generar un vínculo satisfactorio con el hecho artístico, más que simplemente formar artistas profesionales.",
+    "trayectoria": "",
+    "instagram": "",
+    "whatsapp": "",
+    "precio": 2500,
+    "activo": true
   }
 ]
