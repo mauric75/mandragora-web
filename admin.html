@@ -544,6 +544,37 @@ a:hover { text-decoration: underline; }
     <div id="obras-list"></div>
   </section>
 
+  <!-- ====== TAB: OBRAS ====== -->
+  <section class="tab-panel" id="tab-obras">
+    <h2>Nueva obra</h2>
+    <label>Título</label>
+    <input type="text" id="obra-titulo" placeholder="Nombre de la obra" maxlength="100">
+    <label>Descripción</label>
+    <textarea id="obra-descripcion" placeholder="Descripción general" maxlength="500"></textarea>
+    <label>Sinopsis</label>
+    <textarea id="obra-sinopsis" placeholder="Sinopsis breve" maxlength="300"></textarea>
+    <label>Elenco</label>
+    <input type="text" id="obra-elenco" placeholder="Nombres del elenco">
+    <label>Dirección</label>
+    <input type="text" id="obra-direccion" placeholder="Nombre del director/a">
+    <label>Estado</label>
+    <select id="obra-estado">
+      <option value="presente">En cartel</option>
+      <option value="futura">Próximo estreno</option>
+      <option value="pasada">Histórica</option>
+    </select>
+    <label>Fecha / Temporada</label>
+    <input type="text" id="obra-fecha" placeholder="Julio 2026 · Sábados 16hs">
+    <input type="hidden" id="obra-id">
+    <div style="display:flex;gap:0.5rem">
+      <button class="primary" id="obra-save">Guardar obra</button>
+      <button class="secondary" id="obra-cancel" style="display:none">Cancelar</button>
+    </div>
+    <div class="msg" id="obra-msg"></div>
+    <h2 style="margin-top:2rem">Obras existentes</h2>
+    <div id="obras-list"></div>
+  </section>
+
   <!-- ====== TAB: PUSH ====== -->
   <section class="tab-panel" id="tab-push">
     <h2>Enviar notificación push</h2>
@@ -639,6 +670,7 @@ a:hover { text-decoration: underline; }
     if(tabName==='noticias') loadNoticias();
     if(tabName==='docentes') loadDocentes();
     if(tabName==='agenda') loadAgenda();
+    if(tabName==='obras') loadObras();
     if(tabName==='obras') loadObras();
   }
 
@@ -1064,6 +1096,9 @@ a:hover { text-decoration: underline; }
     document.getElementById('obra-id').value = '';
     document.getElementById('obra-titulo').value = '';
     document.getElementById('obra-descripcion').value = '';
+    document.getElementById('obra-sinopsis').value = '';
+    document.getElementById('obra-elenco').value = '';
+    document.getElementById('obra-direccion').value = '';
     document.getElementById('obra-estado').value = 'presente';
     document.getElementById('obra-fecha').value = '';
     document.getElementById('obra-imagen-staging').value = '';
@@ -1133,6 +1168,9 @@ a:hover { text-decoration: underline; }
         document.getElementById('obra-id').value = obra.id;
         document.getElementById('obra-titulo').value = obra.titulo||'';
         document.getElementById('obra-descripcion').value = obra.descripcion||'';
+        document.getElementById('obra-sinopsis').value = obra.sinopsis||'';
+        document.getElementById('obra-elenco').value = obra.elenco||'';
+        document.getElementById('obra-direccion').value = obra.direccion||'';
         document.getElementById('obra-estado').value = obra.estado||'presente';
         document.getElementById('obra-fecha').value = obra.fecha_texto||'';
         obraImagenesPendientes = (obra.imagenes||[]).slice();
@@ -1155,14 +1193,17 @@ a:hover { text-decoration: underline; }
     var titulo = document.getElementById('obra-titulo').value.trim();
     var estado = document.getElementById('obra-estado').value;
     if(!titulo){ document.getElementById('obra-msg').className='msg error'; document.getElementById('obra-msg').textContent='Falta el título.'; return; }
-    var obra = {
-      id: document.getElementById('obra-id').value || undefined,
-      titulo: titulo,
-      descripcion: document.getElementById('obra-descripcion').value.trim(),
-      estado: estado,
-      fecha_texto: document.getElementById('obra-fecha').value.trim(),
-      imagenes: obraImagenesPendientes.slice()
-    };
+      var obra = {
+        id: document.getElementById('obra-id').value || undefined,
+        titulo: titulo,
+        descripcion: document.getElementById('obra-descripcion').value.trim(),
+        sinopsis: document.getElementById('obra-sinopsis').value.trim(),
+        elenco: document.getElementById('obra-elenco').value.trim(),
+        direccion: document.getElementById('obra-direccion').value.trim(),
+        estado: estado,
+        fecha_texto: document.getElementById('obra-fecha').value.trim(),
+        imagenes: obraImagenesPendientes.slice()
+      };
     var btn = document.getElementById('obra-save');
     btn.disabled = true; btn.textContent = 'Guardando…';
     document.getElementById('obra-msg').className='msg'; document.getElementById('obra-msg').textContent='';
@@ -1211,10 +1252,29 @@ a:hover { text-decoration: underline; }
     var input = document.getElementById('ai-input');
     var send = document.getElementById('ai-send');
 
+    function formatText(text){
+      if(!text) return '';
+      // Escapar HTML primero
+      var d = document.createElement('div');
+      d.textContent = text;
+      var html = d.innerHTML;
+      // **negrita**
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      // ### título
+      html = html.replace(/### (.+)/g, '<h4 style=\"margin:0.8rem 0 0.3rem;font-size:0.85rem;color:var(--c-gold)\">$1</h4>');
+      // - lista (líneas que empiezan con -)
+      html = html.replace(/(?:^|\n)- (.+)/g, '\n<li>$1</li>');
+      html = html.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul style=\"margin:0.3rem 0;padding-left:1.2rem\">$1</ul>');
+      // saltos de línea
+      html = html.replace(/\n\n/g, '<br><br>');
+      html = html.replace(/\n/g, '<br>');
+      return html;
+    }
+
     function addMsg(text, who){
       var div = document.createElement('div');
       div.style.marginBottom = '0.5rem';
-      div.innerHTML = '<strong>'+(who==='user'?'Vos':'IA')+':</strong> '+text;
+      div.innerHTML = '<strong>'+(who==='user'?'Vos':'IA')+':</strong> '+(who==='user' ? text : formatText(text));
       log.appendChild(div);
       log.scrollTop = log.scrollHeight;
     }
@@ -1226,7 +1286,7 @@ a:hover { text-decoration: underline; }
       input.value = '';
       addMsg('Pensando…', 'ia');
       api('/api/ai-admin/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg})}).then(function(r){
-        log.lastChild.innerHTML = '<strong>IA:</strong> '+(r.data.reply||'Sin respuesta');
+        log.lastChild.innerHTML = '<strong>IA:</strong> '+formatText(r.data.reply||'Sin respuesta');
       }).catch(function(){
         log.lastChild.innerHTML = '<strong>IA:</strong> Error de conexión';
       });
