@@ -157,6 +157,14 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 
 /* masonry */
 .masonry { columns: 3 240px; column-gap: 0.75rem; max-width: 1200px; margin: 0 auto; padding: 1rem var(--gutter) 5rem; }
+.obras-galeria { max-width: 1200px; margin: 0 auto; padding: 0 var(--gutter); }
+.obras-galeria__group { margin-bottom: 3rem; }
+.obras-galeria__group-title { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-gold); text-align: center; margin-bottom: 1.5rem; }
+.obras-galeria__obra { margin-bottom: 2.5rem; }
+.obras-galeria__obra-header { text-align: center; margin-bottom: 1rem; }
+.obras-galeria__obra-header h3 { font-size: 1.6rem; margin-bottom: 0.3rem; }
+.obras-galeria__obra-header p { font-size: 0.85rem; color: var(--c-cream-dim); }
+.obras-galeria__empty { text-align: center; padding: 3rem 1rem; color: var(--c-cream-dim); }
 .masonry img {
   width: 100%; margin-bottom: 0.75rem; border-radius: 2px; cursor: pointer;
   border: 1px solid var(--c-border);
@@ -248,7 +256,14 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 <section class="page-header reveal">
   <img src="assets/images/arabesco-18.png" alt="" aria-hidden="true" class="page-header__ornament">
   <h1>Galería</h1>
-  <p>11 fotos</p>
+  <p>Obras y momentos de Mandrágora</p>
+</section>
+
+<section class="obras-galeria" id="obras-galeria"></section>
+
+<section class="page-header reveal" style="padding-top:2rem; padding-bottom:1rem;">
+  <h2>La Casa</h2>
+  <p>La casa que aloja todo esto.</p>
 </section>
 
 <section class="masonry reveal">
@@ -259,9 +274,6 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
   <img src="assets/images/fachada.jpg" alt="Fachada de Mandrágora" loading="lazy">
   <img src="assets/images/festival.jpg" alt="Festival en Mandrágora" loading="lazy">
   <img src="assets/images/hero-mandragora.jpg" alt="Mandrágora" loading="lazy">
-  <img src="assets/images/obra-atrapada.jpg" alt="Atrapada en la pantalla" loading="lazy">
-  <img src="assets/images/obra-crisis-actor.jpg" alt="La inevitable crisis del actor" loading="lazy">
-  <img src="assets/images/obra-manos-atadas.jpg" alt="Con las manos atadas" loading="lazy">
   <img src="assets/images/sala.jpg" alt="Sala de Mandrágora" loading="lazy">
 </section>
 
@@ -346,29 +358,84 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
   });
   if (btt) btt.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
-  // galeria lightbox (con prev/next y contador)
-  var imgs = document.querySelectorAll(".masonry img");
+  // galeria lightbox (con prev/next y contador) — delegación de eventos,
+  // funciona tanto con las imágenes fijas de "La Casa" como con las de obras cargadas por JS
   var lb = document.getElementById("lb");
   var lbi = document.getElementById("lb-img");
+  var currentImgs = [];
   var idx = 0;
+  function collectImgs(){ return Array.prototype.slice.call(document.querySelectorAll(".masonry img")); }
   function show(){
-    lbi.src = imgs[idx].src;
-    lbi.alt = imgs[idx].alt;
-    document.getElementById("lb-counter").textContent = (idx + 1) + " de " + imgs.length;
+    lbi.src = currentImgs[idx].src;
+    lbi.alt = currentImgs[idx].alt;
+    document.getElementById("lb-counter").textContent = (idx + 1) + " de " + currentImgs.length;
   }
-  imgs.forEach(function(img, i){
-    img.addEventListener("click", function(){ idx = i; show(); lb.classList.add("is-open"); });
+  document.addEventListener("click", function(e){
+    if (e.target.tagName === "IMG" && e.target.closest(".masonry")) {
+      currentImgs = collectImgs();
+      idx = currentImgs.indexOf(e.target);
+      if (idx === -1) return;
+      show();
+      lb.classList.add("is-open");
+    }
   });
   document.getElementById("lb-close").addEventListener("click", function(){ lb.classList.remove("is-open"); });
-  document.getElementById("lb-prev").addEventListener("click", function(){ idx = idx > 0 ? idx - 1 : imgs.length - 1; show(); });
-  document.getElementById("lb-next").addEventListener("click", function(){ idx = idx < imgs.length - 1 ? idx + 1 : 0; show(); });
+  document.getElementById("lb-prev").addEventListener("click", function(){ idx = idx > 0 ? idx - 1 : currentImgs.length - 1; show(); });
+  document.getElementById("lb-next").addEventListener("click", function(){ idx = idx < currentImgs.length - 1 ? idx + 1 : 0; show(); });
   lb.addEventListener("click", function(e){ if (e.target === lb) lb.classList.remove("is-open"); });
   document.addEventListener("keydown", function(e){
     if (!lb.classList.contains("is-open")) return;
     if (e.key === "Escape") lb.classList.remove("is-open");
-    if (e.key === "ArrowLeft") { idx = idx > 0 ? idx - 1 : imgs.length - 1; show(); }
-    if (e.key === "ArrowRight") { idx = idx < imgs.length - 1 ? idx + 1 : 0; show(); }
+    if (e.key === "ArrowLeft") { idx = idx > 0 ? idx - 1 : currentImgs.length - 1; show(); }
+    if (e.key === "ArrowRight") { idx = idx < currentImgs.length - 1 ? idx + 1 : 0; show(); }
   });
+
+  // obras: cargar y agrupar por estado (presente / futura / pasada)
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  var ESTADO_ORDEN = ['presente', 'futura', 'pasada'];
+  var ESTADO_TITULO = { presente: 'En cartel', futura: 'Próximos estrenos', pasada: 'Funciones pasadas' };
+
+  fetch('/api/docentes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ resource: 'obra', action: 'list' })
+  })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var obras = data.obras || [];
+      var el = document.getElementById('obras-galeria');
+      if (!obras.length) { el.innerHTML = '<p class="obras-galeria__empty">Todavía no hay obras cargadas.</p>'; return; }
+
+      var html = '';
+      ESTADO_ORDEN.forEach(function(estado){
+        var grupo = obras.filter(function(o){ return o.estado === estado; });
+        if (!grupo.length) return;
+        html += '<div class="obras-galeria__group reveal">';
+        html += '<p class="obras-galeria__group-title">' + ESTADO_TITULO[estado] + '</p>';
+        grupo.forEach(function(o){
+          html += '<div class="obras-galeria__obra">';
+          html += '<div class="obras-galeria__obra-header"><h3>' + escapeHtml(o.titulo) + '</h3>';
+          if (o.fecha_texto) html += '<p>' + escapeHtml(o.fecha_texto) + '</p>';
+          html += '</div>';
+          html += '<div class="masonry">';
+          (o.imagenes || []).forEach(function(src){
+            html += '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(o.titulo) + '" loading="lazy">';
+          });
+          html += '</div></div>';
+        });
+        html += '</div>';
+      });
+      el.innerHTML = html || '<p class="obras-galeria__empty">Todavía no hay obras cargadas.</p>';
+
+      document.querySelectorAll('.reveal').forEach(function(r){ observer.observe(r); });
+    })
+    .catch(function(){
+      document.getElementById('obras-galeria').innerHTML = '<p class="obras-galeria__empty">No se pudieron cargar las obras.</p>';
+    });
 
   // PWA
   if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
