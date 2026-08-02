@@ -1292,32 +1292,17 @@ a:hover { text-decoration: underline; }
       };
       reader.readAsDataURL(file);
 
-      var formData = new FormData();
-      formData.append('file', file);
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', '/api/docentes', true);
-      xhr.withCredentials = true;
-      xhr.onload = function(){
-        try {
-          var data = JSON.parse(xhr.responseText);
-          if(data.url){
-            previewDiv.innerHTML = '<strong>Vos:</strong> <img src="'+data.url+'" style="max-width:120px;max-height:120px;border-radius:6px;vertical-align:middle;margin-right:0.5rem;"> ✅ Lista';
-            log.scrollTop = log.scrollHeight;
-            cb(data.url);
-          } else {
-            previewDiv.innerHTML = '<strong>Vos:</strong> ❌ Error: '+(data.error||'desconocido');
-            cb(null);
-          }
-        } catch(e){
-          previewDiv.innerHTML = '<strong>Vos:</strong> ❌ Error: respuesta inválida ('+xhr.status+')';
+      // Usar la misma función probada que el resto del admin
+      window._uploadFileCore(file, function(url, error){
+        if(url){
+          previewDiv.innerHTML = '<strong>Vos:</strong> <img src="'+url+'" style="max-width:120px;max-height:120px;border-radius:6px;vertical-align:middle;margin-right:0.5rem;"> ✅ Lista';
+          log.scrollTop = log.scrollHeight;
+          cb(url);
+        } else {
+          previewDiv.innerHTML = '<strong>Vos:</strong> ❌ Error: '+(error||'desconocido');
           cb(null);
         }
-      };
-      xhr.onerror = function(){
-        previewDiv.innerHTML = '<strong>Vos:</strong> ❌ Error de conexión (status '+xhr.status+')';
-        cb(null);
-      };
-      xhr.send(formData);
+      });
     }
 
     // ── Enviar mensaje a la IA ───────────
@@ -1388,7 +1373,24 @@ a:hover { text-decoration: underline; }
     input.addEventListener('keydown', function(e){ if(e.key==='Enter') send.click(); });
   })();
 
-  // ── Upload de imágenes ────────────────
+  // ── Upload de imágenes (core, reutilizable) ──
+  window._uploadFileCore = function(file, cb){
+    var formData = new FormData();
+    formData.append('file', file);
+    fetch('/api/docentes', {
+      method: 'POST',
+      credentials: 'same-origin',
+      body: formData
+    }).then(function(r){ return r.json(); })
+      .then(function(data){
+        if(data.url){ cb(data.url, null); }
+        else { cb(null, data.error || 'desconocido'); }
+      }).catch(function(){
+        cb(null, 'Error de conexión');
+      });
+  };
+
+  // ── Upload de imágenes (formulario) ──────
   window.uploadFile = function(input, textId, previewId){
     var file = input.files && input.files[0];
     if(!file) return;
@@ -1401,29 +1403,18 @@ a:hover { text-decoration: underline; }
     };
     reader.readAsDataURL(file);
 
-    // Subir al servidor
-    var formData = new FormData();
-    formData.append('file', file);
-
     // Cambiar el placeholder mientras sube
     var textInput = document.getElementById(textId);
     if(textInput) textInput.placeholder = 'Subiendo...';
 
-    fetch('/api/docentes', {
-      method: 'POST',
-      credentials: 'same-origin',
-      body: formData
-    }).then(function(r){ return r.json(); })
-      .then(function(data){
-        if(data.url){
-          if(textInput){ textInput.value = data.url; textInput.placeholder = ''; }
-        } else {
-          if(textInput) textInput.placeholder = 'Error: ' + (data.error || 'desconocido');
-          alert('Error al subir: ' + (data.error || 'desconocido'));
-        }
-      }).catch(function(e){
-        if(textInput) textInput.placeholder = 'Error de conexión';
-      });
+    window._uploadFileCore(file, function(url, error){
+      if(url){
+        if(textInput){ textInput.value = url; textInput.placeholder = ''; }
+      } else {
+        if(textInput) textInput.placeholder = 'Error: ' + (error || 'desconocido');
+        alert('Error al subir: ' + (error || 'desconocido'));
+      }
+    });
   }
 
   // ── Init ─────────────────────────────
