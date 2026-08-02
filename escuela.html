@@ -777,7 +777,7 @@ h1, h2, h3, h4 {
             '<h4>' + escHtml(d.nombre) + '</h4>' +
             '<p class="docente-card__rol">' + escHtml(d.rol) + '</p>' +
             (d.frase ? '<p class="docente-card__quote">' + escHtml(d.frase) + '</p>' : '') +
-            (tieneExtra ? '<button class="docente-card__toggle">+ M\u00e1s info</button><div class="docente-card__extra">' + trayect + ig + whatsapp + '</div>' : trayect + ig) +
+            (tieneExtra ? '<button class="docente-card__toggle">+ M\u00e1s info</button><div class="docente-card__extra">' + trayect + ig + whatsapp + '<a href="compania.html#elenco" style="display:inline-block;margin-top:0.6rem;font-size:0.78rem;color:var(--c-gold)">Ver en Compañía →</a></div>' : trayect + ig + '<a href="compania.html#elenco" style="display:inline-block;margin-top:0.6rem;font-size:0.78rem;color:var(--c-gold)">Ver en Compañía →</a>') +
           '</div></article>';
       }).join('');
 
