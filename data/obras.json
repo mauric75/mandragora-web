@@ -70,5 +70,16 @@
     "estado": "futura",
     "fecha_texto": "",
     "imagenes": []
+  },
+  {
+    "id": "obra-1785635670249",
+    "titulo": "La Sed",
+    "descripcion": "Estrenazo de esta obra que tantos éxitos nos dio en España.",
+    "sinopsis": "\"No hay nada en el mundo que pueda calmar mi sed...\"",
+    "elenco": "",
+    "direccion": "",
+    "estado": "futura",
+    "fecha_texto": "",
+    "imagenes": []
   }
 ]
