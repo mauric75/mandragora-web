@@ -424,6 +424,20 @@ const TOOLS = [
       },
     },
   },
+  {
+    type: 'function',
+    function: {
+      name: 'borrar_obra',
+      description: 'Borra una obra de la compañía. Buscala por título. SOLO admin. Ejecutá sin preguntar.',
+      parameters: {
+        type: 'object',
+        properties: {
+          titulo: { type: 'string', description: 'Título de la obra a borrar' },
+        },
+        required: ['titulo'],
+      },
+    },
+  },
 ];
 
 // ── Ejecutar herramienta contra datos reales ──────────────────
@@ -694,6 +708,22 @@ async function executeTool(name, args) {
     }
   }
 
+  if (name === 'borrar_obra') {
+    if (args?._role !== 'admin') return 'Solo el admin puede borrar obras.';
+    try {
+      const { obras, sha } = await readObrasJSON();
+      const tituloBuscado = (args?.titulo || '').toLowerCase();
+      const idx = obras.findIndex(o => o.titulo.toLowerCase().includes(tituloBuscado));
+      if (idx === -1) return 'No encontré una obra que coincida con "' + (args?.titulo || '') + '".';
+      const borrada = obras[idx];
+      const filtered = obras.filter((_, i) => i !== idx);
+      await writeObrasJSON(filtered, sha, `IA: borrar obra "${borrada.titulo}"`);
+      return 'Obra "' + borrada.titulo + '" borrada.';
+    } catch (e) {
+      return 'Error al borrar: ' + e.message;
+    }
+  }
+
   if (name === 'borrar_noticia') {
     if (args?._role !== 'admin') return 'Solo el admin puede borrar noticias.';
     try {
@@ -872,6 +902,7 @@ Podés consultar y modificar datos reales usando las herramientas disponibles:
 - listar_obras: lista las obras de la compañía
 - crear_obra: crea una nueva obra
 - actualizar_obra: modifica una obra existente
+- borrar_obra: borra una obra (solo admin)
 También podés ayudar redactando textos para redes sociales o descripciones si el usuario te lo pide. En ese caso no uses herramientas, solo respondé con el texto sugerido.
 Si el usuario te pide hacer algo, respondé ÚNICAMENTE con un bloque JSON así:
 \`\`\`json
