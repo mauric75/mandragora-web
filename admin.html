@@ -592,6 +592,8 @@ a:hover { text-decoration: underline; }
   <section class="tab-panel" id="tab-chat">
     <div class="chat-log" id="ai-chat-log"></div>
     <div class="chat-wrap">
+      <input type="file" id="chat-file-input" accept="image/*" style="display:none">
+      <button type="button" id="ai-attach" title="Adjuntar imagen" style="flex:0 0 auto;background:var(--c-surface);border:1px solid var(--c-border);color:var(--c-text);border-radius:var(--radius);padding:0 0.7rem;cursor:pointer;font-size:1.1rem;">📎</button>
       <input type="text" id="ai-input" placeholder="Ej: cuántas reservas hay esta semana?">
       <button class="primary" id="ai-send">Enviar</button>
     </div>
@@ -1251,21 +1253,19 @@ a:hover { text-decoration: underline; }
     var log = document.getElementById('ai-chat-log');
     var input = document.getElementById('ai-input');
     var send = document.getElementById('ai-send');
+    var attach = document.getElementById('ai-attach');
+    var fileInput = document.getElementById('chat-file-input');
+    var pendingUrl = '';  // URL de imagen pendiente de enviar
 
     function formatText(text){
       if(!text) return '';
-      // Escapar HTML primero
       var d = document.createElement('div');
       d.textContent = text;
       var html = d.innerHTML;
-      // **negrita**
       html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-      // ### título
       html = html.replace(/### (.+)/g, '<h4 style=\"margin:0.8rem 0 0.3rem;font-size:0.85rem;color:var(--c-gold)\">$1</h4>');
-      // - lista (líneas que empiezan con -)
       html = html.replace(/(?:^|\n)- (.+)/g, '\n<li>$1</li>');
       html = html.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul style=\"margin:0.3rem 0;padding-left:1.2rem\">$1</ul>');
-      // saltos de línea
       html = html.replace(/\n\n/g, '<br><br>');
       html = html.replace(/\n/g, '<br>');
       return html;
@@ -1277,21 +1277,114 @@ a:hover { text-decoration: underline; }
       div.innerHTML = '<strong>'+(who==='user'?'Vos':'IA')+':</strong> '+(who==='user' ? text : formatText(text));
       log.appendChild(div);
       log.scrollTop = log.scrollHeight;
+      return div;
     }
 
-    send.addEventListener('click', function(){
+    // ── Upload de imagen para el chat ────
+    function uploadImageForChat(file, cb){
+      var previewDiv = document.createElement('div');
+      previewDiv.style.marginBottom = '0.5rem';
+      var reader = new FileReader();
+      reader.onload = function(e){
+        previewDiv.innerHTML = '<strong>Vos:</strong> <img src="'+e.target.result+'" style="max-width:120px;max-height:120px;border-radius:6px;vertical-align:middle;margin-right:0.5rem;"> <em style="color:var(--c-dim)">Subiendo…</em>';
+        log.appendChild(previewDiv);
+        log.scrollTop = log.scrollHeight;
+      };
+      reader.readAsDataURL(file);
+
+      var formData = new FormData();
+      formData.append('file', file);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/docentes', true);
+      xhr.withCredentials = true;
+      xhr.onload = function(){
+        try {
+          var data = JSON.parse(xhr.responseText);
+          if(data.url){
+            previewDiv.innerHTML = '<strong>Vos:</strong> <img src="'+data.url+'" style="max-width:120px;max-height:120px;border-radius:6px;vertical-align:middle;margin-right:0.5rem;"> ✅ Lista';
+            log.scrollTop = log.scrollHeight;
+            cb(data.url);
+          } else {
+            previewDiv.innerHTML = '<strong>Vos:</strong> ❌ Error: '+(data.error||'desconocido');
+            cb(null);
+          }
+        } catch(e){
+          previewDiv.innerHTML = '<strong>Vos:</strong> ❌ Error: respuesta inválida ('+xhr.status+')';
+          cb(null);
+        }
+      };
+      xhr.onerror = function(){
+        previewDiv.innerHTML = '<strong>Vos:</strong> ❌ Error de conexión (status '+xhr.status+')';
+        cb(null);
+      };
+      xhr.send(formData);
+    }
+
+    // ── Enviar mensaje a la IA ───────────
+    function doSend(){
       var msg = input.value.trim();
+      // Si hay URL pendiente pero no texto, usamos solo la URL
+      if(pendingUrl && !msg){
+        msg = 'Imagen: ' + pendingUrl;
+      } else if(pendingUrl && msg){
+        msg = msg + '\nImagen: ' + pendingUrl;
+      }
       if(!msg) return;
+
       addMsg(msg, 'user');
       input.value = '';
+      pendingUrl = '';
       addMsg('Pensando…', 'ia');
       api('/api/ai-admin/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg})}).then(function(r){
         log.lastChild.innerHTML = '<strong>IA:</strong> '+formatText(r.data.reply||'Sin respuesta');
       }).catch(function(){
         log.lastChild.innerHTML = '<strong>IA:</strong> Error de conexión';
       });
+    }
+
+    // ── Manejar archivo de imagen ────────
+    function handleImageFile(file){
+      if(!file || !file.type.startsWith('image/')) return;
+      uploadImageForChat(file, function(url){
+        if(url){
+          pendingUrl = url;
+          // Si el input está vacío, enviamos automáticamente
+          if(!input.value.trim()){
+            doSend();
+          }
+        }
+      });
+    }
+
+    // 📎 Botón de adjuntar
+    attach.addEventListener('click', function(){ fileInput.click(); });
+    fileInput.addEventListener('change', function(){
+      if(fileInput.files && fileInput.files[0]) handleImageFile(fileInput.files[0]);
+      fileInput.value = '';
     });
 
+    // Pegar imagen (Ctrl+V)
+    input.addEventListener('paste', function(e){
+      var items = (e.clipboardData||{}).items;
+      if(!items) return;
+      for(var i=0; i<items.length; i++){
+        if(items[i].type.indexOf('image')===0){
+          e.preventDefault();
+          handleImageFile(items[i].getAsFile());
+          return;
+        }
+      }
+    });
+
+    // Drag & drop en el área del chat
+    log.addEventListener('dragover', function(e){ e.preventDefault(); });
+    log.addEventListener('drop', function(e){
+      e.preventDefault();
+      var files = (e.dataTransfer||{}).files;
+      if(files && files[0]) handleImageFile(files[0]);
+    });
+
+    send.addEventListener('click', doSend);
     input.addEventListener('keydown', function(e){ if(e.key==='Enter') send.click(); });
   })();
 
