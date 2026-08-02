@@ -770,15 +770,14 @@ h1, h2, h3, h4 {
         var whatsapp = d.whatsapp
           ? '<a href="https://wa.me/' + escAttr(String(d.whatsapp).replace(/\D/g,'')) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.3rem;font-size:0.8rem;color:var(--c-gold);margin-top:0.3rem">💬 Contactar</a>'
           : '';
-        var tieneExtra = d.whatsapp || (d.trayectoria && d.trayectoria.length > 60);
+        var tieneExtra = d.trayectoria || d.instagram || d.whatsapp;
         return '<article class="docente-card reveal">' +
           '<div class="docente-card__photo"><img src="' + escAttr(foto) + '" alt="' + escAttr(d.nombre) + '" loading="lazy"></div>' +
           '<div class="docente-card__body">' +
             '<h4>' + escHtml(d.nombre) + '</h4>' +
             '<p class="docente-card__rol">' + escHtml(d.rol) + '</p>' +
             (d.frase ? '<p class="docente-card__quote">' + escHtml(d.frase) + '</p>' : '') +
-            (tieneExtra ? '<button class="docente-card__toggle">+ Más info</button>' : '') +
-            '<div class="docente-card__extra">' + trayect + ig + whatsapp + '</div>' +
+            (tieneExtra ? '<button class="docente-card__toggle">+ M\u00e1s info</button><div class="docente-card__extra">' + trayect + ig + whatsapp + '</div>' : trayect + ig) +
           '</div></article>';
       }).join('');
 
