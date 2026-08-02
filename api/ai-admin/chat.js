@@ -872,14 +872,14 @@ export default async function handler(req, res) {
   if (!apiKey) return res.status(503).json({ error: 'IA no configurada' });
 
   try {
-    const { message } = req.body || {};
+    const { message, history } = req.body || {};
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ error: 'Mensaje requerido' });
     }
 
     const role = getAdminSessionRole(req);
 
-    // Construir mensajes para DeepSeek
+    // Construir mensajes para DeepSeek (con memoria si hay history)
     const messages = [
       {
         role: 'system',
@@ -914,8 +914,18 @@ No agregues texto antes ni después del bloque JSON cuando uses una herramienta.
 Respondé siempre en español, con claridad y precisión. Usá formato markdown para que las respuestas sean más legibles: negritas para resaltar, listas con guiones, títulos con ### cuando corresponda.
 Si el usuario incluye \"Imagen: https://...\" en su mensaje, esa URL es la foto que quiere usar. Asignala al campo \"foto\" de la herramienta que corresponda (crear_docente, actualizar_docente, crear_noticia, actualizar_noticia, crear_obra, actualizar_obra, actualizar_evento). Podés usar la URL tal cual.`
       },
-      { role: 'user', content: message },
     ];
+
+    // Insertar historial de conversación (últimos mensajes)
+    if (Array.isArray(history)) {
+      for (const h of history.slice(-20)) {
+        if (h.role === 'user' || h.role === 'assistant') {
+          messages.push({ role: h.role, content: h.content });
+        }
+      }
+    }
+
+    messages.push({ role: 'user', content: message });
 
     // Llamar a DeepSeek con tools
     let response = await fetch(DEEPSEEK_URL, {

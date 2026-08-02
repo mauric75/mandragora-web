@@ -1256,6 +1256,7 @@ a:hover { text-decoration: underline; }
     var attach = document.getElementById('ai-attach');
     var fileInput = document.getElementById('chat-file-input');
     var pendingUrl = '';  // URL de imagen pendiente de enviar
+    var chatHistory = []; // Memoria de la conversación
 
     function formatText(text){
       if(!text) return '';
@@ -1319,9 +1320,14 @@ a:hover { text-decoration: underline; }
       addMsg(msg, 'user');
       input.value = '';
       pendingUrl = '';
+      chatHistory.push({ role: 'user', content: msg });
       addMsg('Pensando…', 'ia');
-      api('/api/ai-admin/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg})}).then(function(r){
-        log.lastChild.innerHTML = '<strong>IA:</strong> '+formatText(r.data.reply||'Sin respuesta');
+      api('/api/ai-admin/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg, history:chatHistory})}).then(function(r){
+        var reply = r.data.reply||'Sin respuesta';
+        log.lastChild.innerHTML = '<strong>IA:</strong> '+formatText(reply);
+        chatHistory.push({ role: 'assistant', content: reply });
+        // Mantener solo los últimos 20 mensajes (10 intercambios)
+        if(chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
       }).catch(function(){
         log.lastChild.innerHTML = '<strong>IA:</strong> Error de conexión';
       });
