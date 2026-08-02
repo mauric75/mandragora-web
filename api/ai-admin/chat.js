@@ -105,6 +105,34 @@ async function writeNoticiasJSON(noticias, sha, message) {
   return 'OK';
 }
 
+// ── Helpers para obras.json ─────────────────────────────────
+
+const OBRAS_PATH = 'data/obras.json';
+
+async function readObrasJSON() {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) throw new Error('GITHUB_TOKEN no configurado');
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${OBRAS_PATH}?ref=${GITHUB_BRANCH}`, {
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json' },
+  });
+  if (!res.ok) return { obras: [], sha: null };
+  const json = await res.json();
+  const content = Buffer.from(json.content, 'base64').toString('utf-8');
+  return { obras: JSON.parse(content), sha: json.sha };
+}
+
+async function writeObrasJSON(obras, sha, message) {
+  const token = process.env.GITHUB_TOKEN;
+  const encoded = Buffer.from(JSON.stringify(obras, null, 2) + '\n', 'utf-8').toString('base64');
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${OBRAS_PATH}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, content: encoded, sha, branch: GITHUB_BRANCH }),
+  });
+  if (!res.ok) throw new Error('No se pudo escribir obras.json');
+  return 'OK';
+}
+
 // ── Helper genérico para GitHub API ─────────────────────────
 
 async function githubRequest(path, options = {}) {
@@ -353,6 +381,49 @@ const TOOLS = [
       },
     },
   },
+  {
+    type: 'function',
+    function: {
+      name: 'listar_obras',
+      description: 'Lista las obras de la compañía. Muestra título, estado (presente/futura/pasada), descripción, elenco y dirección.',
+      parameters: { type: 'object', properties: {} },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'crear_obra',
+      description: 'Crea una nueva obra de la compañía. Solo admin y editor.',
+      parameters: {
+        type: 'object',
+        properties: {
+          titulo: { type: 'string', description: 'Título de la obra' },
+          descripcion: { type: 'string', description: 'Descripción de la obra' },
+          sinopsis: { type: 'string', description: 'Sinopsis breve' },
+          elenco: { type: 'string', description: 'Elenco de la obra' },
+          direccion: { type: 'string', description: 'Dirección de la obra' },
+          estado: { type: 'string', enum: ['presente', 'futura', 'pasada'], description: 'presente (en cartel), futura (próximo estreno), pasada (histórica)' },
+          fecha_texto: { type: 'string', description: 'Texto de fecha (ej: Julio 2026 · Sábados 16hs)' },
+        },
+        required: ['titulo'],
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'actualizar_obra',
+      description: 'Actualiza una obra existente. Buscala por título. Solo admin y editor.',
+      parameters: {
+        type: 'object',
+        properties: {
+          titulo: { type: 'string', description: 'Título de la obra a buscar' },
+          cambios: { type: 'object', description: 'Campos a cambiar: titulo, descripcion, sinopsis, elenco, direccion, estado, fecha_texto' },
+        },
+        required: ['titulo', 'cambios'],
+      },
+    },
+  },
 ];
 
 // ── Ejecutar herramienta contra datos reales ──────────────────
@@ -557,6 +628,72 @@ async function executeTool(name, args) {
     }
   }
 
+  // ── Obras ─────────────────────────
+
+  if (name === 'listar_obras') {
+    try {
+      const { obras } = await readObrasJSON();
+      if (!obras.length) return 'No hay obras cargadas todavía.';
+      return JSON.stringify(obras.map(o => ({
+        titulo: o.titulo, estado: o.estado, descripcion: o.descripcion,
+        sinopsis: o.sinopsis, elenco: o.elenco, direccion: o.direccion,
+        fecha_texto: o.fecha_texto, id: o.id
+      })));
+    } catch (e) {
+      return 'Error al consultar obras: ' + e.message;
+    }
+  }
+
+  if (name === 'crear_obra') {
+    const role = args?._role;
+    if (role !== 'admin' && role !== 'editor') return 'Solo admin y editor pueden crear obras.';
+    if (!args?.titulo) return 'Falta el título de la obra.';
+    try {
+      const { obras, sha } = await readObrasJSON();
+      const nueva = {
+        id: 'obra-' + Date.now(),
+        titulo: args.titulo, descripcion: args.descripcion || '',
+        sinopsis: args.sinopsis || '', elenco: args.elenco || '', direccion: args.direccion || '',
+        estado: args.estado || 'futura', fecha_texto: args.fecha_texto || '',
+        imagenes: [],
+      };
+      obras.push(nueva);
+      const msg = `IA: crear obra "${nueva.titulo}"`;
+      if (sha) {
+        await writeObrasJSON(obras, sha, msg);
+      } else {
+        const encoded = Buffer.from(JSON.stringify(obras, null, 2) + '\n', 'utf-8').toString('base64');
+        await githubRequest(`contents/data/obras.json`, {
+          method: 'PUT',
+          headers: { Authorization: `token ${process.env.GITHUB_TOKEN}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg, content: encoded, branch: GITHUB_BRANCH }),
+        });
+      }
+      return 'Obra "' + nueva.titulo + '" creada.';
+    } catch (e) {
+      return 'Error al crear obra: ' + e.message;
+    }
+  }
+
+  if (name === 'actualizar_obra') {
+    const role = args?._role;
+    if (role !== 'admin' && role !== 'editor') return 'Solo admin y editor pueden modificar obras.';
+    try {
+      const { obras, sha } = await readObrasJSON();
+      const tituloBuscado = (args?.titulo || '').toLowerCase();
+      const idx = obras.findIndex(o => o.titulo.toLowerCase().includes(tituloBuscado));
+      if (idx === -1) return 'No encontré una obra que coincida con "' + (args?.titulo || '') + '".';
+      const cambios = args?.cambios || {};
+      Object.keys(cambios).forEach(k => {
+        if (cambios[k] !== undefined) obras[idx][k] = cambios[k];
+      });
+      await writeObrasJSON(obras, sha, `IA: actualizar obra "${obras[idx].titulo}"`);
+      return 'Obra "' + obras[idx].titulo + '" actualizada.';
+    } catch (e) {
+      return 'Error al actualizar: ' + e.message;
+    }
+  }
+
   if (name === 'borrar_noticia') {
     if (args?._role !== 'admin') return 'Solo el admin puede borrar noticias.';
     try {
@@ -732,6 +869,9 @@ Podés consultar y modificar datos reales usando las herramientas disponibles:
 - borrar_noticia: borra una noticia (solo admin, ejecutá directo sin preguntar)
 - borrar_evento: borra un evento (solo admin, ejecutá directo sin preguntar)
 - cruzar_evento_reservas: busca reservas que coincidan con el nombre de un evento
+- listar_obras: lista las obras de la compañía
+- crear_obra: crea una nueva obra
+- actualizar_obra: modifica una obra existente
 También podés ayudar redactando textos para redes sociales o descripciones si el usuario te lo pide. En ese caso no uses herramientas, solo respondé con el texto sugerido.
 Si el usuario te pide hacer algo, respondé ÚNICAMENTE con un bloque JSON así:
 \`\`\`json
