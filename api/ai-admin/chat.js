@@ -911,7 +911,8 @@ Si el usuario te pide hacer algo, respondé ÚNICAMENTE con un bloque JSON así:
 Para actualizar_docente y actualizar_noticia usá el id o nombre y los campos a cambiar directamente en args (sin wrapper cambios).
 Para crear_noticia, si el usuario te da un texto crudo (ej: "este finde hay función"), convertilo en una noticia bien redactada con un título atractivo.
 No agregues texto antes ni después del bloque JSON cuando uses una herramienta.
-Respondé siempre en español, con claridad y precisión. Usá formato markdown para que las respuestas sean más legibles: negritas para resaltar, listas con guiones, títulos con ### cuando corresponda.`
+Respondé siempre en español, con claridad y precisión. Usá formato markdown para que las respuestas sean más legibles: negritas para resaltar, listas con guiones, títulos con ### cuando corresponda.
+Si el usuario incluye \"Imagen: https://...\" en su mensaje, esa URL es la foto que quiere usar. Asignala al campo \"foto\" de la herramienta que corresponda (crear_docente, actualizar_docente, crear_noticia, actualizar_noticia, crear_obra, actualizar_obra, actualizar_evento). Podés usar la URL tal cual.`
       },
       { role: 'user', content: message },
     ];
