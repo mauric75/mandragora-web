@@ -1,10 +1,10 @@
 [
   {
     "titulo": "Noches Criminales",
-    "tipo": "Evento especial",
-    "categoria": "Mandr�gora",
-    "descripcion": "Una noche de misterio y teatro criminal.",
-    "fecha": "2026-07-26",
+    "tipo": "Teatro · Misterio interactivo",
+    "categoria": "Compañía Mandrágora",
+    "descripcion": "Una noche de misterio con el legendario detective Vidocq. Actores en vivo, pistas y un crimen por resolver. 4 funciones desde el viernes 28 de agosto.",
+    "fecha": "2026-08-28",
     "hora": "20:00",
     "link_tickets": "https://redtickets.uy/evento/NOCHES-CRIMINALES/31363/",
     "texto_boton": "Entradas",
