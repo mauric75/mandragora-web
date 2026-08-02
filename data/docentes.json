@@ -24,18 +24,6 @@
     "activo": true
   },
   {
-    "id": "docente-1784416933428",
-    "nombre": "Docente de Prueba",
-    "rol": "Teatro y Expresión Corporal",
-    "foto": "",
-    "frase": "",
-    "trayectoria": "",
-    "instagram": "",
-    "whatsapp": "",
-    "precio": 2500,
-    "activo": true
-  },
-  {
     "nombre": "Freddy González",
     "rol": "Dirección · Actuación · Escenografía",
     "foto": "assets/images/docentes/Freddy.png",
