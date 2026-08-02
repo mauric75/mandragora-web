@@ -379,6 +379,7 @@ body.is-admin .noticia-card__edit { display: inline-block; }
       var fechaFmt = n.fecha ? new Date(n.fecha + 'T12:00:00').toLocaleDateString('es-UY', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
       var imagen = n.imagen ? '<img class="noticia-card__imagen" src="' + escapeHtml(n.imagen) + '" alt="" loading="lazy">' : '';
       var link = n.link ? '<a class="noticia-card__link" href="' + escapeHtml(n.link) + '" target="_blank" rel="noopener">Leer más</a>' : '';
+      var tituloLink = n.link ? '<a href="' + escapeHtml(n.link) + '" target="_blank" rel="noopener">' + escapeHtml(n.titulo) + '</a>' : escapeHtml(n.titulo);
       var editLink = '<a class="noticia-card__edit" href="/admin.html?tab=noticias&edit=' + encodeURIComponent(n.id || '') + '">✎ Editar</a>';
       return (
         '<article class="noticia-card reveal">' +
@@ -388,7 +389,7 @@ body.is-admin .noticia-card__edit { display: inline-block; }
               '<span class="noticia-card__badge ' + badgeClass + '">' + badge + '</span>' +
               '<span class="noticia-card__date">' + fechaFmt + '</span>' +
             '</div>' +
-            '<h2>' + escapeHtml(n.titulo) + '</h2>' +
+            '<h2>' + tituloLink + '</h2>' +
             '<p>' + escapeHtml(n.texto) + '</p>' +
             link + editLink +
           '</div>' +
