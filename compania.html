@@ -637,14 +637,9 @@ h1, h2, h3, h4 {
   var grid = document.getElementById('obras-grid');
   if(!grid) return;
 
-  fetch('/api/docentes', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({resource: 'obra', action: 'list'})
-  })
-  .then(r => r.json())
-  .then(data => {
-    var obras = data.obras || [];
+  fetch('data/obras.json?t=' + Date.now(), {cache:'no-store'})
+    .then(r => r.json())
+    .then(obras => {
     if(!obras.length){ grid.innerHTML = '<p style="text-align:center;opacity:0.5;padding:2rem">Obras próximamente.</p>'; return; }
 
     var labels = { presente: 'En cartel', futura: 'Próximamente', pasada: 'Histórica' };
