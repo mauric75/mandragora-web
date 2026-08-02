@@ -251,7 +251,8 @@ h1, h2, h3, h4 {
   aspect-ratio: 4/3; overflow: hidden;
 }
 .obra-card__image img {
-  width: 100%; height: 100%; object-fit: cover;
+  width: 100%; height: 100%; object-fit: contain;
+  background: var(--c-bg-soft);
   filter: sepia(0.25) saturate(0.8) contrast(1.05) brightness(0.9);
   transform: scale(1.03);
   transition: transform 1.5s var(--ease);
