@@ -387,6 +387,10 @@ h1, h2, h3, h4 {
   font-size: 0.85rem; line-height: 1.6;
   color: var(--c-cream-dim);
 }
+.docente-card__toggle { background: none; border: 1px solid var(--c-gold-dim); color: var(--c-gold); padding: 0.3em 1em; border-radius: 4px; cursor: pointer; font-size: 0.75rem; margin-top: 0.4rem; transition: all 0.2s; }
+.docente-card__toggle:hover { background: var(--c-gold-faint); }
+.docente-card__extra { display: none; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--c-border); font-size: 0.85rem; }
+.docente-card__extra.is-open { display: block; }
 
 /* ============================================================
    INSCRIPCIONES CTA
@@ -763,15 +767,31 @@ h1, h2, h3, h4 {
         var trayect = d.trayectoria
           ? '<p style="font-size:0.78rem;color:var(--c-gold);margin-top:0.5rem">' + escHtml(d.trayectoria) + '</p>'
           : '';
+        var whatsapp = d.whatsapp
+          ? '<a href="https://wa.me/' + escAttr(String(d.whatsapp).replace(/\D/g,'')) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.3rem;font-size:0.8rem;color:var(--c-gold);margin-top:0.3rem">💬 Contactar</a>'
+          : '';
+        var tieneExtra = d.whatsapp || (d.trayectoria && d.trayectoria.length > 60);
         return '<article class="docente-card reveal">' +
           '<div class="docente-card__photo"><img src="' + escAttr(foto) + '" alt="' + escAttr(d.nombre) + '" loading="lazy"></div>' +
           '<div class="docente-card__body">' +
             '<h4>' + escHtml(d.nombre) + '</h4>' +
             '<p class="docente-card__rol">' + escHtml(d.rol) + '</p>' +
             (d.frase ? '<p class="docente-card__quote">' + escHtml(d.frase) + '</p>' : '') +
-            trayect + ig +
+            (tieneExtra ? '<button class="docente-card__toggle">+ Más info</button>' : '') +
+            '<div class="docente-card__extra">' + trayect + ig + whatsapp + '</div>' +
           '</div></article>';
       }).join('');
+
+      // Bind toggle buttons
+      setTimeout(function(){
+        document.querySelectorAll('.docente-card__toggle').forEach(function(btn){
+          btn.addEventListener('click', function(){
+            var extra = btn.parentElement.querySelector('.docente-card__extra');
+            var open = extra.classList.toggle('is-open');
+            btn.textContent = open ? '− Menos info' : '+ Más info';
+          });
+        });
+      }, 50);
 
       // Re-trigger scroll reveals
       setTimeout(function(){
