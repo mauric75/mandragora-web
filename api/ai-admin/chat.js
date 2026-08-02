@@ -880,7 +880,7 @@ Si el usuario te pide hacer algo, respondé ÚNICAMENTE con un bloque JSON así:
 Para actualizar_docente y actualizar_noticia usá el id o nombre y los campos a cambiar directamente en args (sin wrapper cambios).
 Para crear_noticia, si el usuario te da un texto crudo (ej: "este finde hay función"), convertilo en una noticia bien redactada con un título atractivo.
 No agregues texto antes ni después del bloque JSON cuando uses una herramienta.
-Respondé siempre en español, con claridad y precisión.`
+Respondé siempre en español, con claridad y precisión. Usá formato markdown para que las respuestas sean más legibles: negritas para resaltar, listas con guiones, títulos con ### cuando corresponda.`
       },
       { role: 'user', content: message },
     ];
