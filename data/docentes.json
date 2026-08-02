@@ -31,5 +31,17 @@
     "trayectoria": "Premios Florencio · Carnaval de Uruguay · Teatro del Notariado · Ser Humana · Onírika",
     "activo": true,
     "id": "docente-1785639120520"
+  },
+  {
+    "id": "docente-1785654385898",
+    "nombre": "Pablo Bentancourt",
+    "rol": "coordinador de Mandrágora",
+    "foto": "https://i.ytimg.com/vi/e7OkW3Bsq0U/maxresdefault.jpg",
+    "frase": "",
+    "trayectoria": "",
+    "instagram": "",
+    "whatsapp": "",
+    "precio": 2500,
+    "activo": true
   }
 ]
