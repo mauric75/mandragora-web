@@ -163,5 +163,17 @@
     "whatsapp": "",
     "precio": 2500,
     "activo": true
+  },
+  {
+    "id": "docente-1785720569101",
+    "nombre": "Carlos Vesperoni",
+    "rol": "Guitarra · Canto · Young (Río Negro)",
+    "foto": "",
+    "frase": "Maestro de guitarra y canto en Young.",
+    "trayectoria": "",
+    "instagram": "",
+    "whatsapp": "",
+    "precio": 2500,
+    "activo": true
   }
 ]
