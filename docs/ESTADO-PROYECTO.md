@@ -76,10 +76,12 @@
 - Migrar a hosting con dominio mandragora.uy
 - MercadoPago con token real
 - Chat IA con memoria de conversación
-- Galería de obras (plan en docs/PLAN-GALERIA-OBRAS.md)
 
 ## Completado reciente
 - ✅ Reels en menú y footer de las 14 páginas
 - ✅ Noticias con edit inline (si hay sesión admin, muestra "✎ Editar")
 - ✅ Sistema de obras (data/obras.json + api/docentes.js extendido por Claude)
+- ✅ Galería reorganizada por obra (presente/futura/pasada) + sección "La Casa" (Claude)
 - ✅ Upload de imágenes a Supabase Storage
+- ✅ Modo oscuro por defecto en las 13 páginas públicas — antes solo se activaba si ya estaba guardado en localStorage, ahora es el default salvo elección explícita de modo claro (Claude)
+- ✅ Fix: `noticias.html` tenía `renderNoticias()` con sintaxis rota (join duplicado + paréntesis huérfano) de un edit a medias — corregido (Claude)
