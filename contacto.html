@@ -119,7 +119,8 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 @media (max-width: 600px) { .site-nav__logo { height: 28px; } }
 
 .section-hero { width: 100%; height: 40vh; min-height: 280px; overflow: hidden; position: relative; }
-.section-hero img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.02) brightness(0.92); }
+.section-hero img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.02) brightness(0.92);   color: transparent;
+}
 .section-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to top, var(--c-bg), transparent); pointer-events: none; }
 
 .page-header { padding: 3rem var(--gutter) 2rem; max-width: 880px; margin: 0 auto; text-align: center; }
