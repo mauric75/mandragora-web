@@ -58,12 +58,12 @@
   },
   {
     "id": "docente-1785718750409",
-    "nombre": "Pitufo Lombardo",
-    "rol": "Tallerista · Ciudad de la Costa",
-    "foto": "",
-    "frase": "",
-    "trayectoria": "",
-    "instagram": "",
+    "nombre": "Edú \"Pitufo\" Lombardo",
+    "rol": "Tallerista · Música · Ciudad de la Costa",
+    "foto": "https://upload.wikimedia.org/wikipedia/commons/0/01/Pitufo.jpg",
+    "frase": "La murga tiene un potencial increíble.",
+    "trayectoria": "Músico, compositor, percusionista y cantante. Figura emblemática del Carnaval uruguayo. Director de Falta y Resto, Contrafarsa, La Gran Muñeca y Don Timoteo. Premios Graffiti a Mejor Compositor. Acompañó a Jaime Roos, Jorge Drexler, Mercedes Sosa y Serrat. Obras: Murga Madre (Premio Florencio), Montevideo Amor. Discos: Rocanrol, Ilustrados y Valientes, Músicos Ambulantes.",
+    "instagram": "@pitufolombardouy",
     "whatsapp": "",
     "precio": 2500,
     "activo": true
