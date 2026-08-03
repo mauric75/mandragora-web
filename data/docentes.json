@@ -43,5 +43,41 @@
     "whatsapp": "",
     "precio": 2500,
     "activo": true
+  },
+  {
+    "id": "docente-1785716995648",
+    "nombre": "Próximamente — Acrobacia Aérea",
+    "rol": "Acrobacia Aérea · Tela · Geolira",
+    "foto": "",
+    "frase": "Disciplina aérea para todas las edades.",
+    "trayectoria": "",
+    "instagram": "",
+    "whatsapp": "",
+    "precio": 2500,
+    "activo": true
+  },
+  {
+    "id": "docente-1785716995649",
+    "nombre": "Próximamente — Danza",
+    "rol": "Danza · Expresión Corporal",
+    "foto": "",
+    "frase": "Movimiento, ritmo y expresión.",
+    "trayectoria": "",
+    "instagram": "",
+    "whatsapp": "",
+    "precio": 2500,
+    "activo": true
+  },
+  {
+    "id": "docente-1785716995650",
+    "nombre": "Próximamente — Canto y Guitarra",
+    "rol": "Canto · Guitarra · Música",
+    "foto": "",
+    "frase": "Formación musical integral.",
+    "trayectoria": "",
+    "instagram": "",
+    "whatsapp": "",
+    "precio": 2500,
+    "activo": true
   }
 ]
