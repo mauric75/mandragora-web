@@ -67,6 +67,13 @@
 - El sistema de 3 roles (admin/editor/consulta) existe en `admin-auth.js` pero el frontend no diferencia
 - Documentado en `docs/DIAGNOSTICO-ROLES.md` con sugerencia de simplificar a un solo rol
 
+### 13. Modo oscuro por defecto (hecho por Claude)
+- Pedido del cliente/Mauricio: que el tema oscuro sea el default para cualquier visitante nuevo, no el claro
+- Antes: `if(t==="dark")` — solo activaba oscuro si ya estaba guardado en localStorage. Un visitante nuevo veía claro.
+- Ahora: `if(t!=="light")` — activa oscuro salvo que el visitante haya elegido explícitamente claro antes. El botón de tema sigue funcionando igual, solo cambió el default.
+- Aplicado en las 13 páginas públicas (index, agenda, escuela, sala, compania, cine-viajero, comunidad, contacto, reservar, galeria, nosotros, noticias, 404). `reels.html` y `reels-v2.html` ya lo tenían así.
+- **Bug encontrado y arreglado de paso**: `noticias.html` tenía un `renderNoticias()` roto — un `.join('')` duplicado con un `);` huérfano en el medio (quedó de un edit a medias del rediseño de tarjetas de noticias), rompía la sintaxis del script entero. Ya está corregido.
+
 ## Archivos modificados
 - `api/docentes.js` — merge selectivo
 - `api/ai-admin/chat.js` — memoria, system prompt imágenes
@@ -76,6 +83,8 @@
 - `index.html` — hero, menú dropdown
 - `data/docentes.json` — limpieza duplicados, Pablo
 - `*.html` (12 páginas) — menú dropdown
+- `*.html` (13 páginas) — modo oscuro por defecto (Claude)
+- `noticias.html` — fix renderNoticias roto (Claude)
 - `AGENTS.md` — creado
 - `docs/DIAGNOSTICO-ROLES.md` — creado
 - `docs/cliente-reinion1-5.txt` — transcripciones
