@@ -15,7 +15,7 @@
 
 
 
-<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
+<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t!=="light")document.documentElement.setAttribute("data-theme","dark");})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2" as="font" crossorigin>
@@ -708,8 +708,7 @@ h1, h2, h3, h4 {
   // theme toggle
   var toggle = document.getElementById('theme-toggle');
   var html = document.documentElement;
-  var saved = localStorage.getItem('mandragora-theme');
-  if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; }
+  toggle.textContent = html.getAttribute('data-theme') === 'dark' ? '☾' : '☀';
   toggle.addEventListener('click', function(){
     var isDark = html.getAttribute('data-theme') === 'dark';
     if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '☀'; localStorage.setItem('mandragora-theme','light'); }
