@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
 
 
-<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
+<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t!=="light")document.documentElement.setAttribute("data-theme","dark");})()</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -375,8 +375,7 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 
   var toggle = document.getElementById('theme-toggle');
   var html = document.documentElement;
-  var saved = localStorage.getItem('mandragora-theme');
-  if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; }
+  toggle.textContent = html.getAttribute('data-theme') === 'dark' ? '\u263e' : '\u2600';
   toggle.addEventListener('click', function(){
     var isDark = html.getAttribute('data-theme') === 'dark';
     if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '\u2600'; localStorage.setItem('mandragora-theme','light'); }
