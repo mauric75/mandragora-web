@@ -15,7 +15,7 @@
 
 
 
-<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark");})()</script>
+<script>(function(){var t=localStorage.getItem("mandragora-theme");if(t!=="light")document.documentElement.setAttribute("data-theme","dark");})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -629,8 +629,7 @@ h1, h2, h3, h4 {
   // theme toggle
   var toggle = document.getElementById('theme-toggle');
   var html = document.documentElement;
-  var saved = localStorage.getItem('mandragora-theme');
-  if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.textContent = '☾'; }
+  toggle.textContent = html.getAttribute('data-theme') === 'dark' ? '☾' : '☀';
   toggle.addEventListener('click', function(){
     var isDark = html.getAttribute('data-theme') === 'dark';
     if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '☀'; localStorage.setItem('mandragora-theme','light'); }
