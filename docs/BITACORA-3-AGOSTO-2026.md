@@ -72,20 +72,57 @@
 - Elegido por el usuario (Opción A entre 3 propuestas basadas en el contenido del reel)
 - Aplicado en `escuela.html` líneas 691-692
 - **Commit:** `b00dd2c`
+
+### 14. Fix: teléfono e Instagram intrusos en el header
+- El `<p>` con 📞 091 508455 y @teatromandragora_uy se había colado dentro del `<header>` en 10 páginas, deformando la navegación
+- Corregido en: agenda, cine-viajero, compania, comunidad, contacto, escuela, galeria, noticias, reservar, sala
+- `index.html` ya estaba corregido previamente
+- También se corrigió el Instagram en el footer de `nosotros.html` (@mandragoracasa → @teatromandragora_uy)
+- **Commits:** `6971519`, `20226ef`
+
+### 15. Fix: texto duplicado y HTML roto en hero de portada
+- "Donde la magia ocurre" aparecía repetido (ya está en el eyebrow "DONDE LA MAGIA OCURRE")
+- Además el HTML del hero tenía etiquetas mal cerradas (texto suelto fuera del `<p>`)
+- **Commit:** `d426bbe`
+
+### 16. Fotos y biografías de docentes
+- **Pitufo Lombardo** (Edú Lombardo): foto de Wikipedia Commons + biografía enriquecida con trayectoria, premios, Instagram (@pitufolombardouy)
+- **Camilo Abellá**: foto aportada por el usuario (`camilo-abella.jpg`)
+- **Katia Zacarían**: foto aportada por el usuario (`Katia Zacarían.png`)
+- **Iván Solarich**: foto aportada por el usuario (`Ivan-Solarich.jpg`)
+- **Agustín Camacho**: foto + rol "Director de Infernum" (`agustin-camacho-id.jpg`)
+- **Lucía Caballero**: foto aportada por el usuario (`Lucía Caballero.jpg`)
+- **Javiera Torres**: foto aportada por el usuario (`Javiera-Torres.png`)
+- **Carlos Vesperoni**: foto aportada por el usuario (`Carlos-Vesperoni.jpg`)
+- **Florencia De Armas**: foto + corrección de nombre completo (`Florencia-De-Armas.png`)
+- Quedan pendientes: Gustavo Carapuchet y Jonás de León (Mandrágora enviará el material)
+- **Commits:** `c0360d7`, `595e68c`, `48c6d96`, `a9aadef`, `fa0dde3`, `f357cc3`, `3e24886`
+
+### 17. Hero images en páginas que no tenían
+- Agregado `<section class="section-hero">` con imagen + degradado inferior a 5 páginas:
+  - `agenda.html` → `festival.jpg` (también ajustado padding del page-header)
+  - `noticias.html` → `comunidad.jpg` (también agregado CSS faltante)
+  - `galeria.html` → `escuela.jpg` (también agregado CSS faltante)
+  - `reservar.html` → `sala.jpg` (también agregado CSS faltante)
+  - `nosotros.html` → `nosotros-hero.jpg` (migrado de `<img class="hero-img">` a section-hero estándar)
+- **Rama:** `feature/hero-images` → main
+- **Commit merge:** `d1b3008`
 ## Archivos modificados
-- `index.html` — dropdown Convenios, SUNCA, fix blank line, fix alt text
-- `escuela.html` — dropdown, SUNCA, nav effects, fix blank line, fix alt text, título del reel
-- `sala.html` — dropdown, SUNCA, fix blank line, fix alt text, fix logo link
-- `compania.html` — dropdown, SUNCA, fix blank line, fix alt text
-- `nosotros.html` — dropdown, SUNCA, nav effects
-- `comunidad.html` — dropdown, SUNCA, fix blank line, fix alt text
-- `cine-viajero.html` — dropdown, SUNCA, fix blank line, fix alt text
-- `agenda.html` — dropdown, SUNCA, fix blank line, fix alt text
-- `noticias.html` — dropdown, SUNCA, fix blank line
-- `galeria.html` — dropdown, SUNCA, fix blank line
-- `contacto.html` — dropdown, SUNCA, fix blank line, fix alt text
-- `reservar.html` — dropdown, SUNCA
+- `index.html` — dropdown Convenios, SUNCA, fix blank line, fix alt text, fix teléfono/IG header, fix texto duplicado hero
+- `escuela.html` — dropdown, SUNCA, nav effects, fix blank line, fix alt text, título del reel, fix teléfono/IG header
+- `sala.html` — dropdown, SUNCA, fix blank line, fix alt text, fix logo link, fix teléfono/IG header
+- `compania.html` — dropdown, SUNCA, fix blank line, fix alt text, fix teléfono/IG header
+- `nosotros.html` — dropdown, SUNCA, nav effects, fix IG footer, hero image estándar
+- `comunidad.html` — dropdown, SUNCA, fix blank line, fix alt text, fix teléfono/IG header
+- `cine-viajero.html` — dropdown, SUNCA, fix blank line, fix alt text, fix teléfono/IG header
+- `agenda.html` — dropdown, SUNCA, fix blank line, fix alt text, fix teléfono/IG header, hero image + spacing
+- `noticias.html` — dropdown, SUNCA, fix blank line, fix teléfono/IG header, hero image
+- `galeria.html` — dropdown, SUNCA, fix blank line, fix teléfono/IG header, hero image
+- `contacto.html` — dropdown, SUNCA, fix blank line, fix alt text, fix teléfono/IG header
+- `reservar.html` — dropdown, SUNCA, fix teléfono/IG header, hero image
 - `convenio-sunca.html` — creado (nueva página)
+- `data/docentes.json` — fotos y biografías de 9 docentes
+- `assets/images/docentes/` — 10 imágenes nuevas de docentes
 - `assets/images/Convenios/sunca-mandragora.jpg` — subida al repo
 
 ## Commits del día (main)
@@ -102,9 +139,22 @@
 11. `565908b` — Oculta alt text en section-hero img mientras carga la imagen
 12. `c0d32ae` — Corrige link del logo en sala.html: index.html en vez de #hero
 13. `b00dd2c` — Actualiza título y subtítulo del reel de presentación
+14. `6971519` — Quita teléfono e IG intrusos del header de index.html
+15. `c0360d7` — Foto y biografía enriquecida de Pitufo Lombardo
+16. `595e68c` — Agrega foto de Camilo Abellá
+17. `48c6d96` — Agrega foto de Katia Zacarían
+18. `258ae57` — Agrega foto de Iván Solarich
+19. `a9aadef` — Agrega foto de Agustín Camacho (Director de Infernum)
+20. `20226ef` — Quita teléfono e IG intrusos del header en 10 páginas + corrige IG en footer de nosotros
+21. `fa0dde3` — Agrega fotos de Lucía Caballero y Javiera Torres
+22. `f357cc3` — Agrega foto de Carlos Vesperoni
+23. `3e24886` — Agrega foto de Florencia De Armas
+24. `d426bbe` — Quita texto duplicado y HTML roto en hero de portada
+25. `d1b3008` — Hero images en 5 páginas (agenda, noticias, galeria, reservar, nosotros)
 
-## Rama temporal
+## Ramas temporales
 - `fix/blank-line-after-body` — fixes 10 y 11, mergeada a main
+- `feature/hero-images` — heroes en 5 páginas, mergeada a main
 
 ## Producción
 🔗 https://mauric75.github.io/mandragora-web
