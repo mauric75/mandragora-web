@@ -106,6 +106,9 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 .mobile-menu.is-open { opacity: 1; pointer-events: auto; }
 .mobile-menu a { font-family: var(--f-display); font-size: 1.6rem; color: var(--c-cream); transition: color 0.3s; }
 .mobile-menu a:hover { color: var(--c-gold); }
+.mobile-subitem { padding-left: 1.5rem; font-size: 1.3rem; opacity: 0.75; }
+.mobile-subitem:hover { opacity: 1; }
+
 @media (min-width: 881px) { .hamburger { display: none; } }
 @media (min-width: 880px) { .site-nav__links { display: flex; } }
 @media (max-width: 600px) { .site-nav__logo { height: 28px; } }
@@ -306,7 +309,9 @@ body.is-admin .noticia-card__edit { display: inline-block; }
     <a href="sala.html">Sala</a>
     <a href="compania.html">Compañía</a>
     <a href="convenios.html">Convenios</a>
-        <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
+    <a href="atrapasuenos.html" class="mobile-subitem">Atrapasueños Recreación</a>
+    <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
     <a href="comunidad.html">Comunidad</a>
     <a href="galeria.html">Galeria</a>
     <a href="contacto.html">Contacto</a>
