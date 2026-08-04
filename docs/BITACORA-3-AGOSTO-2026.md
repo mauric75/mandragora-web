@@ -64,9 +64,17 @@
 - Corregido a `href="index.html"`
 - **Commit:** `c0d32ae`
 
+### 13. Título del reel de presentación en escuela.html
+- Escuchado el reel `assets/videos/reel-presentacion.mp4` (59,5s) vía transcripción Vosk (el modelo no puede ver imágenes)
+- Qué dice el reel: "Cuando era niña soñaba con ser actriz y así llegué al teatro. En Mandrágora tenemos todas las herramientas a tu disposición para hacer realidad tu sueño de actuar. Los lunes y miércoles 18:30 horas acá en Escuela Teatro"
+- El título anterior ("Taller de actuación en acción") era heredado del viejo link de Instagram y no coincidía con el contenido
+- Nuevo título: "Hacé realidad tu sueño de actuar" / subtítulo "Clases de teatro: lunes y miércoles 18:30 hs"
+- Elegido por el usuario (Opción A entre 3 propuestas basadas en el contenido del reel)
+- Aplicado en `escuela.html` líneas 691-692
+- **Commit:** `b00dd2c`
 ## Archivos modificados
 - `index.html` — dropdown Convenios, SUNCA, fix blank line, fix alt text
-- `escuela.html` — dropdown, SUNCA, nav effects, fix blank line, fix alt text
+- `escuela.html` — dropdown, SUNCA, nav effects, fix blank line, fix alt text, título del reel
 - `sala.html` — dropdown, SUNCA, fix blank line, fix alt text, fix logo link
 - `compania.html` — dropdown, SUNCA, fix blank line, fix alt text
 - `nosotros.html` — dropdown, SUNCA, nav effects
@@ -93,6 +101,7 @@
 10. `5b6df18` — Elimina linea en blanco despues de body en 10 archivos
 11. `565908b` — Oculta alt text en section-hero img mientras carga la imagen
 12. `c0d32ae` — Corrige link del logo en sala.html: index.html en vez de #hero
+13. `b00dd2c` — Actualiza título y subtítulo del reel de presentación
 
 ## Rama temporal
 - `fix/blank-line-after-body` — fixes 10 y 11, mergeada a main
