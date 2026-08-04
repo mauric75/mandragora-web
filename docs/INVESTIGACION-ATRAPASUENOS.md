@@ -32,8 +32,8 @@ Se extrajeron **22 URLs** de fotos desde la sección de fotos del perfil (thumbn
 
 | Archivo | Ubicación | Tamaño | Descripción |
 |---------|-----------|--------|-------------|
-| `atrapasuenos-perfil-facebook.png` | `assets/images/` | 260 KB | Captura de pantalla del perfil completo de Facebook |
-| `atrapasuenos-foto-ejemplo.jpg` | `assets/images/atrapadaenlapantalla/` | 518 KB | Foto a tamaño completo (949×960 px) de la obra "ATRAPADA EN LA PANTALLA" |
+| `atrapasuenos-perfil-facebook.png` | `assets/images/Convenios/` | 260 KB | Captura de pantalla del perfil completo de Facebook |
+| `atrapasuenos-foto-ejemplo.jpg` | `assets/images/Convenios/` | 518 KB | Foto a tamaño completo (949×960 px) de la obra "ATRAPADA EN LA PANTALLA" |
 
 ### Imágenes preexistentes en el proyecto
 

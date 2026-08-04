@@ -12,15 +12,15 @@
 
 ### 2. Extracción de imágenes de la galería de Facebook
 - Extraídas 22 URLs de fotos desde la sección de fotos del perfil usando automatización de navegador
-- Captura de pantalla del perfil guardada como `assets/images/atrapasuenos-perfil-facebook.png` (260 KB)
-- Foto a tamaño completo de la obra guardada como `assets/images/atrapadaenlapantalla/atrapasuenos-foto-ejemplo.jpg` (518 KB)
+- Captura de pantalla del perfil guardada como `assets/images/Convenios/atrapasuenos-perfil-facebook.png` (260 KB)
+- Foto a tamaño completo de la obra guardada como `assets/images/Convenios/atrapasuenos-foto-ejemplo.jpg` (518 KB)
 - **Commit:** `a4e6892`
 
 ## Archivos modificados
 - `docs/INVESTIGACION-ATRAPASUENOS.md` — nuevo documento con la investigación completa
 - `docs/BITACORA-4-AGOSTO-2026.md` — este archivo
-- `assets/images/atrapasuenos-perfil-facebook.png` — captura del perfil de Facebook
-- `assets/images/atrapadaenlapantalla/atrapasuenos-foto-ejemplo.jpg` — foto a tamaño completo de la obra
+- `assets/images/Convenios/atrapasuenos-perfil-facebook.png` — captura del perfil de Facebook
+- `assets/images/Convenios/atrapasuenos-foto-ejemplo.jpg` — foto a tamaño completo de la obra
 
 ## Commits del día (main)
 1. `a4e6892` — Agrega investigacion de Atrapasuenos Recreacion con imagenes y datos del perfil de Facebook
