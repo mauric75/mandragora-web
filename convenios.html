@@ -3,19 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comunidad — Mandrágora</title>
+<title>Convenios — Mandrágora</title>
 <link rel="manifest" href="/manifest.json">
-<meta name="description" content="La comunidad de Mandrágora. Egresados, vecinos, público fiel: la razón por la que las luces se siguen prendiendo cada noche.">
-<meta property="og:title" content="Comunidad — Mandrágora">
-<meta property="og:description" content="Egresados, vecinos, público fiel. La razón por la que las luces se siguen prendiendo.">
+<meta name="description" content="Convenios de Mandrágora con organizaciones, empresas e instituciones. Alianzas para democratizar el acceso a la cultura.">
+<meta property="og:title" content="Convenios — Mandrágora">
+<meta property="og:description" content="Tejemos alianzas con organizaciones para llevar el arte donde más se necesita. SUNCA, Atrapasueños y más.">
 <meta property="og:image" content="https://mauric75.github.io/mandragora-web/assets/images/comunidad.jpg">
-<meta property="og:url" content="https://mauric75.github.io/mandragora-web/comunidad.html">
+<meta property="og:url" content="https://mauric75.github.io/mandragora-web/convenios.html">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" href="assets/brand-logos/iso.png">
 
-
-
 <script>(function(){var t=localStorage.getItem("mandragora-theme");if(t!=="light")document.documentElement.setAttribute("data-theme","dark");})()</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -71,68 +70,28 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; background: var(--c-bg); -webkit-font-smoothing: antialiased; }
-body { font-family: var(--f-body); color: var(--c-cream); background: var(--c-bg); line-height: 1.65; overflow-x: hidden;
-.section-hero {
-  width: 100%; height: 55vh; min-height: 360px;
-  overflow: hidden; position: relative;
-  margin-top: 0;
-}
-.section-hero img {
-  width: 100%; height: 100%; object-fit: cover;
-  filter: contrast(1.02) brightness(0.92);
-  color: transparent;
-}
-.section-hero::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-  height: 40%;
-  background: linear-gradient(to top, var(--c-bg), transparent);
-  pointer-events: none;
-}
-
-  transition: background 0.4s var(--ease), color 0.3s var(--ease);
+body { font-family: var(--f-body); color: var(--c-cream); background: var(--c-bg); line-height: 1.65; overflow-x: hidden; transition: background 0.4s var(--ease), color 0.3s var(--ease);
   animation: fade-in 0.6s var(--ease) both; }
 img { max-width: 100%; display: block; }
 a  { color: inherit; text-decoration: none; }
-h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.01em; line-height: 1.1; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.01em; line-height: 1.1; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
 
-.grain {
-  position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0.05;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  background-repeat: repeat;
-}
+.grain { position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0.05; mix-blend-mode: multiply; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); background-repeat: repeat; }
 [data-theme="dark"] .grain { mix-blend-mode: overlay; opacity: 0.04; }
 
-.btn {
-  font-family: var(--f-body); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 0.9em 1.7em; border-radius: 2px; border: 1px solid transparent;
-  display: inline-flex; align-items: center; cursor: pointer;
-  transition: transform 0.4s var(--ease), background 0.4s, border-color 0.4s;
-}
+.btn { font-family: var(--f-body); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.9em 1.7em; border-radius: 2px; border: 1px solid transparent; display: inline-flex; align-items: center; cursor: pointer; transition: transform 0.4s var(--ease), background 0.4s, border-color 0.4s; }
 .btn--gold { background: var(--c-gold); color: var(--c-bg); border-color: var(--c-gold); }
 .btn--gold:hover { background: var(--c-gold-bright); transform: translateY(-1px); }
 .btn--ghost { border-color: var(--c-cream-faint); color: var(--c-cream); }
 .btn--ghost:hover { border-color: var(--c-cream); transform: translateY(-1px); }
 
-.site-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.5rem var(--gutter); font-family: var(--f-mark);
-  font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--c-ink);
-  transition: padding 0.4s var(--ease), background 0.4s var(--ease);
-}
-.site-nav.is-scrolled {
-  background: color-mix(in srgb, var(--c-bg) 96%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--c-border);
-}
+.site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.5rem var(--gutter); font-family: var(--f-mark); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; transition: padding 0.4s var(--ease), background 0.4s var(--ease); }
+.site-nav.is-scrolled { background: color-mix(in srgb, var(--c-bg) 96%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--c-border); }
 [data-theme="dark"] .site-nav { color: var(--c-cream); }
 .site-nav__logo { height: 36px; width: auto; display: block; }
 .site-nav__logo-dark { display: none; }
@@ -142,74 +101,43 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 .site-nav__links a { opacity: 0.72; transition: opacity 0.3s var(--ease); }
 .site-nav__links a:hover { opacity: 1; }
 .site-nav__links a.is-active { opacity: 1; color: var(--c-gold); }
-.theme-toggle {
-  background: none; border: 1px solid currentColor; cursor: pointer;
-  width: 34px; height: 34px; border-radius: 50%;
-  display: grid; place-items: center; color: inherit;
-  font-size: 0.9rem; line-height: 1; padding: 0;
-  opacity: 0.7; transition: opacity 0.3s, transform 0.4s var(--ease);
-}
+.theme-toggle { background: none; border: 1px solid currentColor; cursor: pointer; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 0.9rem; line-height: 1; padding: 0; opacity: 0.7; transition: opacity 0.3s, transform 0.4s var(--ease); }
 .theme-toggle:hover { opacity: 1; transform: rotate(15deg); }
 .theme-toggle:active { transform: rotate(180deg); }
-@media (min-width: 880px) { .site-nav__links { display: flex; } }
-@media (max-width: 600px) { .site-nav__logo { height: 28px; } }
-/* hamburger */
-.hamburger {
-  display: flex; flex-direction: column; gap: 5px;
-  background: none; border: none; cursor: pointer; padding: 4px;
-  z-index: 101;
-}
-.hamburger span {
-  display: block; width: 24px; height: 1.5px;
-  background: currentColor; transition: transform 0.3s var(--ease), opacity 0.2s;
-}
+.hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 101; opacity: 0.8; }
+.hamburger span { display: block; width: 24px; height: 1.5px; background: currentColor; transition: transform 0.3s var(--ease), opacity 0.2s; }
 .hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
 .hamburger.is-open span:nth-child(2) { opacity: 0; }
 .hamburger.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
-@media (min-width: 881px) { .hamburger { display: none; } }
-
-/* mobile menu */
-.mobile-menu {
-  position: fixed; inset: 0; z-index: 99;
-  background: var(--c-bg); display: flex;
-  flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.35s var(--ease);
-}
+.mobile-menu { position: fixed; inset: 0; z-index: 99; background: var(--c-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; pointer-events: none; transition: opacity 0.35s var(--ease); }
 .mobile-menu.is-open { opacity: 1; pointer-events: auto; }
-.mobile-menu a {
-  font-family: var(--f-display); font-size: 1.6rem;
-  color: var(--c-cream); transition: color 0.3s;
-}
+.mobile-menu a { font-family: var(--f-display); font-size: 1.6rem; color: var(--c-cream); transition: color 0.3s; }
 .mobile-menu a:hover { color: var(--c-gold); }
+@media (min-width: 881px) { .hamburger { display: none; } }
+@media (min-width: 880px) { .site-nav__links { display: flex; } }
+@media (max-width: 600px) { .site-nav__logo { height: 28px; } }
 
+.section-hero { width: 100%; height: 35vh; min-height: 200px; overflow: hidden; position: relative; }
+.section-hero img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.02) brightness(0.92); color: transparent; }
+.section-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to top, var(--c-bg), transparent); pointer-events: none; }
 
 .page-header { padding: 4rem var(--gutter) 3rem; max-width: 880px; margin: 0 auto; text-align: center; }
+.page-header h1 { font-size: clamp(2.6rem, 6vw, 4.8rem); font-weight: 500; line-height: 1.05; }
+.page-header__ornament { height: 60px; width: auto; margin: 0 auto 1rem; opacity: 0.75; display: block; }
 .page-header__kicker { font-family: var(--f-mark); font-size: 0.68rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--c-gold); margin-bottom: 1.2rem; }
-.page-header h1 { font-size: clamp(2.6rem, 6vw, 4.8rem); font-weight: 500; line-height: 1.05; margin-bottom: 1.4rem; }
-.page-header__lede { font-family: var(--f-display); font-style: italic; font-size: clamp(1rem, 1.8vw, 1.2rem); color: var(--c-cream-dim); max-width: 48ch; margin: 0 auto; line-height: 1.55; }
 
-.intro-block { max-width: 780px; margin: 0 auto; padding: 0 var(--gutter) 4rem; }
-.intro-block p { font-size: 1rem; line-height: 1.8; color: var(--c-cream-dim); }
-.intro-block p + p { margin-top: 1.2rem; }
-
-/* valores */
-.valores { padding: 4rem var(--gutter); border-top: 1px solid var(--c-border); background: var(--c-bg-soft); }
-.valores__header { text-align: center; margin-bottom: 3rem; }
-.valores__kicker { font-family: var(--f-mark); font-size: 0.68rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--c-gold); margin-bottom: 1rem; }
-.valores__title { font-size: clamp(1.9rem, 4.2vw, 3rem); font-weight: 400; }
-.valores__grid { display: grid; grid-template-columns: 1fr; gap: 1.6rem; max-width: 900px; margin: 0 auto; }
-@media (min-width: 700px) { .valores__grid { grid-template-columns: repeat(3, 1fr); } }
-.valor-card { text-align: center; padding: 1.5rem; }
-.valor-card__num { font-family: var(--f-mark); font-size: 0.7rem; letter-spacing: 0.2em; color: var(--c-gold); margin-bottom: 1rem; }
-.valor-card h3 { font-size: 1.3rem; margin-bottom: 0.6rem; }
-.valor-card p { font-size: 0.9rem; line-height: 1.6; color: var(--c-cream-dim); }
-
-/* cta */
-.cta-block { padding: 6rem var(--gutter); text-align: center; border-top: 1px solid var(--c-border); }
-.cta-block h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
-.cta-block p { font-size: 1rem; color: var(--c-cream-dim); max-width: 44ch; margin: 0 auto 2rem; }
-.cta-block__actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+/* convenios content */
+.convenios { padding: 0 var(--gutter) 5rem; max-width: 780px; margin: 0 auto; }
+.convenios h2 { font-size: 1.8rem; color: var(--c-gold); margin: 3.5rem 0 1rem; }
+.convenios h2:first-child { margin-top: 0; }
+.convenios h3 { font-size: 1.3rem; margin: 1.5rem 0 0.5rem; }
+.convenios p { font-size: 1rem; line-height: 1.8; color: var(--c-cream-dim); margin-bottom: 1rem; }
+.convenios ul { margin: 0.5rem 0 1.5rem 1.5rem; color: var(--c-cream-dim); line-height: 1.8; }
+.convenios ul li { margin-bottom: 0.4rem; }
+.convenio-card { padding: 2rem; border: 1px solid var(--c-border); border-radius: 2px; margin: 2rem 0; background: var(--c-bg-soft); transition: border-color 0.4s var(--ease); }
+.convenio-card:hover { border-color: var(--c-gold-dim); }
+.convenio-card__title { font-family: var(--f-display); font-size: 1.4rem; font-weight: 500; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem; }
+.convenio-card__tag { font-family: var(--f-mark); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-gold); margin-bottom: 1rem; }
 
 .site-footer { padding: 5rem var(--gutter) 2.5rem; text-align: center; background: var(--c-bg); border-top: 1px solid var(--c-border); }
 .site-footer__logo { height: 56px; width: auto; margin: 0 auto 1rem; display: block; }
@@ -222,22 +150,12 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 .site-footer__links a:hover { opacity: 1; }
 .site-footer__legal { font-size: 0.7rem; color: var(--c-cream-faint); }
 
-.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
-.reveal.is-visible { opacity: 1; transform: translateY(0); }
-
-/* back to top */
-.back-to-top {
-  position: fixed; bottom: 2rem; right: 1.5rem; z-index: 90;
-  width: 40px; height: 40px; border-radius: 50%;
-  background: var(--c-bg-soft); border: 1px solid var(--c-gold-faint);
-  color: var(--c-cream-dim); cursor: pointer;
-  display: grid; place-items: center; font-size: 1.1rem;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease), border-color 0.3s;
-}
+.back-to-top { position: fixed; bottom: 2rem; right: 1.5rem; z-index: 90; width: 40px; height: 40px; border-radius: 50%; background: var(--c-bg-soft); border: 1px solid var(--c-gold-faint); color: var(--c-cream-dim); cursor: pointer; display: grid; place-items: center; font-size: 1.1rem; opacity: 0; pointer-events: none; transition: opacity 0.3s var(--ease), transform 0.3s var(--ease), border-color 0.3s; }
 .back-to-top.is-visible { opacity: 1; pointer-events: auto; }
 .back-to-top:hover { border-color: var(--c-gold); transform: translateY(-2px); }
 
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
 
 /* whatsapp float */
 .whatsapp-float {
@@ -276,7 +194,6 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-.page-header__ornament { height: 60px; width: auto; margin: 0 auto 1rem; opacity: 0.75; display: block; }
 
 /* nav dropdown */
 .nav-item { position: relative; }
@@ -306,6 +223,13 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 }
 .nav-item__dropdown a:hover { opacity: 1; background: var(--c-bg-soft); }
 .nav-item.is-active > .nav-item__trigger { color: var(--c-gold); opacity: 1; }
+
+.cta-convenios {
+  text-align: center; margin-top: 3rem; padding: 2.5rem;
+  border: 1px solid var(--c-gold-dim); border-radius: 2px;
+  background: var(--c-gold-faint);
+}
+.cta-convenios p { color: var(--c-cream); font-size: 1.05rem; }
 </style>
 </head>
 <body>
@@ -338,7 +262,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
         <a href="compania.html#obras">Obras</a>
       </div>
     </div>
-    <div class="nav-item">
+    <div class="nav-item is-active">
       <a href="#" class="nav-item__trigger">Convenios <span class="nav-arrow">▾</span></a>
       <div class="nav-item__dropdown">
         <a href="convenios.html">Convenios</a>
@@ -347,7 +271,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
         <a href="convenio-sunca.html">SUNCA</a>
       </div>
     </div>
-    <div class="nav-item is-active">
+    <div class="nav-item">
       <a href="nosotros.html" class="nav-item__trigger">Nosotros <span class="nav-arrow">▾</span></a>
       <div class="nav-item__dropdown">
         <a href="nosotros.html">Historia</a>
@@ -370,7 +294,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
     <a href="sala.html">Sala</a>
     <a href="compania.html">Compañía</a>
     <a href="convenios.html">Convenios</a>
-        <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
     <a href="comunidad.html">Comunidad</a>
     <a href="noticias.html">Noticias</a>
     <a href="galeria.html">Galeria</a>
@@ -379,64 +303,98 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
   </nav>
 </header>
 
-<section class="page-header reveal">
-  <p class="page-header__kicker">Habitación V</p>
-  <img src="assets/images/arabesco-18.png" alt="" aria-hidden="true" class="page-header__ornament">
-  <h1>Comunidad</h1>
-  <p class="page-header__lede">
-    Quienes vuelven. Egresados, vecinos, público fiel: la razón por la que las luces se siguen prendiendo cada noche.
-  </p>
-</section>
-
 <section class="section-hero">
-  <img src="assets/images/comunidad.jpg" alt="Mandrágora" loading="lazy">
+  <img src="assets/images/comunidad.jpg" alt="Comunidad de Mandrágora reunida">
 </section>
 
-
-
-<section class="intro-block reveal">
-  <p>
-    Mandrágora se autogestiona a través de un colectivo de artistas y gestores. Las decisiones se toman en asamblea. No somos una institución corporativa: somos una red cultural independiente, cooperativa y comunitaria.
-  </p>
-  <p>
-    Trabajamos con organizaciones barriales, colectivos de derechos humanos y cooperativas de vivienda (FUCVAM). Articulamos con fondos sociales del SUNCA para descentralizar el acceso al arte, dictando talleres gratuitos en La Unión y en el interior del país. Nuestro espacio se cede para asambleas, ferias de editoriales independientes y eventos de beneficencia.
-  </p>
+<section class="page-header reveal">
+  <p class="page-header__kicker">Alianzas</p>
+  <img src="assets/images/arabesco-18.png" alt="" aria-hidden="true" class="page-header__ornament">
+  <h1>Convenios</h1>
 </section>
 
-<section class="valores">
-  <div class="valores__header reveal">
-    <p class="valores__kicker">Lo que nos mueve</p>
-    <h2 class="valores__title">Nuestros valores</h2>
-  </div>
-  <div class="valores__grid">
-    <div class="valor-card reveal">
-      <div class="valor-card__num">01</div>
-      <h3>Compromiso social</h3>
-      <p>Creemos que el arte transforma comunidades. Por eso abrimos la casa a lo que importa.</p>
-    </div>
-    <div class="valor-card reveal">
-      <div class="valor-card__num">02</div>
-      <h3>Profesionalismo</h3>
-      <p>Hacemos las cosas en serio. Con estándares altos, con responsabilidad, con amor al oficio.</p>
-    </div>
-    <div class="valor-card reveal">
-      <div class="valor-card__num">03</div>
-      <h3>Encuentro</h3>
-      <p>El teatro es de las últimas experiencias analógicas que nos quedan. Cuerpos en el mismo lugar, al mismo tiempo.</p>
-    </div>
-  </div>
-</section>
+<section class="convenios">
 
-<section class="cta-block reveal">
-  <h2>¿Querés ser parte?</h2>
-  <p>
-    Vení a una función, anotate en un taller, traé tu evento, sumate como voluntario.
-    La casa está abierta.
+  <p class="reveal">
+    En Mandrágora creemos que el arte es un derecho, no un privilegio. Por eso tejemos alianzas con organizaciones,
+    empresas e instituciones que comparten nuestra visión: llevar la cultura a todos los rincones, sin barreras
+    económicas ni geográficas.
   </p>
-  <div class="cta-block__actions">
-    <a href="agenda.html" class="btn btn--gold">Ver agenda</a>
-    <a href="escuela.html" class="btn btn--ghost">Talleres</a>
+
+  <p class="reveal">
+    Nuestra política de convenios se construye sobre una idea simple pero poderosa: <strong>tender puentes entre la
+    cultura, el trabajo y la comunidad</strong>. Cada alianza es una oportunidad para que nuevas personas —muchas
+    de ellas alejadas históricamente de los circuitos artísticos— descubran que el teatro, la música y la expresión
+    también les pertenecen.
+  </p>
+
+  <!-- SUNCA -->
+  <h2 class="reveal">Fondo Social de la Construcción (SUNCA)</h2>
+
+  <p class="reveal">
+    Nuestro convenio más consolidado. En alianza con el Fondo Social de la Construcción, abrimos las puertas de
+    Mandrágora a los trabajadores de la construcción y sus familias, especialmente en la zona oeste de Montevideo
+    y el eje Belloni, donde reside una gran población del sector.
+  </p>
+
+  <p class="reveal">
+    Como dijo Pablo Bentancur en Canal 5: <em>"Trabajadores de la construcción y familiares, gratis."</em>
+  </p>
+
+  <div class="convenio-card reveal">
+    <p class="convenio-card__tag">Tres pilares</p>
+    <h3>1. Talleres compartidos</h3>
+    <p>Espacios de formación técnica y expresión artística dictados en nuestra escuela. Actuación, canto, guitarra,
+    murga, clown y más, con docentes de primer nivel.</p>
+
+    <h3>2. Muestras artísticas</h3>
+    <p>Ciclos culturales y exposiciones conjuntas donde los estudiantes exhiben sus obras al público. La sala de
+    Mandrágora se convierte en vidriera del talento que nace en los barrios.</p>
+
+    <h3>3. Democratización cultural</h3>
+    <p>Impulso de la creatividad y el disfrute del arte como un derecho fundamental de los trabajadores. No se trata
+    solo de formar artistas: se trata de garantizar que todas las personas tengan un primer vínculo
+    <em>satisfactorio</em> con el hecho artístico.</p>
   </div>
+
+  <!-- Atrapasueños -->
+  <h2 class="reveal">Atrapasueños Recreación</h2>
+
+  <p class="reveal">
+    Atrapasueños es una organización dedicada a la recreación y la animación cultural. Su enfoque lúdico y
+    participativo complementa la propuesta artística de Mandrágora, ampliando el alcance de nuestros talleres y
+    actividades hacia nuevos públicos, especialmente infancias y familias.
+  </p>
+
+  <div class="convenio-card reveal">
+    <p class="convenio-card__tag">En desarrollo</p>
+    <p>Este convenio se encuentra en etapa de expansión. Pronto compartiremos más detalles sobre las actividades
+    conjuntas con Atrapasueños Recreación.</p>
+  </div>
+
+  <!-- Cine Viajero -->
+  <h2 class="reveal">Cine Viajero</h2>
+
+  <p class="reveal">
+    Una vez al año, Mandrágora se transforma en una sala de cine itinerante. El Cine Viajero recorre el país
+    llevando proyecciones a comunidades que no tienen acceso a salas comerciales. Es parte de nuestra política de
+    convenios porque cada proyección es una alianza con la comunidad que la recibe.
+  </p>
+
+  <p class="reveal">
+    <a href="cine-viajero.html" style="color:var(--c-gold)">Conocé más sobre Cine Viajero →</a>
+  </p>
+
+  <!-- CTA -->
+  <div class="cta-convenios reveal">
+    <p><strong>¿Tu organización quiere sumarse?</strong></p>
+    <p style="margin-top:0.5rem;color:var(--c-cream-dim)">
+      Escribinos a <a href="mailto:info@mandragora.uy" style="color:var(--c-gold)">info@mandragora.uy</a>
+      o llamanos al <a href="tel:097052948" style="color:var(--c-gold)">097 052 948</a>.
+      Conversemos.
+    </p>
+  </div>
+
 </section>
 
 <footer class="site-footer">
@@ -451,7 +409,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
     <a href="sala.html">Sala</a>
     <a href="compania.html">Compañía</a>
     <a href="convenios.html">Convenios</a>
-        <a href="cine-viajero.html">Cine Viajero</a>
+    <a href="cine-viajero.html">Cine Viajero</a>
     <a href="comunidad.html">Comunidad</a>
     <a href="noticias.html">Noticias</a>
     <a href="galeria.html">Galeria</a>
@@ -459,8 +417,13 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
     <a href="agenda.html">Agenda</a>
   </nav>
   <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora · <a href="admin.html">Admin</a></p>
-<button class="back-to-top" id="back-to-top" aria-label="Volver arriba">↑</button>
 </footer>
+
+<a href="https://wa.me/59898914088" target="_blank" rel="noopener" class="whatsapp-float" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+</a>
+
+<button class="back-to-top" id="back-to-top" aria-label="Volver arriba">↑</button>
 
 <div class="lightbox" id="lightbox">
   <button class="lightbox__close" id="lightbox-close">✕</button>
@@ -473,11 +436,8 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
   document.getElementById('current-year').textContent = new Date().getFullYear();
 
   var observer = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if (entry.isIntersecting) entry.target.classList.add('is-visible');
-    });
+    entries.forEach(function(entry){ if (entry.isIntersecting) entry.target.classList.add('is-visible'); });
   }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
-
   document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
 
   var toggle = document.getElementById('theme-toggle');
@@ -489,7 +449,6 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
     else { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; localStorage.setItem('mandragora-theme','dark'); }
   });
 
-  // hamburger
   var hamburger = document.getElementById('hamburger');
   var mobileMenu = document.getElementById('mobile-menu');
   hamburger.addEventListener('click', function(){
@@ -498,24 +457,11 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
     hamburger.setAttribute('aria-expanded', open);
   });
   mobileMenu.querySelectorAll('a').forEach(function(a){
-    a.addEventListener('click', function(){
-      hamburger.classList.remove('is-open');
-      mobileMenu.classList.remove('is-open');
-      hamburger.setAttribute('aria-expanded', 'false');
-    });
+    a.addEventListener('click', function(){ hamburger.classList.remove('is-open'); mobileMenu.classList.remove('is-open'); hamburger.setAttribute('aria-expanded','false'); });
   });
 
-  
-  // nav scroll blur
-  var nav = document.querySelector('.site-nav');
-  window.addEventListener('scroll', function(){
-    if (nav) nav.classList.toggle('is-scrolled', window.pageYOffset > 50);
-  });
-  // back to top
   var btt = document.getElementById('back-to-top');
-  window.addEventListener('scroll', function(){
-    if (btt) btt.classList.toggle('is-visible', window.pageYOffset > 400);
-  });
+  window.addEventListener('scroll', function(){ if (btt) btt.classList.toggle('is-visible', window.pageYOffset > 400); });
   if (btt) btt.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
   // lightbox
@@ -536,10 +482,14 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 
   // PWA
   if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); }
+
+  // nav scroll blur
+  var nav = document.querySelector('.site-nav');
+  window.addEventListener('scroll', function(){
+    if (nav) nav.classList.toggle('is-scrolled', window.pageYOffset > 50);
+  });
 })();
 </script>
-
-
 
 <script src="/assets/js/push.js" defer></script>
 </body>
