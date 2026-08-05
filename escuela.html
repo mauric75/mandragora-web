@@ -210,33 +210,53 @@ h1, h2, h3, h4 {
 /* mobile menu */
 .mobile-menu {
   position: fixed; inset: 0; z-index: 99;
-  background: var(--c-bg); display: flex;
-  flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+  background: rgba(248,244,237,0.94);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 1.8rem;
   opacity: 0; pointer-events: none;
   transition: opacity 0.35s var(--ease);
 }
+[data-theme="dark"] .mobile-menu { background: rgba(5,7,10,0.95); }
 .mobile-menu.is-open { opacity: 1; pointer-events: auto; }
 .mobile-menu a {
-  font-family: var(--f-display); font-size: 1.6rem;
-  color: var(--c-cream); transition: color 0.3s;
+  font-family: var(--f-display); font-size: 1.6rem; font-weight: 400;
+  color: var(--c-cream); transition: color 0.3s, transform 0.2s;
+  min-height: 48px; display: flex; align-items: center;
 }
+.mobile-menu a:active { transform: scale(0.96); }
 .mobile-menu a:hover { color: var(--c-gold); }
 /* mobile submenu dropdown */
 .mobile-submenu {
-  display: none; flex-direction: column; align-items: center; gap: 1rem;
-  margin-bottom: 0.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height 0.45s var(--ease), opacity 0.35s var(--ease), margin 0.45s var(--ease), padding 0.45s var(--ease);
+  margin-top: 0; margin-bottom: 0; padding-top: 0;
+  border-top: 1px solid transparent;
 }
-.mobile-submenu.is-open { display: flex; }
+.mobile-submenu.is-open {
+  max-height: 360px; opacity: 1;
+  margin-top: 0.3rem; margin-bottom: 0.3rem;
+  padding-top: 0.7rem;
+  border-top-color: var(--c-border);
+}
 .mobile-subitem {
-  font-size: 1.3rem; opacity: 0.75;
+  font-size: 1.2rem; opacity: 0.7; font-weight: 300;
   padding: 0.3rem 0; transition: opacity 0.2s, color 0.2s;
+  min-height: 40px; display: flex; align-items: center;
 }
 .mobile-subitem:hover { opacity: 1; color: var(--c-gold); }
+.mobile-subitem:active { transform: scale(0.95); }
 .mobile-submenu-toggle {
   display: flex; align-items: center; gap: 0.3em; cursor: pointer;
+  min-height: 48px;
 }
-.mobile-arrow { font-size: 0.7em; display: inline-block; transition: transform 0.3s; }
-.mobile-submenu-toggle.is-open .mobile-arrow { transform: rotate(180deg); }
+.mobile-arrow {
+  font-size: 0.6em; display: inline-block; transition: transform 0.35s var(--ease);
+  opacity: 0.45;
+}
+.mobile-submenu-toggle.is-open .mobile-arrow { transform: rotate(180deg); opacity: 1; }
+.mobile-submenu-toggle.is-open { color: var(--c-gold); }
 
 
 
