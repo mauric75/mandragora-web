@@ -45,7 +45,10 @@
 4. `deabdce` — Convierte menu movil de Convenios en dropdown colapsable como en desktop
 5. `e5d37a8` — Corrige error de sintaxis CSS y conflicto JS en dropdown movil de Convenios
 6. `db6eff6` — Agrega todos los dropdowns del desktop al menu movil + mejora visual + fix atrapasuenos.html
-7. `0999b3c` — Agrega manual de administracion, guia rapida, context text y dev-server
+7. `a671aef` — Actualiza bitacora 4 agosto con fix de menu movil
+8. `0999b3c` — Agrega manual de administracion, guia rapida, context text y dev-server
+9. `8388691` — Rediseno visual del menu movil: backdrop-blur, animacion max-height, touch targets 48px
+10. `74023a5` — Merge test/mobile-menu-redesign a main (produccion)
 
 ---
 
@@ -119,6 +122,23 @@ Agregado link `· Manual` junto al link `Admin`: index, escuela, sala, compania,
 - [ ] Paginación en listados del admin
 - [ ] MercadoPago: cambiar test key a producción
 - [ ] CSP headers y CSRF protection
+
+---
+
+## Tercera sesión — Rediseño visual del menú móvil
+
+### 5. Rediseño visual (rama `test/mobile-menu-redesign`)
+- **Fondo**: `backdrop-filter: blur(24px)` + `rgba(248,244,237,0.94)` — overlay translúcido en vez de color sólido. Dark mode: `rgba(5,7,10,0.95)`.
+- **Submenús animados**: `max-height` + `opacity` con transición 0.45s ease en vez de `display:none` ↔ `flex` instantáneo. Slide suave al abrir/cerrar.
+- **Separadores**: `border-top: var(--c-border)` visible solo cuando el submenú está abierto.
+- **Touch targets**: `min-height: 48px` en todos los ítems + feedback `:active { scale(0.96) }`.
+- **Flecha ▾**: arranca al 45% opacidad, se vuelve dorada + rota 180° al desplegar. Toggle activo en `var(--c-gold)`.
+- **Jerarquía**: sub-ítems en 1.2rem + `font-weight: 300`, ítems principales en 1.6rem + 400.
+
+### 6. Merge a producción
+- `test/mobile-menu-redesign` mergeada a `main` (fast-forward desde `74023a5`)
+- 14 archivos HTML actualizados con el nuevo CSS del menú móvil
+- **Commits:** `8388691` (rama test), `74023a5` (merge a main)
 
 ## Producción
 🔗 https://mauric75.github.io/mandragora-web
