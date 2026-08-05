@@ -38,14 +38,21 @@
   /* ── Top Bar / Site Nav ── */
   .site-nav {
     position: sticky; top: 0; z-index: 100;
-    background: rgba(17,22,36,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--c-border);
-    padding: 0.65rem clamp(1rem, 4vw, 3rem);
     display: flex; align-items: center; justify-content: space-between;
+    padding: 0.65rem clamp(1rem, 4vw, 3rem);
     gap: 1rem; font-size: 0.7rem; letter-spacing: 0.08em;
+    color: var(--c-text);
+    transition: background 0.4s var(--ease);
+  }
+  .site-nav.is-scrolled {
+    background: rgba(17,22,36,0.85);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--c-border);
   }
   .site-nav__logo { height: 26px; }
+  .site-nav__logo-dark { display: none; }
+  [data-theme="dark"] .site-nav__logo-light { display: none; }
+  [data-theme="dark"] .site-nav__logo-dark { display: block; }
   .site-nav__links { display: none; gap: 1.5rem; align-items: center; }
   .site-nav__links a { color: var(--c-dim); text-decoration: none; transition: color 0.2s; font-size: 0.75rem; }
   .site-nav__links a:hover { color: var(--c-gold); }
@@ -255,7 +262,8 @@
 <!-- Topbar / Site Nav -->
 <header class="site-nav" id="topbar" style="display:none">
   <a href="index.html" class="site-nav__mark">
-    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo">
+    <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-light">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-dark">
   </a>
   <nav class="site-nav__links">
     <div class="nav-item"><a href="escuela.html" class="nav-item__trigger">Escuela <span class="nav-arrow">▾</span></a><div class="nav-item__dropdown"><a href="escuela.html#docentes">Docentes</a><a href="escuela.html#talleres">Talleres</a></div></div>
