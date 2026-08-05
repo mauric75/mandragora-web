@@ -944,7 +944,14 @@ Si el usuario incluye \"Imagen: https://...\" en su mensaje, esa URL es la foto 
     let choice = data.choices?.[0];
     let reply = choice?.message?.content || '';
 
+    // Si la API falló (key inválida, sin créditos, etc.), informar claramente
+    if (!choice && !data.choices) {
+      const errMsg = data.error?.message || 'Error de conexión con la IA';
+      return res.status(200).json({ reply: `🤖 No puedo responder ahora: ${errMsg}. Revisá que la API key esté configurada.` });
+    }
+
     // Function calling loop (máx 3 rondas)
+    let toolsExecuted = false;
     for (let loop = 0; loop < 3; loop++) {
       const nativeCalls = choice?.message?.tool_calls;
       let jsonTool = null;
@@ -957,6 +964,7 @@ Si el usuario incluye \"Imagen: https://...\" en su mensaje, esa URL es la foto 
       if (!nativeCalls?.length && !jsonTool) break;
 
       if (nativeCalls) {
+        toolsExecuted = true;
         messages.push(choice.message);
         for (const tc of nativeCalls) {
           const fnName = tc.function?.name;
@@ -967,6 +975,7 @@ Si el usuario incluye \"Imagen: https://...\" en su mensaje, esa URL es la foto 
           messages.push({ role: 'tool', tool_call_id: tc.id, content: result });
         }
       } else if (jsonTool) {
+        toolsExecuted = true;
         messages.push({ role: 'assistant', content: reply });
         let fnArgs = {};
         try { fnArgs = JSON.parse(jsonTool.args); } catch(e) {}
@@ -990,10 +999,10 @@ Si el usuario incluye \"Imagen: https://...\" en su mensaje, esa URL es la foto 
     // Si no hay reply pero se ejecutaron herramientas, dar confirmación
     if (reply && reply.trim().length > 5) {
       // La IA respondió con texto, todo bien
-    } else if (messages.length > 2) {
+    } else if (toolsExecuted) {
       reply = '¡Listo! La acción se completó correctamente.';
     } else {
-      reply = 'No pude ejecutar esa acción. ¿Podés intentarlo de otra forma?';
+      reply = 'No pude procesar tu mensaje. ¿Podés intentarlo de otra forma?';
     }
 
     logAdminAction(role, 'ai-chat', 'ai-admin', { message: message.slice(0, 200), reply: reply.slice(0, 200) }, req);
