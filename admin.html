@@ -268,28 +268,59 @@ a:hover { text-decoration: underline; }
    SITE NAV & FOOTER (dark only, from site standard)
    ============================================================ */
 .site-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  position: sticky; top: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 1.2rem 1.5rem;
-  background: rgba(5,7,10,0.92); backdrop-filter: blur(12px);
+  padding: 0.8rem 1.5rem;
   font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c-text);
+  transition: padding 0.4s var(--ease), background 0.4s var(--ease);
 }
-.site-nav__mark { display: flex; align-items: center; }
-.site-nav__logo { height: 32px; width: auto; }
-.site-nav__links { display: flex; gap: 1.2rem; font-size: 0.72rem; letter-spacing: 0.08em; }
-.site-nav__links a { opacity: 0.65; transition: opacity 0.2s; }
+.site-nav.is-scrolled {
+  background: color-mix(in srgb, var(--c-bg) 96%, transparent);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--c-border);
+}
+.site-nav__links { display: none; gap: 2rem; font-size: 0.74rem; letter-spacing: 0.08em; }
+.site-nav__links a { opacity: 0.72; transition: opacity 0.3s, color 0.3s; }
 .site-nav__links a:hover { opacity: 1; color: var(--c-gold); }
-.nav-instagram { display: grid; place-items: center; opacity: 0.6; transition: opacity 0.2s; }
+.site-nav__logo { height: 28px; width: auto; display: block; }
+.site-nav__logo-dark { display: none; }
+[data-theme="dark"] .site-nav__logo-light { display: none; }
+[data-theme="dark"] .site-nav__logo-dark { display: block; }
+.theme-toggle {
+  background: none; border: 1px solid currentColor; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; color: inherit;
+  font-size: 0.9rem; line-height: 1; padding: 0;
+  opacity: 0.7; transition: opacity 0.3s, transform 0.4s;
+}
+.theme-toggle:hover { opacity: 1; transform: rotate(15deg); }
+.nav-instagram { display: grid; place-items: center; opacity: 0.7; transition: opacity 0.3s; }
 .nav-instagram:hover { opacity: 1; }
-.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 101; opacity: 0.8; }
-.hamburger span { display: block; width: 22px; height: 1.5px; background: currentColor; transition: transform 0.3s, opacity 0.2s; }
+@media (min-width: 880px) { .site-nav__links { display: flex; } }
+@media (max-width: 600px) { .site-nav__logo { height: 28px; } }
+.hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 101; opacity: 0.8; }
+.hamburger span { display: block; width: 24px; height: 1.5px; background: currentColor; transition: transform 0.3s, opacity 0.2s; }
 .hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
 .hamburger.is-open span:nth-child(2) { opacity: 0; }
 .hamburger.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
-.mobile-menu { position: fixed; inset: 0; z-index: 99; background: rgba(5,7,10,0.97); backdrop-filter: blur(20px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.8rem; opacity: 0; pointer-events: none; transition: opacity 0.35s; }
+@media (min-width: 881px) { .hamburger { display: none; } }
+.mobile-menu { position: fixed; inset: 0; z-index: 99; background: rgba(10,14,26,0.97); backdrop-filter: blur(20px); display: flex; flex-direction: column; padding: 5rem 2rem 2rem; opacity: 0; pointer-events: none; transition: opacity 0.3s; overflow-y: auto; gap: 0.3rem; }
 .mobile-menu.is-open { opacity: 1; pointer-events: auto; }
-.mobile-menu a { font-size: 1.4rem; opacity: 0.7; transition: opacity 0.2s; }
-.mobile-menu a:hover { opacity: 1; color: var(--c-gold); }
+.mobile-menu a { font-size: 1rem; padding: 0.5rem 0; }
+.mobile-menu a:hover { color: var(--c-gold); }
+.mobile-submenu-toggle { font-weight: 600; }
+.mobile-submenu { display: none; padding-left: 1rem; }
+.mobile-submenu.is-open { display: flex; flex-direction: column; }
+.mobile-subitem { font-size: 0.9rem !important; opacity: 0.8; }
+.nav-item { position: relative; }
+.nav-item__trigger { display: flex; align-items: center; gap: 0.3em; cursor: pointer; }
+.nav-arrow { font-size: 0.7em; transition: transform 0.3s; }
+.nav-item:hover .nav-arrow { transform: rotate(180deg); }
+.nav-item__dropdown { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 4px; padding: 0.6rem 0; min-width: 160px; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s; transform: translateX(-50%) translateY(4px); box-shadow: 0 8px 32px rgba(0,0,0,0.12); z-index: 200; }
+.nav-item:hover .nav-item__dropdown, .nav-item:focus-within .nav-item__dropdown { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+.nav-item__dropdown a { display: block; padding: 0.4rem 1.2rem; font-size: 0.78rem; letter-spacing: 0.04em; opacity: 0.7; transition: opacity 0.2s, background 0.2s; white-space: nowrap; }
+.nav-item__dropdown a:hover { opacity: 1; background: var(--c-bg-soft); }
 
 .site-footer { padding: 4rem 1.5rem 2rem; text-align: center; border-top: 1px solid var(--c-border); margin-top: 2rem; }
 .site-footer__logo { height: 42px; width: auto; margin: 0 auto 0.5rem; display: block; }
@@ -313,36 +344,32 @@ a:hover { text-decoration: underline; }
 <!-- ========== SITE NAV ========== -->
 <header class="site-nav">
   <a href="index.html" class="site-nav__mark">
-    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo">
+    <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-light">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="site-nav__logo site-nav__logo-dark">
   </a>
   <nav class="site-nav__links">
-    <a href="escuela.html">Escuela</a>
-    <a href="sala.html">Sala</a>
-    <a href="compania.html">Compañía</a>
-    <a href="cine-viajero.html">Cine Viajero</a>
-    <a href="comunidad.html">Comunidad</a>
-    <a href="noticias.html">Noticias</a>
-    <a href="galeria.html">Galeria</a>
-    <a href="contacto.html">Contacto</a>
+    <div class="nav-item"><a href="escuela.html" class="nav-item__trigger">Escuela <span class="nav-arrow">▾</span></a><div class="nav-item__dropdown"><a href="escuela.html#docentes">Docentes</a><a href="escuela.html#talleres">Talleres</a></div></div>
+    <div class="nav-item"><a href="sala.html" class="nav-item__trigger">Sala <span class="nav-arrow">▾</span></a><div class="nav-item__dropdown"><a href="sala.html#cartelera">Cartelera</a><a href="sala.html#alquiler">Alquiler</a></div></div>
+    <div class="nav-item"><a href="compania.html" class="nav-item__trigger">Compañía <span class="nav-arrow">▾</span></a><div class="nav-item__dropdown"><a href="compania.html#elenco">Elenco</a><a href="compania.html#obras">Obras</a></div></div>
+    <div class="nav-item"><a href="#" class="nav-item__trigger">Convenios <span class="nav-arrow">▾</span></a><div class="nav-item__dropdown"><a href="convenios.html">Convenios</a><a href="cine-viajero.html">Cine Viajero</a><a href="atrapasuenos.html">Atrapasueños</a><a href="convenio-sunca.html">SUNCA</a></div></div>
+    <div class="nav-item"><a href="nosotros.html" class="nav-item__trigger">Nosotros <span class="nav-arrow">▾</span></a><div class="nav-item__dropdown"><a href="nosotros.html">Historia</a><a href="comunidad.html">Comunidad</a><a href="contacto.html">Contacto</a></div></div>
     <a href="agenda.html">Agenda</a>
+    <a href="noticias.html">Noticias</a>
+    <a href="galeria.html">Galería</a>
   </nav>
-  <a href="https://www.instagram.com/teatromandragora_uy/" target="_blank" rel="noopener" class="nav-instagram" aria-label="Instagram">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.5" fill="currentColor" stroke="none"/></svg>
-  </a>
-  <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
+  <a href="https://www.instagram.com/teatromandragora_uy/" target="_blank" rel="noopener" class="nav-instagram" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.5" fill="currentColor" stroke="none"/></svg></a>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">☀</button>
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span><span></span></button>
   <nav class="mobile-menu" id="mobile-menu">
-    <a href="index.html">Inicio</a>
-    <a href="escuela.html">Escuela</a>
-    <a href="sala.html">Sala</a>
-    <a href="compania.html">Compañía</a>
-    <a href="cine-viajero.html">Cine Viajero</a>
-    <a href="comunidad.html">Comunidad</a>
-    <a href="noticias.html">Noticias</a>
-    <a href="galeria.html">Galeria</a>
-    <a href="contacto.html">Contacto</a>
+    <a href="#" class="mobile-submenu-toggle">Escuela <span class="mobile-arrow">▾</span></a><div class="mobile-submenu"><a href="escuela.html#talleres" class="mobile-subitem">Talleres</a><a href="escuela.html#docentes" class="mobile-subitem">Docentes</a></div>
+    <a href="#" class="mobile-submenu-toggle">Sala <span class="mobile-arrow">▾</span></a><div class="mobile-submenu"><a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a><a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a></div>
+    <a href="#" class="mobile-submenu-toggle">Compañía <span class="mobile-arrow">▾</span></a><div class="mobile-submenu"><a href="compania.html#elenco" class="mobile-subitem">Elenco</a><a href="compania.html#obras" class="mobile-subitem">Obras</a></div>
+    <a href="#" class="mobile-submenu-toggle">Convenios <span class="mobile-arrow">▾</span></a><div class="mobile-submenu"><a href="convenios.html" class="mobile-subitem">Convenios</a><a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a><a href="atrapasuenos.html" class="mobile-subitem">Atrapasueños</a><a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a></div>
+    <a href="#" class="mobile-submenu-toggle">Nosotros <span class="mobile-arrow">▾</span></a><div class="mobile-submenu"><a href="nosotros.html" class="mobile-subitem">Historia</a><a href="comunidad.html" class="mobile-subitem">Comunidad</a><a href="contacto.html" class="mobile-subitem">Contacto</a></div>
     <a href="agenda.html">Agenda</a>
+    <a href="noticias.html">Noticias</a>
+    <a href="galeria.html">Galería</a>
+    <a href="admin.html" style="border-top:1px solid var(--c-border);margin-top:0.5rem;padding-top:0.8rem;">← Panel Admin</a>
   </nav>
 </header>
 
@@ -1480,7 +1507,18 @@ a:hover { text-decoration: underline; }
 (function(){
   document.getElementById('current-year').textContent = new Date().getFullYear();
 
-  // Hamburguesa
+  // ── Theme toggle ──
+  var themeToggle = document.getElementById('theme-toggle');
+  if(themeToggle){
+    themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u263e' : '\u2600';
+    themeToggle.addEventListener('click', function(){
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if(isDark){ document.documentElement.removeAttribute('data-theme'); themeToggle.textContent = '\u2600'; localStorage.setItem('mandragora-theme','light'); }
+      else { document.documentElement.setAttribute('data-theme','dark'); themeToggle.textContent = '\u263e'; localStorage.setItem('mandragora-theme','dark'); }
+    });
+  }
+
+  // ── Hamburguesa + mobile accordion ──
   var hamburger = document.getElementById('hamburger');
   var mobileMenu = document.getElementById('mobile-menu');
   if(hamburger && mobileMenu){
@@ -1491,12 +1529,27 @@ a:hover { text-decoration: underline; }
     });
     mobileMenu.querySelectorAll('a').forEach(function(a){
       a.addEventListener('click', function(){
+        if(a.classList.contains('mobile-submenu-toggle')) return;
         hamburger.classList.remove('is-open');
         mobileMenu.classList.remove('is-open');
         hamburger.setAttribute('aria-expanded','false');
       });
     });
   }
+  document.querySelectorAll('.mobile-submenu-toggle').forEach(function(toggle){
+    toggle.addEventListener('click', function(e){
+      e.preventDefault();
+      this.classList.toggle('is-open');
+      var sub = this.nextElementSibling;
+      if(sub) sub.classList.toggle('is-open');
+    });
+  });
+
+  // ── Scroll blur ──
+  window.addEventListener('scroll', function(){
+    var nav = document.querySelector('.site-nav');
+    if(nav) nav.classList.toggle('is-scrolled', window.scrollY > 50);
+  });
 })();
 </script>
 
