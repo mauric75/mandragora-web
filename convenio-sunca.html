@@ -41,7 +41,7 @@ a{color:inherit;text-decoration:none}h1,h2{font-family:var(--f-display);font-wei
 .theme-toggle{background:none;border:1px solid currentColor;cursor:pointer;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:0.9rem;opacity:0.7;transition:opacity 0.3s,transform 0.4s}.theme-toggle:hover{opacity:1;transform:rotate(15deg)}
 .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:101;opacity:0.85}.hamburger span{width:22px;height:1.5px;background:currentColor;display:block}@media(max-width:900px){.site-nav__links{display:none}.hamburger{display:flex}}
 .mobile-menu{position:fixed;inset:0;z-index:99;background:rgba(248,244,237,0.97);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;opacity:0;pointer-events:none;transition:opacity 0.4s}[data-theme="dark"] .mobile-menu{background:rgba(5,7,10,0.97)}
-.mobile-menu.is-open{opacity:1;pointer-events:auto}.mobile-menu a{font-family:var(--f-display);font-size:1.5rem;color:var(--c-dim)}./* mobile submenu dropdown */
+.mobile-menu.is-open{opacity:1;pointer-events:auto}.mobile-menu a{font-family:var(--f-display);font-size:1.5rem;color:var(--c-dim)}/* mobile submenu dropdown */
 .mobile-submenu {
   display: none; flex-direction: column; align-items: center; gap: 1rem;
 }
@@ -207,7 +207,7 @@ a{color:inherit;text-decoration:none}h1,h2{font-family:var(--f-display);font-wei
     <a href="index.html">Inicio</a><a href="escuela.html">Escuela</a><a href="sala.html">Sala</a><a href="compania.html">Compañía</a><a href="cine-viajero.html">Cine Viajero</a><a href="comunidad.html">Comunidad</a><a href="noticias.html">Noticias</a><a href="galeria.html">Galería</a><a href="contacto.html">Contacto</a><a href="agenda.html">Agenda</a>
   </nav>
   <p style="margin-bottom:0.5rem">📞 091 508455 · 097 052948 · <a href="https://www.instagram.com/teatromandragora_uy/" style="color:var(--c-gold)">@teatromandragora_uy</a></p>
-  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora · <a href="admin.html">Admin</a></p>
+  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora · <a href="admin.html">Admin</a> · <a href="manual.html">Manual</a></p>
 </footer>
 
 <script>
@@ -218,7 +218,7 @@ a{color:inherit;text-decoration:none}h1,h2{font-family:var(--f-display);font-wei
   t.textContent=h.getAttribute("data-theme")==="dark"?"☾":"☀";t.addEventListener("click",function(){var d=h.getAttribute("data-theme")==="dark";if(d){h.removeAttribute("data-theme");t.textContent="☀";localStorage.setItem("mandragora-theme","light")}else{h.setAttribute("data-theme","dark");t.textContent="☾";localStorage.setItem("mandragora-theme","dark")}});
   var hb=document.getElementById("hamburger"),mm=document.getElementById("mobile-menu");
   hb.addEventListener("click",function(){hb.classList.toggle("is-open");mm.classList.toggle("is-open")});
-	  mm.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){hb.classList.remove("is-open");mm.classList.remove("is-open")})});
+	  mm.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){ if(a.classList.contains('mobile-submenu-toggle'))return; hb.classList.remove("is-open");mm.classList.remove("is-open")})});
 	  document.querySelectorAll('.mobile-submenu-toggle').forEach(function(t){t.addEventListener('click',function(e){e.preventDefault();this.classList.toggle('is-open');var s=this.nextElementSibling;if(s)s.classList.toggle('is-open')})});
 
   // nav scroll blur

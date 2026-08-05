@@ -171,7 +171,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
   color: var(--c-cream); transition: color 0.3s;
 }
 .mobile-menu a:hover { color: var(--c-gold); }
-./* mobile submenu dropdown */
+/* mobile submenu dropdown */
 .mobile-submenu {
   display: none; flex-direction: column; align-items: center; gap: 1rem;
 }
@@ -561,7 +561,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
     <a href="contacto.html">Contacto</a>
     <a href="agenda.html">Agenda</a>
   </nav>
-  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora · <a href="admin.html">Admin</a></p>
+  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora · <a href="admin.html">Admin</a> · <a href="manual.html">Manual</a></p>
 <button class="back-to-top" id="back-to-top" aria-label="Volver arriba">↑</button>
 </footer>
 
@@ -600,8 +600,7 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
     hamburger.setAttribute('aria-expanded', open);
   });
   mobileMenu.querySelectorAll('a').forEach(function(a){
-    a.addEventListener('click', function(){
-      hamburger.classList.remove('is-open');
+    a.addEventListener('click', function(){ if (a.classList.contains('mobile-submenu-toggle')) return; hamburger.classList.remove('is-open');
       mobileMenu.classList.remove('is-open');
       hamburger.setAttribute('aria-expanded', 'false');
     });

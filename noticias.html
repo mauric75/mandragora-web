@@ -106,7 +106,7 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 .mobile-menu.is-open { opacity: 1; pointer-events: auto; }
 .mobile-menu a { font-family: var(--f-display); font-size: 1.6rem; color: var(--c-cream); transition: color 0.3s; }
 .mobile-menu a:hover { color: var(--c-gold); }
-./* mobile submenu dropdown */
+/* mobile submenu dropdown */
 .mobile-submenu {
   display: none; flex-direction: column; align-items: center; gap: 1rem;
 }
@@ -367,7 +367,7 @@ body.is-admin .noticia-card__edit { display: inline-block; }
     <a href="contacto.html">Contacto</a>
     <a href="agenda.html">Agenda</a>
   </nav>
-  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora · <a href="admin.html">Admin</a></p>
+  <p class="site-footer__legal">© <span id="current-year"></span> Mandrágora · <a href="admin.html">Admin</a> · <a href="manual.html">Manual</a></p>
 </footer>
 
 <button class="back-to-top" id="back-to-top" aria-label="Volver arriba">↑</button>
@@ -394,7 +394,7 @@ body.is-admin .noticia-card__edit { display: inline-block; }
     hamburger.setAttribute('aria-expanded', open);
   });
 	  mobileMenu.querySelectorAll('a').forEach(function(a){
-	    a.addEventListener('click', function(){ hamburger.classList.remove('is-open'); mobileMenu.classList.remove('is-open'); hamburger.setAttribute('aria-expanded','false'); });
+	    a.addEventListener('click', function(){ if (a.classList.contains('mobile-submenu-toggle')) return; hamburger.classList.remove('is-open'); mobileMenu.classList.remove('is-open'); hamburger.setAttribute('aria-expanded','false'); });
 	  });
 
 	  // mobile submenu accordion

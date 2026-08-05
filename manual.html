@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de Uso — Mandrágora Admin</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --c-bg: #111624;
+    --c-surface: #14181b;
+    --c-surface2: #1a1f23;
+    --c-gold: #CE9A47;
+    --c-gold-bright: #e0b85a;
+    --c-gold-faint: rgba(206,154,71,0.10);
+    --c-gold-dim: rgba(206,154,71,0.25);
+    --c-text: #e6ded5;
+    --c-dim: rgba(230,222,213,0.6);
+    --c-faint: rgba(230,222,213,0.25);
+    --c-border: rgba(230,222,213,0.08);
+    --c-red: #e0554a;
+    --c-green: #5cb85c;
+    --c-blue: #5b9bd5;
+    --c-yellow: #d4a843;
+    --radius: 6px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  body {
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'Schrifted', 'Jost', system-ui, -apple-system, sans-serif;
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  /* ── Top Bar ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(17,22,36,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--c-border);
+    padding: 0.75rem clamp(1rem, 4vw, 3rem);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem;
+  }
+  .topbar .brand {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .topbar .brand img { height: 32px; }
+  .topbar .brand span {
+    font-family: 'Schrifted', 'Cinzel', Georgia, serif;
+    font-size: 0.9rem; color: var(--c-gold); letter-spacing: 0.05em;
+  }
+  .topbar a {
+    color: var(--c-dim); text-decoration: none; font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+  .topbar a:hover { color: var(--c-gold); }
+
+  /* ── Login Overlay ── */
+  .login-overlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: radial-gradient(ellipse at center, #1a1f2e 0%, #0a0e1a 100%);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 2rem;
+  }
+  .login-overlay.hidden { display: none; }
+  .login-box {
+    background: var(--c-surface); border: 1px solid var(--c-border);
+    border-radius: var(--radius); padding: 2.5rem 2rem;
+    width: min(360px, 90vw); text-align: center;
+  }
+  .login-box img { height: 48px; margin-bottom: 1rem; }
+  .login-box h1 { font-size: 1.2rem; font-weight: 500; margin-bottom: 1.5rem; color: var(--c-text); }
+  .login-box input {
+    width: 100%; padding: 0.75rem 1rem; background: var(--c-surface2);
+    border: 1px solid var(--c-border); border-radius: var(--radius);
+    color: var(--c-text); font-size: 1rem; margin-bottom: 1rem; outline: none;
+    transition: border-color 0.2s;
+  }
+  .login-box input:focus { border-color: var(--c-gold); }
+  .login-box button {
+    width: 100%; padding: 0.75rem; background: var(--c-gold); color: #000;
+    border: none; border-radius: var(--radius); font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .login-box button:hover { background: var(--c-gold-bright); }
+  .login-box button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .login-box .error { color: var(--c-red); font-size: 0.85rem; margin-top: 0.5rem; min-height: 1.2em; }
+  .login-box .hint { color: var(--c-dim); font-size: 0.75rem; margin-top: 0.5rem; }
+
+  /* ── Content ── */
+  .container {
+    max-width: 860px; margin: 0 auto; padding: 2rem clamp(1rem, 4vw, 3rem) 4rem;
+  }
+  .container.hidden { display: none; }
+
+  /* ── Typography ── */
+  h1 { font-family: 'Schrifted', 'Cinzel', Georgia, serif; font-size: 2rem; color: var(--c-gold); margin-bottom: 0.5rem; }
+  h2 { font-size: 1.5rem; color: var(--c-gold); margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--c-border); }
+  h3 { font-size: 1.15rem; color: var(--c-text); margin-top: 1.5rem; margin-bottom: 0.5rem; }
+  h4 { font-size: 1rem; color: var(--c-dim); margin-top: 1.25rem; margin-bottom: 0.4rem; }
+  p { margin-bottom: 0.75rem; color: var(--c-dim); }
+  a { color: var(--c-gold); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--c-text); }
+  blockquote {
+    border-left: 3px solid var(--c-gold-dim); margin: 1rem 0; padding: 0.5rem 1rem;
+    background: var(--c-gold-faint); border-radius: 0 var(--radius) var(--radius) 0;
+    color: var(--c-dim); font-style: italic;
+  }
+  hr { border: none; border-top: 1px solid var(--c-border); margin: 2rem 0; }
+
+  /* ── Lists ── */
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; color: var(--c-dim); }
+  li { margin-bottom: 0.35rem; }
+  li strong { color: var(--c-text); }
+
+  /* ── Code / Inline ── */
+  code {
+    background: var(--c-surface2); padding: 0.15em 0.4em; border-radius: 3px;
+    font-size: 0.9em; color: var(--c-gold);
+  }
+
+  /* ── Tables ── */
+  .table-wrap {
+    overflow-x: auto; margin: 1rem 0 1.5rem;
+    border: 1px solid var(--c-border); border-radius: var(--radius);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  thead th {
+    background: var(--c-gold-faint); color: var(--c-gold); font-weight: 600;
+    text-align: left; padding: 0.6rem 0.75rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  tbody td { padding: 0.55rem 0.75rem; border-top: 1px solid var(--c-border); color: var(--c-dim); }
+  tbody tr:hover { background: var(--c-gold-faint); }
+  tbody td:first-child { color: var(--c-text); font-weight: 500; }
+
+  /* ── Tips / Warnings ── */
+  .tip {
+    background: rgba(206,154,71,0.08); border-left: 3px solid var(--c-gold);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 0.75rem 1rem; margin: 1rem 0;
+    color: var(--c-dim); font-size: 0.9rem;
+  }
+  .tip strong { color: var(--c-gold); }
+  .warning {
+    background: rgba(224,85,74,0.08); border-left: 3px solid var(--c-red);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 0.75rem 1rem; margin: 1rem 0;
+    color: var(--c-dim); font-size: 0.9rem;
+  }
+  .warning strong { color: var(--c-red); }
+
+  /* ── Table of Contents ── */
+  .toc {
+    background: var(--c-surface); border: 1px solid var(--c-border);
+    border-radius: var(--radius); padding: 1.5rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .toc h3 { margin-top: 0; color: var(--c-text); }
+  .toc ol { margin-bottom: 0; }
+  .toc a { font-size: 0.9rem; }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-block; padding: 0.15em 0.55em; border-radius: 99px;
+    font-size: 0.75rem; font-weight: 600;
+  }
+  .badge--green { background: rgba(92,184,92,0.15); color: var(--c-green); }
+  .badge--blue  { background: rgba(91,155,213,0.15); color: var(--c-blue); }
+  .badge--red   { background: rgba(224,85,74,0.15); color: var(--c-red); }
+  .badge--gold  { background: rgba(206,154,71,0.15); color: var(--c-gold); }
+  .badge--gray  { background: rgba(230,222,213,0.08); color: var(--c-dim); }
+
+  /* ── Back to top ── */
+  .back-top {
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--c-gold); color: #000; border: none;
+    font-size: 1.2rem; cursor: pointer; opacity: 0; transition: opacity 0.3s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .back-top.visible { opacity: 1; }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.2rem; }
+    .table-wrap { font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Login Overlay -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-box">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora">
+    <h1>Manual de Administración</h1>
+    <input type="password" id="password" placeholder="Contraseña" autofocus>
+    <button id="login-btn">Entrar</button>
+    <div class="error" id="login-msg"></div>
+    <div class="hint">Usá la misma contraseña del panel de administración</div>
+  </div>
+</div>
+
+<!-- Topbar -->
+<div class="topbar" id="topbar" style="display:none">
+  <div class="brand">
+    <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora">
+    <span>Manual de Administración</span>
+  </div>
+  <div>
+    <a href="admin.html">← Volver al panel</a>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="container hidden" id="content">
+
+<h1>📖 Manual de Uso — Panel de Administración Mandrágora</h1>
+
+<p>Bienvenido al manual de referencia para administrar el sitio web de Mandrágora. Acá vas a encontrar instrucciones paso a paso para cada tarea.</p>
+
+<div class="toc">
+  <h3>📑 Índice</h3>
+  <ol>
+    <li><a href="#primeros-pasos">Primeros pasos</a></li>
+    <li><a href="#dashboard">Vista general — Dashboard</a></li>
+    <li><a href="#noticias">Noticias</a></li>
+    <li><a href="#agenda">Agenda (Eventos)</a></li>
+    <li><a href="#docentes">Docentes</a></li>
+    <li><a href="#obras">Obras</a></li>
+    <li><a href="#reservas">Reservas</a></li>
+    <li><a href="#push">Notificaciones Push</a></li>
+    <li><a href="#chat-ia">Chat con Inteligencia Artificial</a></li>
+    <li><a href="#faq">Preguntas Frecuentes</a></li>
+    <li><a href="#referencia">Referencia rápida</a></li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="primeros-pasos">1. Primeros Pasos</h2>
+
+<h3>Cómo entrar al panel</h3>
+<ol>
+  <li>Abrí tu navegador (Chrome, Edge, Firefox)</li>
+  <li>Entrá a: <a href="admin.html">admin.html</a></li>
+  <li>Ingresá tu contraseña y hacé clic en <strong>Entrar</strong></li>
+  <li>Si es la primera vez que entrás, guardá la página en favoritos ⭐</li>
+</ol>
+
+<div class="tip"><strong>💡 Tip:</strong> También podés entrar desde cualquier página del sitio haciendo clic en "Admin" al final del footer.</div>
+
+<h3>La sesión</h3>
+<ul>
+  <li>La sesión dura <strong>30 minutos</strong>. Después de ese tiempo se cierra automáticamente.</li>
+  <li>Si ves el mensaje "Sesión expirada", simplemente volvé a ingresar tu contraseña.</li>
+  <li>Para cerrar sesión manualmente, hacé clic en <strong>Cerrar sesión</strong> (arriba a la derecha).</li>
+</ul>
+
+<h3>Navegación del panel</h3>
+<p>El panel tiene <strong>7 pestañas</strong> (tabs) en la parte superior. Hacé clic en cada una para cambiar de sección:</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Pestaña</th><th>Ícono</th><th>¿Para qué sirve?</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Reservas</td><td>📅</td><td>Ver todas las reservas recibidas</td></tr>
+    <tr><td>Noticias</td><td>📄</td><td>Publicar y gestionar noticias</td></tr>
+    <tr><td>Docentes</td><td>👥</td><td>Gestionar los profesores y talleres</td></tr>
+    <tr><td>Agenda</td><td>📅</td><td>Administrar la cartelera de eventos</td></tr>
+    <tr><td>Obras</td><td>🎭</td><td>Gestionar las obras de la compañía</td></tr>
+    <tr><td>Push</td><td>🔔</td><td>Enviar notificaciones a los seguidores</td></tr>
+    <tr><td>Chat IA</td><td>🤖</td><td>Asistente inteligente para ayudarte</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="dashboard">2. Vista General — Dashboard</h2>
+
+<p>Al entrar al panel, lo primero que ves son <strong>4 números</strong> grandes:</p>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Indicador</th><th>¿Qué mide?</th></tr></thead>
+  <tbody>
+    <tr><td>Reservas totales</td><td>Cuántas reservas se recibieron en total</td></tr>
+    <tr><td>Pendientes</td><td>Cuántas reservas todavía no fueron contactadas</td></tr>
+    <tr><td>Noticias publicadas</td><td>Cuántas noticias están visibles al público</td></tr>
+    <tr><td>Docentes activos</td><td>Cuántos profesores están marcados como activos</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Estos números te dan un pantallazo rápido de cómo está todo. Para ver el detalle, andá a la pestaña correspondiente.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="noticias">3. Noticias</h2>
+
+<h3>¿Dónde se ven las noticias?</h3>
+<p>Las noticias que publiques aparecen en:</p>
+<ul>
+  <li>La <strong>página de Noticias</strong> del sitio (<code>/noticias.html</code>)</li>
+  <li>La <strong>cartelera</strong> de la página principal (la última noticia publicada, ese cartelito inclinado en el hero)</li>
+</ul>
+
+<h3>Crear una noticia nueva</h3>
+<ol>
+  <li>Andá a la pestaña <strong>Noticias</strong></li>
+  <li>Completá el formulario:</li>
+</ol>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Campo</th><th>¿Obligatorio?</th><th>Detalle</th></tr></thead>
+  <tbody>
+    <tr><td>Título</td><td>✅ Sí</td><td>Máximo 200 caracteres</td></tr>
+    <tr><td>Texto</td><td>✅ Sí</td><td>Podés escribir todo lo necesario</td></tr>
+    <tr><td>Tipo</td><td>—</td><td>"Anuncio" o "Prensa"</td></tr>
+    <tr><td>Link externo</td><td>—</td><td>URL si la noticia está en otro lado</td></tr>
+    <tr><td>Imagen</td><td>—</td><td>URL de internet o archivo de tu computadora</td></tr>
+    <tr><td>Publicada ✅</td><td>—</td><td><strong>Marcá para que se vea en el sitio.</strong> Sin marcar = borrador</td></tr>
+    <tr><td>Avisar por push</td><td>—</td><td>Envía notificación a todos los seguidores al guardar</td></tr>
+  </tbody>
+</table>
+</div>
+
+<ol start="3">
+  <li>Hacé clic en <strong>Guardar noticia</strong></li>
+</ol>
+
+<div class="warning"><strong>⚠️ Importante:</strong> Para que una noticia aparezca en el sitio, la casilla <strong>Publicada</strong> DEBE estar marcada.</div>
+
+<h3>Editar una noticia</h3>
+<ol>
+  <li>En la lista de noticias, hacé clic en <strong>Editar</strong> sobre la noticia</li>
+  <li>El formulario se llena con los datos actuales</li>
+  <li>Hacé los cambios → <strong>Guardar cambios</strong></li>
+  <li>Para cancelar: <strong>Cancelar</strong></li>
+</ol>
+
+<h3>Borrar una noticia</h3>
+<ol>
+  <li>Hacé clic en <strong>Borrar</strong></li>
+  <li>Confirmá en la ventana</li>
+</ol>
+<div class="warning"><strong>⚠️ Esta acción no se puede deshacer.</strong></div>
+
+<h3>Notificaciones push automáticas</h3>
+<p>Cuando creás una noticia con las casillas <strong>Publicada ✅</strong> y <strong>Avisar por push ✅</strong> marcadas, el sistema envía una notificación a todos los que tienen la web instalada. El título será el de la noticia y el texto los primeros 120 caracteres.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="agenda">4. Agenda (Eventos)</h2>
+
+<h3>¿Dónde se ven los eventos?</h3>
+<p>En la <strong>página Agenda</strong> del sitio (<code>/agenda.html</code>), ordenados por fecha y agrupados por mes.</p>
+
+<h3>Crear un evento</h3>
+<ol>
+  <li>Andá a la pestaña <strong>Agenda</strong></li>
+  <li>Completá el formulario:</li>
+</ol>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Campo</th><th>¿Obligatorio?</th><th>Ejemplo</th></tr></thead>
+  <tbody>
+    <tr><td>Título</td><td>✅ Sí</td><td>"La Sed — Estreno"</td></tr>
+    <tr><td>Fecha</td><td>✅ Sí</td><td><code>2026-08-15</code> (año-mes-día)</td></tr>
+    <tr><td>Hora</td><td>—</td><td><code>21:00</code></td></tr>
+    <tr><td>Tipo</td><td>—</td><td>"Teatro · Evento especial"</td></tr>
+    <tr><td>Categoría</td><td>—</td><td>"Compañía Mandrágora"</td></tr>
+    <tr><td>Descripción</td><td>—</td><td>Texto descriptivo del evento</td></tr>
+    <tr><td>Link de tickets</td><td>—</td><td>URL de entradas o <code>pagar.html</code></td></tr>
+    <tr><td>Texto del botón</td><td>—</td><td>"Entradas", "Estreno"</td></tr>
+    <tr><td>Publicado ✅</td><td>—</td><td>Marcá para que se vea en el sitio</td></tr>
+  </tbody>
+</table>
+</div>
+
+<ol start="3"><li>Hacé clic en <strong>Guardar evento</strong></li></ol>
+
+<div class="tip"><strong>💡 Tip para la fecha:</strong> Siempre escribila como <code>2026-08-15</code> (año-mes-día con guiones).</div>
+
+<h3>Ojo con la fecha</h3>
+<p>Los eventos se ordenan automáticamente del más cercano al más lejano. Los eventos pasados no desaparecen solos — <strong>borralos manualmente</strong> para mantener la agenda limpia.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="docentes">5. Docentes</h2>
+
+<h3>¿Dónde se ven?</h3>
+<ul>
+  <li><strong>Página Escuela</strong> — grid de cards con foto, nombre, rol y trayectoria</li>
+  <li><strong>Página Compañía</strong> — sección Elenco</li>
+  <li><strong>Sistema de reservas</strong> — como opciones al elegir "Inscripción a taller"</li>
+</ul>
+
+<h3>Agregar un docente</h3>
+<ol>
+  <li>Andá a la pestaña <strong>Docentes</strong></li>
+  <li>Completá:</li>
+</ol>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Campo</th><th>¿Obligatorio?</th><th>Detalle</th></tr></thead>
+  <tbody>
+    <tr><td>Nombre</td><td>✅ Sí</td><td>Máximo 80 caracteres</td></tr>
+    <tr><td>Rol / Disciplinas</td><td>✅ Sí</td><td>"Actuación · Clown"</td></tr>
+    <tr><td>Foto</td><td>—</td><td>URL de internet <strong>o</strong> archivo de tu PC</td></tr>
+    <tr><td>Frase</td><td>—</td><td>Cita corta (máx. 200 caracteres)</td></tr>
+    <tr><td>Trayectoria</td><td>—</td><td>Experiencia (máx. 300 caracteres)</td></tr>
+    <tr><td>Instagram</td><td>—</td><td><code>@usuario</code></td></tr>
+    <tr><td>WhatsApp</td><td>—</td><td><code>59898914088</code> (sin espacios)</td></tr>
+    <tr><td>Precio ($)</td><td>—</td><td>En pesos uruguayos</td></tr>
+    <tr><td>Activo ✅</td><td>—</td><td><strong>Marcá para que aparezca en el sitio</strong></td></tr>
+  </tbody>
+</table>
+</div>
+
+<ol start="3"><li>Hacé clic en <strong>Guardar docente</strong></li></ol>
+
+<div class="tip"><strong>🖼️ Para la foto:</strong> Si subís un archivo, se muestra una vista previa. Si usás URL, asegurate de que la imagen esté disponible.</div>
+
+<h3>Ocultar un docente (sin borrarlo)</h3>
+<p>Si un docente deja de dar clases temporalmente: <strong>Editá → desmarcá Activo → Guardar.</strong> Sus datos se conservan. Cuando vuelva, solo marcá Activo de nuevo.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="obras">6. Obras</h2>
+
+<h3>¿Dónde se ven?</h3>
+<p>En la <strong>página Compañía</strong> y en la <strong>Galería</strong>.</p>
+
+<h3>Estados de una obra</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Estado</th><th>Significado</th><th>Badge</th></tr></thead>
+  <tbody>
+    <tr><td><strong>En cartel</strong> (presente)</td><td>Se está presentando ahora</td><td><span class="badge badge--green">En cartel</span></td></tr>
+    <tr><td><strong>Próximo estreno</strong> (futura)</td><td>Se va a estrenar pronto</td><td><span class="badge badge--blue">Próximamente</span></td></tr>
+    <tr><td><strong>Histórica</strong> (pasada)</td><td>Ya no está en cartel</td><td><span class="badge badge--gray">Histórica</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Agregar una obra</h3>
+<ol>
+  <li>Andá a la pestaña <strong>Obras</strong></li>
+  <li>Completá: Título (obligatorio), Descripción, Sinopsis, Elenco, Dirección, Estado, Fecha/Temporada</li>
+  <li><strong>Para imágenes:</strong> Escribí o subí una URL → clic en <strong>"+ Agregar imagen a la obra"</strong> → la imagen aparece abajo como miniatura. Repetí para más imágenes.</li>
+  <li>Hacé clic en <strong>Guardar obra</strong></li>
+</ol>
+
+<div class="tip"><strong>💡 Cuando una obra deja de estar en cartel:</strong> Editá la obra y cambiá el estado a "Histórica". Se moverá automáticamente a obras pasadas.</div>
+
+<div class="warning"><strong>⚠️ Las imágenes de obras se manejan distinto:</strong> Tenés que escribir la URL, hacer clic en "+ Agregar imagen", y recién ahí se suma. Para quitar una, clic en "Quitar" debajo de la miniatura.</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="reservas">7. Reservas</h2>
+
+<h3>¿Cómo llegan las reservas?</h3>
+<p>Los visitantes completan el formulario en <code>/reservar.html</code>. Al enviar, el sistema abre WhatsApp con un mensaje pre-armado y guarda la reserva.</p>
+
+<h3>Revisar reservas</h3>
+<ol>
+  <li>Andá a la pestaña <strong>Reservas</strong></li>
+  <li>Ves una tabla con todas las reservas</li>
+  <li>Filtrá por tipo: <strong>Todas | Sala | Talleres | Entradas | Consultas</strong></li>
+</ol>
+
+<h3>Estados de una reserva</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Estado</th><th>Color</th><th>Significado</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Pendiente</strong></td><td>🟡 Amarillo</td><td>Recibida, no contactada aún</td></tr>
+    <tr><td><strong>Contactada</strong></td><td>🔵 Azul</td><td>Ya se habló con la persona</td></tr>
+    <tr><td><strong>Confirmada</strong></td><td>🟢 Verde</td><td>Reserva confirmada</td></tr>
+    <tr><td><strong>Cancelada</strong></td><td>🔴 Rojo</td><td>Reserva cancelada</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Flujo recomendado</h3>
+<ol>
+  <li>Revisá las reservas en el panel</li>
+  <li>Contactá a la persona por WhatsApp (el número está en la tabla)</li>
+  <li>Coordiná directamente</li>
+</ol>
+
+<div class="tip"><strong>💡 Consejo:</strong> El Chat IA puede darte un resumen rápido. Preguntale: <em>"¿Cuántas reservas pendientes hay?"</em> o <em>"Dame un resumen de las reservas de esta semana."</em></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="push">8. Notificaciones Push</h2>
+
+<h3>¿Qué son?</h3>
+<p>Notificaciones que llegan al celular de quienes instalaron la web de Mandrágora como aplicación. Aparecen aunque no tengan el navegador abierto.</p>
+
+<h3>¿Cómo se suscriben los visitantes?</h3>
+<p>En las páginas del sitio hay un <strong>botón de campanita 🛎️</strong> abajo a la derecha. Cuando hacen clic y aceptan, quedan suscriptos.</p>
+
+<h3>Enviar una notificación</h3>
+<ol>
+  <li>Andá a la pestaña <strong>Push</strong></li>
+  <li>Completá:
+    <ul>
+      <li><strong>Título</strong> (máx. 60) — "Este sábado: estreno de La Sed"</li>
+      <li><strong>Mensaje</strong> (máx. 200) — "No te pierdas el thriller. Entradas en mandragora.uy"</li>
+      <li><strong>Link</strong> (opcional) — <code>/agenda.html</code></li>
+    </ul>
+  </li>
+  <li>Clic en <strong>Enviar a todos los suscriptos</strong></li>
+</ol>
+
+<div class="tip"><strong>💡 Forma más práctica:</strong> Al crear una noticia marcá "Avisar por push" y se envía automáticamente.</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="chat-ia">9. Chat con Inteligencia Artificial</h2>
+
+<h3>¿Qué es?</h3>
+<p>Un asistente con inteligencia artificial integrado en la pestaña <strong>Chat IA</strong>. Podés hablarle como si fuera un asistente personal y te ayuda con todo.</p>
+
+<h3>¿Qué le puedo pedir?</h3>
+
+<h4>Consultas (solo leer)</h4>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Le decís...</th><th>La IA hace...</th></tr></thead>
+  <tbody>
+    <tr><td><em>"¿Cuántas reservas hay esta semana?"</em></td><td>Te dice el número y detalle</td></tr>
+    <tr><td><em>"¿Cuántas reservas pendientes hay?"</em></td><td>Total de pendientes</td></tr>
+    <tr><td><em>"¿Qué docentes están activos?"</em></td><td>Lista los docentes activos</td></tr>
+    <tr><td><em>"¿Cuál es el próximo evento?"</em></td><td>Fecha y título</td></tr>
+    <tr><td><em>"¿Qué noticias están publicadas?"</em></td><td>Lista noticias visibles</td></tr>
+    <tr><td><em>"¿Qué obras están en cartel?"</em></td><td>Obras presentes</td></tr>
+    <tr><td><em>"Buscá reservas que mencionen La Sed"</em></td><td>Cruza reservas con el evento</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>Acciones (crear, modificar, borrar)</h4>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Le decís...</th><th>La IA hace...</th></tr></thead>
+  <tbody>
+    <tr><td><em>"Creá un evento para el sábado 22 de agosto a las 21hs"</em></td><td>Crea el evento en la agenda</td></tr>
+    <tr><td><em>"Redactá una noticia anunciando nuevas funciones"</em></td><td>Escribe y publica una noticia formal</td></tr>
+    <tr><td><em>"Actualizá el precio del taller de Pancho a $3000"</em></td><td>Cambia el precio</td></tr>
+    <tr><td><em>"Cambiá el estado de La Sed a Histórica"</em></td><td>Modifica la obra</td></tr>
+    <tr><td><em>"Borrá el evento Taller de prueba"</em></td><td>Elimina el evento</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>¿Cómo escribo bien los pedidos?</h3>
+<ul>
+  <li><strong>Sé específico:</strong> "Creá un evento llamado X para el día Y a las 21hs" en lugar de "agregá algo"</li>
+  <li><strong>Dale contexto:</strong> Si pedís redactar una noticia, contale de qué se trata</li>
+  <li><strong>Corregí si se equivoca:</strong> "Cambiá el título por X" o "Borrá lo que creaste"</li>
+</ul>
+
+<h3>Adjuntar imágenes al chat</h3>
+<ul>
+  <li>📎 Clic en el clip para elegir archivo</li>
+  <li>📋 <strong>Ctrl+V</strong> para pegar imagen del portapapeles</li>
+  <li>🖱️ <strong>Arrastrá</strong> una imagen directamente al chat</li>
+</ul>
+
+<h3>Limitaciones</h3>
+<ul>
+  <li>No procesa pagos ni modifica reservas directamente</li>
+  <li>A veces tarda unos segundos en responder</li>
+  <li>Máximo 10 mensajes por minuto (se frena solo)</li>
+</ul>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="faq">10. Preguntas Frecuentes</h2>
+
+<h3>"Publiqué una noticia pero no se ve en el sitio"</h3>
+<p>Verificá: ¿Está marcada <strong>Publicada ✅</strong>? ¿Guardaste? Si ambas son sí, refrescá la página del sitio.</p>
+
+<h3>"Subí una foto pero no se ve"</h3>
+<p>Esperá unos segundos. Si después de un minuto no aparece: verificá la URL, o probá subir el archivo de nuevo.</p>
+
+<h3>"Me equivoqué y borré algo"</h3>
+<div class="warning"><strong>⚠️ No hay papelera de reciclaje.</strong> Lo borrado no se recupera. Si es grave, contactá al desarrollador.</div>
+
+<h3>"La sesión se cierra muy seguido"</h3>
+<p>Dura 30 minutos por seguridad. Es normal. Solo volvé a ingresar tu contraseña.</p>
+
+<h3>"¿Puedo entrar desde el celular?"</h3>
+<p>Sí, el panel funciona desde el celular. Para consultas rápidas va bien.</p>
+
+<h3>"No me acuerdo la contraseña"</h3>
+<p>Contactá al desarrollador (Mauricio).</p>
+
+<h3>"Quiero que un docente aparezca en la Compañía también"</h3>
+<p>Si está marcado como <strong>Activo ✅</strong>, aparece en ambas páginas automáticamente.</p>
+
+<h3>"¿Puedo cambiar el orden de los eventos?"</h3>
+<p>Se ordenan automáticamente por fecha. Para que uno aparezca primero, poné la fecha más cercana.</p>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2 id="referencia">11. Referencia Rápida</h2>
+
+<h3>¿Qué hago si quiero...?</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Quiero...</th><th>Voy a la pestaña...</th><th>Y hago...</th></tr></thead>
+  <tbody>
+    <tr><td>Publicar una noticia</td><td>Noticias</td><td>Formulario → Guardar</td></tr>
+    <tr><td>Agregar un evento</td><td>Agenda</td><td>Formulario → Guardar</td></tr>
+    <tr><td>Agregar un profesor</td><td>Docentes</td><td>Formulario → Guardar</td></tr>
+    <tr><td>Cambiar precio de taller</td><td>Docentes</td><td>Editar → cambiar precio → Guardar</td></tr>
+    <tr><td>Subir fotos de obra</td><td>Obras</td><td>URL → "+ Agregar imagen" → Guardar</td></tr>
+    <tr><td>Ver reservas de la semana</td><td>Reservas</td><td>Revisar tabla con filtro</td></tr>
+    <tr><td>Avisar de un estreno</td><td>Noticias</td><td>Crear → marcar "Avisar por push" → Guardar</td></tr>
+    <tr><td>Mandar aviso rápido</td><td>Push</td><td>Título + mensaje → Enviar</td></tr>
+    <tr><td>Preguntar algo a la IA</td><td>Chat IA</td><td>Escribir → Enviar</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Atajos útiles</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Atajo</th><th>¿Qué hace?</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Enter</strong> en el chat</td><td>Enviar mensaje a la IA</td></tr>
+    <tr><td><strong>Ctrl+V</strong> en el chat</td><td>Pegar imagen del portapapeles</td></tr>
+    <tr><td><strong>Click ×3</strong> en el logo</td><td>Easter egg: animación de telón 😄</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>¿Manual o Chat IA?</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Tarea</th><th>Recomendación</th><th>Motivo</th></tr></thead>
+  <tbody>
+    <tr><td>Crear noticia simple</td><td>Manual</td><td>Más rápido, formulario directo</td></tr>
+    <tr><td>Redactar noticia larga</td><td><strong>Chat IA</strong></td><td>Redacta mejor textos largos</td></tr>
+    <tr><td>Ver cuántas reservas hay</td><td><strong>Chat IA</strong></td><td>Resumen instantáneo</td></tr>
+    <tr><td>Agregar evento</td><td>Manual</td><td>Formulario simple</td></tr>
+    <tr><td>Subir fotos</td><td>Manual</td><td>Necesitás elegir archivos</td></tr>
+    <tr><td>Cruzar información</td><td><strong>Chat IA</strong></td><td>Solo la IA puede cruzar datos</td></tr>
+    <tr><td>Enviar push</td><td>Manual</td><td>Formulario directo</td></tr>
+  </tbody>
+</table>
+</div>
+
+<hr>
+
+<blockquote>
+  <p>📞 <strong>¿Algo no funciona o tenés una duda?</strong> Contactá a Mauricio.</p>
+  <p>📝 <strong>¿Querés sugerir una mejora?</strong> Anotá tu idea y coordinamos.</p>
+  <p>🔄 <strong>Versión 1.0</strong> — Agosto 2026</p>
+</blockquote>
+
+</div><!-- /#content -->
+
+<button class="back-top" id="back-top" title="Volver arriba">↑</button>
+
+<script>
+(function(){
+  var loginOverlay = document.getElementById('login-overlay');
+  var topbar = document.getElementById('topbar');
+  var content = document.getElementById('content');
+  var loginMsg = document.getElementById('login-msg');
+  var passwordInput = document.getElementById('password');
+  var loginBtn = document.getElementById('login-btn');
+  var backTop = document.getElementById('back-top');
+
+  // ── Auth ──
+  async function checkSession(){
+    try {
+      var r = await fetch('/api/admin-auth', {credentials:'same-origin', headers:{Accept:'application/json'}});
+      if(r.ok) { showContent(); }
+    } catch(e) { /* show login */ }
+  }
+
+  async function login(){
+    loginBtn.disabled = true;
+    loginMsg.textContent = '';
+    try {
+      var r = await fetch('/api/admin-auth?action=login', {
+        method:'POST', credentials:'same-origin',
+        headers:{'Content-Type':'application/json', Accept:'application/json'},
+        body:JSON.stringify({password: passwordInput.value})
+      });
+      if(!r.ok){
+        var d = await r.json().catch(function(){ return {}; });
+        throw new Error(d.error || 'Contraseña incorrecta');
+      }
+      passwordInput.value = '';
+      showContent();
+    } catch(e){
+      loginMsg.textContent = e.message;
+    } finally {
+      loginBtn.disabled = false;
+    }
+  }
+
+  function showContent(){
+    loginOverlay.classList.add('hidden');
+    topbar.style.display = 'flex';
+    content.classList.remove('hidden');
+  }
+
+  loginBtn.addEventListener('click', login);
+  passwordInput.addEventListener('keydown', function(e){ if(e.key==='Enter') login(); });
+
+  // ── Scroll: back to top ──
+  window.addEventListener('scroll', function(){
+    backTop.classList.toggle('visible', window.scrollY > 600);
+  });
+  backTop.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+
+  // ── Smooth scroll for anchor links ──
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if(a){
+      e.preventDefault();
+      var id = a.getAttribute('href').slice(1);
+      var el = document.getElementById(id);
+      if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  });
+
+  // ── Init ──
+  checkSession();
+})();
+</script>
+
+</body>
+</html>

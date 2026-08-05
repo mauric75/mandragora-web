@@ -84,6 +84,9 @@ body {
 .header__brand { display: flex; align-items: center; gap: 0.75rem; }
 .header__logo { height: 28px; opacity: 0.9; }
 .header__title { font-family: 'Schrifted', 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-dim); }
+.header__actions { display: flex; align-items: center; gap: 0.6rem; }
+.header__manual { color: var(--c-dim); text-decoration: none; font-size: 0.78rem; padding: 0.4em 0.8em; border-radius: var(--radius); border: 1px solid transparent; transition: all 0.2s; }
+.header__manual:hover { border-color: var(--c-gold-dim); color: var(--c-gold); }
 .header__logout { background: none; border: 1px solid var(--c-border); color: var(--c-dim); padding: 0.4em 1em; border-radius: var(--radius); cursor: pointer; font-size: 0.78rem; transition: all 0.2s; }
 .header__logout:hover { border-color: var(--c-red); color: var(--c-red); }
 
@@ -361,7 +364,10 @@ a:hover { text-decoration: underline; }
       <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="header__logo">
       <span class="header__title">Admin</span>
     </div>
-    <button class="header__logout" id="logout-btn">Cerrar sesión</button>
+    <div class="header__actions">
+      <a href="manual.html" class="header__manual">📖 Manual</a>
+      <button class="header__logout" id="logout-btn">Cerrar sesión</button>
+    </div>
   </header>
 
   <!-- Stats -->

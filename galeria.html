@@ -148,7 +148,7 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 .mobile-menu.is-open { opacity: 1; pointer-events: auto; }
 .mobile-menu a { font-family: var(--f-display); font-size: 1.6rem; color: var(--c-cream); transition: color 0.3s; }
 .mobile-menu a:hover { color: var(--c-gold); }
-./* mobile submenu dropdown */
+/* mobile submenu dropdown */
 .mobile-submenu {
   display: none; flex-direction: column; align-items: center; gap: 1rem;
 }
@@ -439,8 +439,7 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
     hamburger.setAttribute('aria-expanded', open);
   });
   mobileMenu.querySelectorAll('a').forEach(function(a){
-    a.addEventListener('click', function(){
-      hamburger.classList.remove('is-open');
+    a.addEventListener('click', function(){ if (a.classList.contains('mobile-submenu-toggle')) return; hamburger.classList.remove('is-open');
       mobileMenu.classList.remove('is-open');
       hamburger.setAttribute('aria-expanded', 'false');
     });
