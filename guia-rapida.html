@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mandragora — Guía Rápida</title>
+<style>
+  @page { margin: 1.2cm; size: A4; }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --c-bg: #111624;
+    --c-surface: #14181b;
+    --c-surface2: #1a1f23;
+    --c-gold: #CE9A47;
+    --c-gold-bright: #e0b85a;
+    --c-gold-faint: rgba(206,154,71,0.08);
+    --c-gold-dim: rgba(206,154,71,0.25);
+    --c-text: #e6ded5;
+    --c-dim: rgba(230,222,213,0.65);
+    --c-faint: rgba(230,222,213,0.22);
+    --c-border: rgba(230,222,213,0.08);
+    --c-red: #e0554a;
+    --c-green: #5cb85c;
+    --c-blue: #5b9bd5;
+    --radius: 5px;
+  }
+
+  body {
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'Schrifted', 'Jost', system-ui, -apple-system, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.55;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  /* ── Topbar ── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.6rem 0; margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .topbar .brand { display: flex; align-items: center; gap: 0.6rem; }
+  .topbar .brand span {
+    font-family: 'Schrifted', 'Cinzel', Georgia, serif;
+    font-size: 0.8rem; color: var(--c-gold); letter-spacing: 0.05em;
+  }
+  .topbar .actions { display: flex; gap: 0.8rem; align-items: center; }
+  .topbar a, .topbar button {
+    color: var(--c-dim); text-decoration: none; font-size: 0.8rem;
+    background: none; border: 1px solid var(--c-border);
+    padding: 0.3em 0.8em; border-radius: var(--radius); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .topbar a:hover, .topbar button:hover { border-color: var(--c-gold-dim); color: var(--c-gold); }
+
+  h1 {
+    font-family: 'Schrifted', 'Cinzel', Georgia, serif;
+    font-size: 1.5rem; color: var(--c-gold);
+    text-align: center; margin-bottom: 2px;
+  }
+  .subtitle {
+    text-align: center; font-size: 0.75rem; color: var(--c-dim);
+    margin-bottom: 1.5rem; padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--c-gold-dim);
+  }
+
+  h2 {
+    font-size: 1rem; color: var(--c-gold);
+    border-bottom: 1px solid var(--c-border);
+    margin-top: 1.5rem; margin-bottom: 0.6rem;
+    padding-bottom: 0.25rem;
+  }
+
+  h3 {
+    font-size: 0.85rem; color: var(--c-text);
+    margin-top: 0.8rem; margin-bottom: 0.3rem;
+  }
+
+  p { margin-bottom: 0.5rem; color: var(--c-dim); font-size: 0.9rem; }
+  code {
+    background: var(--c-surface2); padding: 0.15em 0.4em;
+    border-radius: 3px; font-size: 0.9em; color: var(--c-gold-bright);
+  }
+  strong { color: var(--c-text); }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    margin: 0.4rem 0 0.8rem; font-size: 0.82rem;
+    border: 1px solid var(--c-border); border-radius: var(--radius);
+  }
+  thead th {
+    background: var(--c-gold-faint); color: var(--c-gold);
+    text-align: left; padding: 0.35rem 0.5rem;
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--c-border);
+  }
+  tbody td {
+    padding: 0.3rem 0.5rem; border-top: 1px solid var(--c-border);
+    color: var(--c-dim); vertical-align: top;
+  }
+  tbody tr:hover { background: var(--c-gold-faint); }
+  tbody td:first-child { color: var(--c-text); }
+  tr:last-child td { border-bottom: none; }
+
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0.6rem; margin: 0.5rem 0;
+  }
+
+  .card {
+    background: var(--c-surface); border: 1px solid var(--c-border);
+    border-radius: var(--radius); padding: 0.6rem 0.7rem;
+  }
+  .card h3 { margin-top: 0; font-size: 0.82rem; color: var(--c-text); }
+
+  .chat-line {
+    padding: 0.2rem 0; font-size: 0.82rem; line-height: 1.4;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .chat-line:last-child { border-bottom: none; }
+  .chat-line .you { color: var(--c-blue); }
+  .chat-line .ia  { color: var(--c-dim); font-size: 0.75rem; }
+
+  .tip {
+    background: var(--c-gold-faint); border-left: 3px solid var(--c-gold-dim);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 0.4rem 0.6rem; margin: 0.5rem 0; font-size: 0.8rem;
+    color: var(--c-dim);
+  }
+  .tip strong { color: var(--c-gold); }
+
+  .warn {
+    background: rgba(224,85,74,0.06); border-left: 3px solid var(--c-red);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 0.4rem 0.6rem; margin: 0.5rem 0; font-size: 0.8rem;
+    color: var(--c-dim);
+  }
+  .warn strong { color: var(--c-red); }
+
+  .tag {
+    display: inline-block; font-size: 0.65rem; padding: 0.1em 0.4em;
+    border-radius: 3px; font-weight: 600;
+  }
+  .tag-req { background: rgba(224,85,74,0.15); color: var(--c-red); }
+  .tag-opt { background: rgba(230,222,213,0.06); color: var(--c-dim); }
+
+  .footer {
+    text-align: center; font-size: 0.7rem; color: var(--c-faint);
+    margin-top: 2rem; border-top: 1px solid var(--c-border);
+    padding-top: 0.8rem;
+  }
+
+  @media (max-width: 600px) {
+    .two-col { grid-template-columns: 1fr; }
+    body { font-size: 9pt; padding: 0.8rem; }
+  }
+
+  /* Print: light mode, compact */
+  @media print {
+    :root {
+      --c-bg: #fff; --c-surface: #fff; --c-surface2: #f5f5f5;
+      --c-gold: #b8892e; --c-gold-faint: #fdfaf5; --c-gold-dim: #e0d0a0;
+      --c-text: #111; --c-dim: #555; --c-faint: #ccc; --c-border: #ddd;
+      --c-red: #c00; --c-blue: #1D3D91;
+    }
+    body { padding: 0; font-size: 8pt; }
+    .topbar, .no-print { display: none; }
+    h1 { font-size: 13pt; }
+    h2 { font-size: 9pt; margin-top: 10px; }
+    table { font-size: 7pt; }
+    .two-col { gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span>🎭 Mandrágora</span>
+  </div>
+  <div class="actions">
+    <button onclick="window.print()">🖨️ Imprimir</button>
+    <a href="admin.html">← Panel</a>
+  </div>
+</div>
+
+<h1>Guía Rápida de Administración</h1>
+<div class="subtitle">Panel de Administración · Versión imprimible · Agosto 2026</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>🔑 Acceso</h2>
+<table>
+  <tr><td>URL</td><td><code>admin.html</code></td></tr>
+  <tr><td>Sesión</td><td>30 minutos · Se cierra automáticamente</td></tr>
+  <tr><td>Manual completo</td><td><code>manual.html</code> (mismo login)</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>🤖 Chat IA — La forma más rápida</h2>
+<p>El <strong>Chat IA</strong> (última pestaña) puede leer y modificar todo el contenido del sitio. Escribile como si hablaras con un asistente.</p>
+
+<div class="two-col">
+  <div class="card">
+    <h3>📋 Consultas</h3>
+    <div class="chat-line"><span class="you">Vos:</span> ¿Cuántas reservas pendientes hay?</div>
+    <div class="chat-line"><span class="you">Vos:</span> ¿Qué eventos hay este mes?</div>
+    <div class="chat-line"><span class="you">Vos:</span> ¿Qué docentes están activos?</div>
+    <div class="chat-line"><span class="you">Vos:</span> Dame un resumen de las reservas de esta semana</div>
+    <div class="chat-line"><span class="you">Vos:</span> ¿Cuál es el próximo evento?</div>
+    <div class="chat-line"><span class="you">Vos:</span> ¿Qué obras están en cartel?</div>
+  </div>
+  <div class="card">
+    <h3>✏️ Acciones</h3>
+    <div class="chat-line"><span class="you">Vos:</span> Creá un evento "La Sed" para el 15/8 a las 21hs</div>
+    <div class="chat-line"><span class="you">Vos:</span> Redactá una noticia anunciando el estreno</div>
+    <div class="chat-line"><span class="you">Vos:</span> Actualizá el precio del taller de Pancho a $3000</div>
+    <div class="chat-line"><span class="you">Vos:</span> Cambiá el estado de "La Sed" a Histórica</div>
+    <div class="chat-line"><span class="you">Vos:</span> Buscá reservas que mencionen "La Sed"</div>
+  </div>
+</div>
+
+<div class="tip"><strong>💡 Sé específico.</strong> "Creá un evento llamado X para el día Y a las 21hs" funciona mejor que "agregá algo". Si se equivoca, decile "corregí el título" o "borralo".</div>
+<div class="tip"><strong>🖼️ Adjuntá imágenes</strong> con el clip 📎, Ctrl+V, o arrastrando al chat. La IA las usa automáticamente.</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>📰 Noticias</h2>
+<table>
+  <thead><tr><th>Campo</th><th></th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Título</strong></td><td><span class="tag tag-req">Req.</span></td><td>Máx. 200 caracteres</td></tr>
+    <tr><td><strong>Texto</strong></td><td><span class="tag tag-req">Req.</span></td><td>Cuerpo de la noticia</td></tr>
+    <tr><td>Tipo</td><td><span class="tag tag-opt">Opc.</span></td><td>Anuncio o Prensa (cambia el badge de color)</td></tr>
+    <tr><td>Link externo</td><td><span class="tag tag-opt">Opc.</span></td><td>Si la nota salió en otro medio</td></tr>
+    <tr><td>Imagen</td><td><span class="tag tag-opt">Opc.</span></td><td>URL de internet o archivo</td></tr>
+    <tr><td><strong>Publicada ✅</strong></td><td><span class="tag tag-req">⚠️</span></td><td><strong>Sin marcar = no se ve en el sitio</strong></td></tr>
+    <tr><td>Avisar por push</td><td><span class="tag tag-opt">Opc.</span></td><td>Notificación a seguidores al guardar</td></tr>
+  </tbody>
+</table>
+<div class="warn"><strong>⚠️ Sin la casilla Publicada, la noticia queda en borrador.</strong></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>📅 Agenda</h2>
+<table>
+  <thead><tr><th>Campo</th><th></th><th>Ejemplo</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Título</strong></td><td><span class="tag tag-req">Req.</span></td><td>"La Sed — Estreno"</td></tr>
+    <tr><td><strong>Fecha</strong></td><td><span class="tag tag-req">Req.</span></td><td><code>2026-08-15</code> ← año-mes-día</td></tr>
+    <tr><td>Hora</td><td><span class="tag tag-opt">Opc.</span></td><td><code>21:00</code></td></tr>
+    <tr><td>Tipo</td><td><span class="tag tag-opt">Opc.</span></td><td>"Teatro · Evento especial"</td></tr>
+    <tr><td>Categoría</td><td><span class="tag tag-opt">Opc.</span></td><td>"Compañía Mandrágora"</td></tr>
+    <tr><td>Descripción</td><td><span class="tag tag-opt">Opc.</span></td><td>Texto del evento</td></tr>
+    <tr><td>Link tickets</td><td><span class="tag tag-opt">Opc.</span></td><td>URL de entradas o <code>pagar.html</code></td></tr>
+    <tr><td>Texto botón</td><td><span class="tag tag-opt">Opc.</span></td><td>"Entradas", "Estreno"</td></tr>
+    <tr><td><strong>Publicado ✅</strong></td><td><span class="tag tag-req">⚠️</span></td><td><strong>Sin marcar = no se ve</strong></td></tr>
+  </tbody>
+</table>
+<div class="tip"><strong>💡 La fecha siempre así:</strong> <code>2026-08-15</code>. Año, mes, día. Con guiones.</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>👥 Docentes</h2>
+<table>
+  <thead><tr><th>Campo</th><th></th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Nombre</strong></td><td><span class="tag tag-req">Req.</span></td><td>Máx. 80 caracteres</td></tr>
+    <tr><td><strong>Rol / Disciplinas</strong></td><td><span class="tag tag-req">Req.</span></td><td>"Actuación · Clown"</td></tr>
+    <tr><td>Foto</td><td><span class="tag tag-opt">Opc.</span></td><td>URL de internet <strong>o</strong> archivo de tu PC</td></tr>
+    <tr><td>Frase</td><td><span class="tag tag-opt">Opc.</span></td><td>Cita corta (máx. 200 caracteres)</td></tr>
+    <tr><td>Trayectoria</td><td><span class="tag tag-opt">Opc.</span></td><td>Experiencia (máx. 300 caracteres)</td></tr>
+    <tr><td>Instagram</td><td><span class="tag tag-opt">Opc.</span></td><td><code>@usuario</code></td></tr>
+    <tr><td>WhatsApp</td><td><span class="tag tag-opt">Opc.</span></td><td><code>59898914088</code> (sin espacios ni guiones)</td></tr>
+    <tr><td>Precio ($)</td><td><span class="tag tag-opt">Opc.</span></td><td>En pesos uruguayos</td></tr>
+    <tr><td><strong>Activo ✅</strong></td><td><span class="tag tag-req">⚠️</span></td><td><strong>Sin marcar = no aparece en el sitio</strong></td></tr>
+  </tbody>
+</table>
+<div class="tip"><strong>💡 Para ocultar sin borrar:</strong> desmarcá Activo. Para que vuelva: marcalo de nuevo.</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>🎭 Obras</h2>
+<table>
+  <thead><tr><th>Campo</th><th></th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Título</strong></td><td><span class="tag tag-req">Req.</span></td><td></td></tr>
+    <tr><td>Descripción</td><td><span class="tag tag-opt">Opc.</span></td><td>Máx. 500 caracteres</td></tr>
+    <tr><td>Sinopsis</td><td><span class="tag tag-opt">Opc.</span></td><td>Máx. 300 caracteres</td></tr>
+    <tr><td>Elenco</td><td><span class="tag tag-opt">Opc.</span></td><td>Lista de actores</td></tr>
+    <tr><td>Dirección</td><td><span class="tag tag-opt">Opc.</span></td><td>Nombre del director/a</td></tr>
+    <tr><td><strong>Estado</strong></td><td><span class="tag tag-req">Req.</span></td><td>En cartel · Próximo estreno · Histórica</td></tr>
+    <tr><td>Fecha / Temporada</td><td><span class="tag tag-opt">Opc.</span></td><td>"Julio 2026"</td></tr>
+    <tr><td>Imágenes</td><td><span class="tag tag-opt">Opc.</span></td><td>URL → clic <strong>"+ Agregar imagen"</strong>. Repetir para más.</td></tr>
+  </tbody>
+</table>
+<div class="warn"><strong>⚠️ Las imágenes de obras:</strong> pegás la URL, hacés clic en "+ Agregar imagen a la obra", y recién ahí se suma. Sin ese clic no se guarda.</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>📋 Reservas</h2>
+<table>
+  <tr><td><strong>Filtros</strong></td><td>Todas &nbsp;|&nbsp; Sala &nbsp;|&nbsp; Talleres &nbsp;|&nbsp; Entradas &nbsp;|&nbsp; Consultas</td></tr>
+  <tr><td><strong>Estados</strong></td><td>🟡 Pendiente &nbsp;·&nbsp; 🔵 Contactada &nbsp;·&nbsp; 🟢 Confirmada &nbsp;·&nbsp; 🔴 Cancelada</td></tr>
+</table>
+<div class="tip"><strong>💡 La IA puede resumir:</strong> "¿Cuántas reservas pendientes hay?" o "Dame un resumen de esta semana."</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>🔔 Push (Notificaciones)</h2>
+<table>
+  <tr><td><strong>Título</strong></td><td>Máx. 60 caracteres. Ej: "Este sábado: estreno de La Sed"</td></tr>
+  <tr><td><strong>Mensaje</strong></td><td>Máx. 200 caracteres</td></tr>
+  <tr><td>Link</td><td>Opcional. Ej: <code>/agenda.html</code></td></tr>
+</table>
+<div class="tip"><strong>💡 Más fácil:</strong> al crear una noticia, marcá "Avisar por push" y se envía automáticamente.</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>⚡ Qué usar: ¿IA o formulario manual?</h2>
+<table>
+  <thead><tr><th>Tarea</th><th>Con qué</th><th>Motivo</th></tr></thead>
+  <tbody>
+    <tr><td>Publicar una noticia simple</td><td>Formulario</td><td>Más rápido</td></tr>
+    <tr><td>Redactar una noticia larga/formal</td><td><strong>Chat IA</strong></td><td>Mejor redacción</td></tr>
+    <tr><td>Agregar un evento</td><td>Formulario</td><td>30 segundos</td></tr>
+    <tr><td>Ver cuántas reservas hay</td><td><strong>Chat IA</strong></td><td>Resumen instantáneo</td></tr>
+    <tr><td>Agregar/editar un docente</td><td>Formulario</td><td>Campos específicos</td></tr>
+    <tr><td>Cambiar precio de un taller</td><td><strong>Chat IA</strong></td><td>Una sola frase</td></tr>
+    <tr><td>Cruzar datos (ej: reservas de X)</td><td><strong>Chat IA</strong></td><td>Solo la IA puede</td></tr>
+    <tr><td>Enviar notificación push</td><td>Formulario</td><td>Directo</td></tr>
+    <tr><td>Subir fotos</td><td>Formulario</td><td>Elegir archivos</td></tr>
+    <tr><td>Actualizar estado de una obra</td><td><strong>Chat IA</strong></td><td>"Cambiá La Sed a Histórica"</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════ -->
+<h2>🚫 No se puede deshacer</h2>
+<div class="warn">
+  <strong>⚠️ Borrar</strong> noticias, eventos, docentes u obras <strong>no tiene vuelta atrás.</strong> No hay papelera de reciclaje. Si borraste algo por error, avisale a Mauricio.
+</div>
+
+<div class="footer">
+  Mandrágora — Teatro · Escuela de Artes · Centro Cultural &nbsp;|&nbsp; Montevideo, Uruguay<br>
+  admin.html &nbsp;|&nbsp; manual.html &nbsp;|&nbsp; guia-rapida.html
+</div>
+
+</body>
+</html>
