@@ -45,6 +45,80 @@
 4. `deabdce` — Convierte menu movil de Convenios en dropdown colapsable como en desktop
 5. `e5d37a8` — Corrige error de sintaxis CSS y conflicto JS en dropdown movil de Convenios
 6. `db6eff6` — Agrega todos los dropdowns del desktop al menu movil + mejora visual + fix atrapasuenos.html
+7. `0999b3c` — Agrega manual de administracion, guia rapida, context text y dev-server
+
+---
+
+## Segunda sesión — Documentación y herramientas de administración
+
+### 5. Documentación del proyecto
+
+#### 5.1 `CONTEXT.md` — Documento técnico completo (51 KB, 1089 líneas)
+Documentación exhaustiva de todo el proyecto: arquitectura, stack, 21 páginas, 8 APIs, BD, sistema de diseño, flujos de datos, bugs, deuda técnica, despliegue. También almacenado en Cerebro (ID: `883aeebb`).
+
+#### 5.2 `MANUAL.md` — Manual de uso para el cliente (~300 líneas)
+Manual en Markdown con 11 secciones: primeros pasos, dashboard, noticias, agenda, docentes, obras, reservas, push, chat IA, FAQ, referencia rápida.
+
+### 6. Páginas web nuevas
+
+#### 6.1 `manual.html` — Manual protegido con login
+- Misma autenticación que el admin (cookie HMAC, 30 min)
+- Tema oscuro consistente, tabla de contenidos navegable
+- Botón **📖 Manual** en header del admin y links en footer de 14 páginas públicas
+
+#### 6.2 `guia-rapida.html` — Guía rápida imprimible
+- Versión compacta optimizada para imprimir (tema claro automático en `@media print`)
+- Tema oscuro en pantalla, diseño consistente con el admin
+- Botón **⚡ Guía Rápida** en header del admin
+
+### 7. Entorno de desarrollo local
+
+#### 7.1 `dev-server.js` — Servidor local
+Creado porque `vercel dev` no leía las variables de entorno locales. Carga `.env.vercel`, sirve estáticos y funciones API. Uso: `node dev-server.js`.
+
+#### 7.2 Contraseña de admin
+- **Correcta:** `Mndrgr4Admin2026!!`
+- **Archivo:** `.env.vercel` (NO `.env.local`)
+- **Issue:** `vercel env pull` no desencripta variables sensibles. El `.env.vercel` tenía un valor viejo (`MandragoraAdmin2026!`). Se actualizó.
+
+### 8. Cambios en archivos existentes
+
+#### 8.1 `admin.html`
+- Agregado `<div class="header__actions">` con botones 📖 Manual y ⚡ Guía Rápida
+- CSS para `.header__actions` y `.header__manual`
+
+#### 8.2 Footer de páginas públicas (14 archivos)
+Agregado link `· Manual` junto al link `Admin`: index, escuela, sala, compania, agenda, comunidad, contacto, reservar, noticias, convenios, convenio-sunca, cine-viajero, nosotros, atrapasuenos.
+
+#### 8.3 `.env.vercel`
+- `ADMIN_PASSWORD` actualizada a `Mndrgr4Admin2026!!`
+
+### 9. Archivos creados (resumen)
+
+| Archivo | Propósito |
+|---------|-----------|
+| `CONTEXT.md` | Documentación técnica completa |
+| `MANUAL.md` | Manual de uso para el cliente |
+| `manual.html` | Manual web protegido |
+| `guia-rapida.html` | Guía rápida imprimible |
+| `dev-server.js` | Servidor local de desarrollo |
+
+### 10. Lecciones aprendidas
+
+1. `vercel dev` no lee `.env.local` ni `.env.vercel` cuando las variables están en el proyecto remoto. Solución: `dev-server.js`.
+2. `vercel env pull` no desencripta variables sensibles — bajan vacías.
+3. El caracter `!!` en bash se expande como último comando. Usar comillas simples.
+4. La contraseña de Cerebro era correcta. El error era variables no cargadas.
+5. El archivo de config correcto es `.env.vercel`, no `.env.local`.
+
+### 11. Pendientes
+
+- [ ] Migrar password hashing de SHA-256 a bcrypt/argon2
+- [ ] Arreglar bug tab Obras duplicado en admin.html
+- [ ] UI para cambiar estado de reservas
+- [ ] Paginación en listados del admin
+- [ ] MercadoPago: cambiar test key a producción
+- [ ] CSP headers y CSRF protection
 
 ## Producción
 🔗 https://mauric75.github.io/mandragora-web
