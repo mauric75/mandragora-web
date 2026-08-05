@@ -404,10 +404,12 @@ h1, h2, h3, h4, h5 {
 /* mobile submenu dropdown */
 .mobile-submenu {
   display: none; flex-direction: column; align-items: center; gap: 1rem;
+  margin-bottom: 0.5rem;
 }
 .mobile-submenu.is-open { display: flex; }
 .mobile-subitem {
   font-size: 1.3rem; opacity: 0.75;
+  padding: 0.3rem 0; transition: opacity 0.2s, color 0.2s;
 }
 .mobile-subitem:hover { opacity: 1; color: var(--c-gold); }
 .mobile-submenu-toggle {
@@ -1041,23 +1043,38 @@ h1, h2, h3, h4, h5 {
   <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
-  <nav class="mobile-menu" id="mobile-menu">
-    <a href="index.html">Inicio</a>
-    <a href="escuela.html">Escuela</a>
-    <a href="sala.html">Sala</a>
-    <a href="compania.html">Compañía</a>
+    <nav class="mobile-menu" id="mobile-menu">
+    <a href="#" class="mobile-submenu-toggle">Escuela <span class="mobile-arrow">▾</span></a>
+    <div class="mobile-submenu">
+      <a href="escuela.html#talleres" class="mobile-subitem">Talleres</a>
+      <a href="escuela.html#docentes" class="mobile-subitem">Docentes</a>
+    </div>
+    <a href="#" class="mobile-submenu-toggle">Sala <span class="mobile-arrow">▾</span></a>
+    <div class="mobile-submenu">
+      <a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a>
+      <a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a>
+    </div>
+    <a href="#" class="mobile-submenu-toggle">Compa&ntilde;&iacute;a <span class="mobile-arrow">▾</span></a>
+    <div class="mobile-submenu">
+      <a href="compania.html#elenco" class="mobile-subitem">Elenco</a>
+      <a href="compania.html#obras" class="mobile-subitem">Obras</a>
+    </div>
     <a href="#" class="mobile-submenu-toggle">Convenios <span class="mobile-arrow">▾</span></a>
     <div class="mobile-submenu">
       <a href="convenios.html" class="mobile-subitem">Convenios</a>
       <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
-      <a href="atrapasuenos.html" class="mobile-subitem">Atrapasueños Recreación</a>
+      <a href="atrapasuenos.html" class="mobile-subitem">Atrapasue&ntilde;os Recreaci&oacute;n</a>
       <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
     </div>
-    <a href="comunidad.html">Comunidad</a>
-    <a href="noticias.html">Noticias</a>
-    <a href="galeria.html">Galeria</a>
-    <a href="contacto.html">Contacto</a>
+    <a href="#" class="mobile-submenu-toggle">Nosotros <span class="mobile-arrow">▾</span></a>
+    <div class="mobile-submenu">
+      <a href="nosotros.html" class="mobile-subitem">Historia</a>
+      <a href="comunidad.html" class="mobile-subitem">Comunidad</a>
+      <a href="contacto.html" class="mobile-subitem">Contacto</a>
+    </div>
     <a href="agenda.html">Agenda</a>
+    <a href="noticias.html">Noticias</a>
+    <a href="galeria.html">Galer&iacute;a</a>
   </nav>
 </header>
 

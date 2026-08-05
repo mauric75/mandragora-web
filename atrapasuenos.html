@@ -100,6 +100,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:500;letter-spacing:.01em;line-
 .mobile-menu.is-open{opacity:1;pointer-events:auto}
 .mobile-menu a{font-family:var(--f-display);font-size:1.6rem;color:var(--c-cream);transition:color .3s}
 .mobile-menu a:hover{color:var(--c-gold)}
+.mobile-submenu{display:none;flex-direction:column;align-items:center;gap:1rem;margin-bottom:0.5rem}.mobile-submenu.is-open{display:flex}.mobile-subitem{font-size:1.3rem;opacity:0.75;padding:0.3rem 0;transition:opacity 0.2s,color 0.2s}.mobile-subitem:hover{opacity:1;color:var(--c-gold)}.mobile-submenu-toggle{display:flex;align-items:center;gap:0.3em;cursor:pointer}.mobile-arrow{font-size:0.7em;display:inline-block;transition:transform 0.3s}.mobile-submenu-toggle.is-open .mobile-arrow{transform:rotate(180deg)}
 @media(min-width:881px){.hamburger{display:none}}
 @media(min-width:880px){.site-nav__links{display:flex}}
 @media(max-width:600px){.site-nav__logo{height:28px}}
@@ -216,17 +217,37 @@ h1,h2,h3{font-family:var(--f-display);font-weight:500;letter-spacing:.01em;line-
     <span></span><span></span><span></span>
   </button>
   <nav class="mobile-menu" id="mobile-menu">
-    <a href="index.html">Inicio</a>
-    <a href="escuela.html">Escuela</a>
-    <a href="sala.html">Sala</a>
-    <a href="compania.html">Compañía</a>
-    <a href="convenios.html">Convenios</a>
-    <a href="cine-viajero.html">Cine Viajero</a>
-    <a href="comunidad.html">Comunidad</a>
-    <a href="noticias.html">Noticias</a>
-    <a href="galeria.html">Galeria</a>
-    <a href="contacto.html">Contacto</a>
+    <a href="#" class="mobile-submenu-toggle">Escuela <span class="mobile-arrow">▾</span></a>
+    <div class="mobile-submenu">
+      <a href="escuela.html#talleres" class="mobile-subitem">Talleres</a>
+      <a href="escuela.html#docentes" class="mobile-subitem">Docentes</a>
+    </div>
+    <a href="#" class="mobile-submenu-toggle">Sala <span class="mobile-arrow">▾</span></a>
+    <div class="mobile-submenu">
+      <a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a>
+      <a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a>
+    </div>
+    <a href="#" class="mobile-submenu-toggle">Compa&ntilde;&iacute;a <span class="mobile-arrow">▾</span></a>
+    <div class="mobile-submenu">
+      <a href="compania.html#elenco" class="mobile-subitem">Elenco</a>
+      <a href="compania.html#obras" class="mobile-subitem">Obras</a>
+    </div>
+    <a href="#" class="mobile-submenu-toggle">Convenios <span class="mobile-arrow">▾</span></a>
+    <div class="mobile-submenu">
+      <a href="convenios.html" class="mobile-subitem">Convenios</a>
+      <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
+      <a href="atrapasuenos.html" class="mobile-subitem">Atrapasue&ntilde;os Recreaci&oacute;n</a>
+      <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
+    </div>
+    <a href="#" class="mobile-submenu-toggle">Nosotros <span class="mobile-arrow">▾</span></a>
+    <div class="mobile-submenu">
+      <a href="nosotros.html" class="mobile-subitem">Historia</a>
+      <a href="comunidad.html" class="mobile-subitem">Comunidad</a>
+      <a href="contacto.html" class="mobile-subitem">Contacto</a>
+    </div>
     <a href="agenda.html">Agenda</a>
+    <a href="noticias.html">Noticias</a>
+    <a href="galeria.html">Galer&iacute;a</a>
   </nav>
 </header>
 
@@ -293,7 +314,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:500;letter-spacing:.01em;line-
     <a href="cine-viajero.html">Cine Viajero</a>
     <a href="comunidad.html">Comunidad</a>
     <a href="noticias.html">Noticias</a>
-    <a href="galeria.html">Galeria</a>
+    <a href="galeria.html">Galer&iacute;a</a>
     <a href="contacto.html">Contacto</a>
     <a href="agenda.html">Agenda</a>
   </nav>
@@ -337,8 +358,22 @@ h1,h2,h3{font-family:var(--f-display);font-weight:500;letter-spacing:.01em;line-
     mobileMenu.classList.toggle('is-open');
     hamburger.setAttribute('aria-expanded', open);
   });
-  mobileMenu.querySelectorAll('a').forEach(function(a){
-    a.addEventListener('click', function(){ hamburger.classList.remove('is-open'); mobileMenu.classList.remove('is-open'); hamburger.setAttribute('aria-expanded','false'); });
+    mobileMenu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      if (a.classList.contains('mobile-submenu-toggle')) return;
+      hamburger.classList.remove('is-open');
+      mobileMenu.classList.remove('is-open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    });
+  });
+  // mobile submenu accordion
+  document.querySelectorAll('.mobile-submenu-toggle').forEach(function(toggle) {
+    toggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      this.classList.toggle('is-open');
+      var sub = this.nextElementSibling;
+      if (sub) sub.classList.toggle('is-open');
+    });
   });
 
   var btt = document.getElementById('back-to-top');
