@@ -40,8 +40,10 @@
 
   /* ── Topbar ── */
   .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(17,22,36,0.85); backdrop-filter: blur(12px);
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0.6rem 0; margin-bottom: 1.5rem;
+    padding: 0.7rem 0; margin-bottom: 1.5rem;
     border-bottom: 1px solid var(--c-border);
   }
   .topbar .brand { display: flex; align-items: center; gap: 0.6rem; }
@@ -154,6 +156,8 @@
     margin-top: 2rem; border-top: 1px solid var(--c-border);
     padding-top: 0.8rem;
   }
+  .footer a { color: var(--c-dim); text-decoration: none; }
+  .footer a:hover { color: var(--c-gold); }
 
   @media (max-width: 600px) {
     .two-col { grid-template-columns: 1fr; }
@@ -184,6 +188,7 @@
     <span>🎭 Mandrágora</span>
   </div>
   <div class="actions">
+    <a href="index.html">Inicio</a>
     <button onclick="window.print()">🖨️ Imprimir</button>
     <a href="admin.html">← Panel</a>
   </div>
@@ -338,9 +343,17 @@
 </div>
 
 <div class="footer">
-  Mandrágora — Teatro · Escuela de Artes · Centro Cultural &nbsp;|&nbsp; Montevideo, Uruguay<br>
-  admin.html &nbsp;|&nbsp; manual.html &nbsp;|&nbsp; guia-rapida.html
+  <p>© <span id="current-year"></span> Mandrágora · Teatro · Escuela de Artes · Centro Cultural</p>
+  <p style="margin-top:0.3em;">
+    <a href="index.html">Inicio</a> ·
+    <a href="admin.html">Admin</a> ·
+    <a href="manual.html">Manual</a>
+  </p>
 </div>
+
+<script>
+document.getElementById('current-year').textContent = new Date().getFullYear();
+</script>
 
 </body>
 </html>

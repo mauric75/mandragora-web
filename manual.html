@@ -48,13 +48,13 @@
   .topbar .brand {
     display: flex; align-items: center; gap: 0.75rem;
   }
-  .topbar .brand img { height: 32px; }
+  .topbar .brand img { height: 28px; }
   .topbar .brand span {
     font-family: 'Schrifted', 'Cinzel', Georgia, serif;
-    font-size: 0.9rem; color: var(--c-gold); letter-spacing: 0.05em;
+    font-size: 0.8rem; color: var(--c-gold); letter-spacing: 0.05em;
   }
   .topbar a {
-    color: var(--c-dim); text-decoration: none; font-size: 0.85rem;
+    color: var(--c-dim); text-decoration: none; font-size: 0.8rem; margin-left: 1rem;
     transition: color 0.2s;
   }
   .topbar a:hover { color: var(--c-gold); }
@@ -183,6 +183,14 @@
   }
   .back-top.visible { opacity: 1; }
 
+  /* ── Footer ── */
+  .site-footer {
+    text-align: center; padding: 2rem 1rem; margin-top: 3rem;
+    border-top: 1px solid var(--c-border); color: var(--c-faint); font-size: 0.8rem;
+  }
+  .site-footer a { color: var(--c-dim); text-decoration: none; }
+  .site-footer a:hover { color: var(--c-gold); }
+
   /* ── Responsive ── */
   @media (max-width: 640px) {
     h1 { font-size: 1.5rem; }
@@ -212,6 +220,7 @@
     <span>Manual de Administración</span>
   </div>
   <div>
+    <a href="index.html">Inicio</a>
     <a href="admin.html">← Volver al panel</a>
   </div>
 </div>
@@ -664,6 +673,15 @@
 
 </div><!-- /#content -->
 
+<footer class="site-footer">
+  <p>© <span id="current-year"></span> Mandrágora · Teatro · Escuela de Artes · Centro Cultural</p>
+  <p style="margin-top:0.3em;">
+    <a href="index.html">Inicio</a> ·
+    <a href="admin.html">Admin</a> ·
+    <a href="guia-rapida.html">Guía Rápida</a>
+  </p>
+</footer>
+
 <button class="back-top" id="back-top" title="Volver arriba">↑</button>
 
 <script>
@@ -733,6 +751,7 @@
   });
 
   // ── Init ──
+  document.getElementById('current-year').textContent = new Date().getFullYear();
   checkSession();
 })();
 </script>
