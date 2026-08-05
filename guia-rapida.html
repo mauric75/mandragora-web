@@ -39,76 +39,63 @@
   }
 
   /* ── Topbar ── */
-  /* ── Site Nav ── */
+  /* ── Site Nav (idéntico a páginas públicas) ── */
   .site-nav {
     position: sticky; top: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0.8rem 1rem; font-size: 0.7rem; letter-spacing: 0.08em;
+    padding: 0.8rem 1rem;
+    font-family: var(--f-mark, 'Schrifted','Cinzel',Georgia,serif);
+    font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
     color: var(--c-text);
-    transition: background 0.4s var(--ease);
+    transition: padding 0.4s var(--ease), background 0.4s var(--ease);
   }
   .site-nav.is-scrolled {
-    background: rgba(17,22,36,0.9);
+    background: color-mix(in srgb, var(--c-bg) 96%, transparent);
     backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--c-border);
   }
-  .site-nav__logo { height: 28px; }
+  .site-nav__links { display: none; gap: 2rem; font-family: var(--f-body, 'Jost',sans-serif); letter-spacing: 0.08em; font-size: 0.74rem; }
+  .site-nav__links a { color: var(--c-dim); text-decoration: none; opacity: 0.72; transition: opacity 0.3s, color 0.3s; }
+  .site-nav__links a:hover { opacity: 1; color: var(--c-gold); }
+  .site-nav__logo { height: 28px; width: auto; display: block; }
   .site-nav__logo-dark { display: none; }
   [data-theme="dark"] .site-nav__logo-light { display: none; }
   [data-theme="dark"] .site-nav__logo-dark { display: block; }
-  .site-nav__links { display: none; gap: 1.5rem; align-items: center; }
-  .site-nav__links a { color: var(--c-dim); text-decoration: none; transition: color 0.2s; font-size: 0.75rem; }
-  .site-nav__links a:hover { color: var(--c-gold); }
-  .nav-item { position: relative; }
-  .nav-item__trigger { display: flex; align-items: center; gap: 0.3em; cursor: pointer; }
-  .nav-arrow { font-size: 0.6em; transition: transform 0.2s; }
-  .nav-item:hover .nav-arrow { transform: rotate(180deg); }
-  .nav-item__dropdown {
-    position: absolute; top: 100%; left: 0; min-width: 200px;
-    background: var(--c-surface); border: 1px solid var(--c-border);
-    border-radius: var(--radius); padding: 0.5rem 0; margin-top: 0.5rem;
-    opacity: 0; pointer-events: none; transform: translateY(-5px);
-    transition: all 0.2s var(--ease);
+  .theme-toggle {
+    background: none; border: 1px solid currentColor; cursor: pointer;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: grid; place-items: center; color: inherit;
+    font-size: 0.9rem; line-height: 1; padding: 0;
+    opacity: 0.7; transition: opacity 0.3s, transform 0.4s;
   }
-  .nav-item:hover .nav-item__dropdown { opacity: 1; pointer-events: auto; transform: translateY(0); }
-  .nav-item__dropdown a {
-    display: block; padding: 0.4rem 1rem; font-size: 0.78rem;
-    color: var(--c-dim); white-space: nowrap;
-  }
-  .nav-item__dropdown a:hover { background: var(--c-gold-faint); color: var(--c-gold); }
+  .theme-toggle:hover { opacity: 1; transform: rotate(15deg); }
   .nav-instagram { display: grid; place-items: center; opacity: 0.7; transition: opacity 0.3s; }
   .nav-instagram:hover { opacity: 1; }
-  .theme-toggle {
-    background: none; border: 1px solid var(--c-border); cursor: pointer;
-    width: 30px; height: 30px; border-radius: 50%;
-    display: grid; place-items: center; color: var(--c-dim);
-    font-size: 0.8rem; opacity: 0.7;
-  }
-  .theme-toggle:hover { opacity: 1; border-color: var(--c-gold-dim); }
-  .hamburger {
-    display: flex; flex-direction: column; gap: 4px;
-    background: none; border: none; cursor: pointer; padding: 4px; opacity: 0.8;
-  }
-  .hamburger span { display: block; width: 22px; height: 1.5px; background: var(--c-dim); transition: all 0.3s; }
-  .hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(4px,4px); }
+  @media (min-width: 880px) { .site-nav__links { display: flex; } }
+  @media (max-width: 600px) { .site-nav__logo { height: 28px; } }
+  .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 101; opacity: 0.8; }
+  .hamburger span { display: block; width: 24px; height: 1.5px; background: currentColor; transition: transform 0.3s, opacity 0.2s; }
+  .hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
   .hamburger.is-open span:nth-child(2) { opacity: 0; }
-  .hamburger.is-open span:nth-child(3) { transform: rotate(-45deg) translate(4px,-4px); }
-  .mobile-menu {
-    position: fixed; inset: 0; z-index: 99;
-    background: rgba(10,14,26,0.97); backdrop-filter: blur(20px);
-    display: flex; flex-direction: column; padding: 5rem 2rem 2rem;
-    opacity: 0; pointer-events: none; transition: opacity 0.3s;
-    overflow-y: auto; gap: 0.3rem;
-  }
+  .hamburger.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+  @media (min-width: 881px) { .hamburger { display: none; } }
+  .mobile-menu { position: fixed; inset: 0; z-index: 99; background: rgba(10,14,26,0.97); backdrop-filter: blur(20px); display: flex; flex-direction: column; padding: 5rem 2rem 2rem; opacity: 0; pointer-events: none; transition: opacity 0.3s; overflow-y: auto; gap: 0.3rem; }
   .mobile-menu.is-open { opacity: 1; pointer-events: auto; }
   .mobile-menu a { color: var(--c-dim); text-decoration: none; font-size: 1rem; padding: 0.5rem 0; }
   .mobile-menu a:hover { color: var(--c-gold); }
   .mobile-submenu-toggle { font-weight: 600; }
   .mobile-submenu { display: none; padding-left: 1rem; }
-  .mobile-submenu.open { display: flex; flex-direction: column; }
+  .mobile-submenu.is-open { display: flex; flex-direction: column; }
   .mobile-subitem { font-size: 0.9rem !important; opacity: 0.8; }
-  .mobile-arrow { font-size: 0.7em; }
-  @media (min-width: 881px) { .site-nav__links { display: flex; } .hamburger { display: none; } }
+  /* dropdowns */
+  .nav-item { position: relative; }
+  .nav-item__trigger { display: flex; align-items: center; gap: 0.3em; cursor: pointer; }
+  .nav-arrow { font-size: 0.7em; transition: transform 0.3s; }
+  .nav-item:hover .nav-arrow { transform: rotate(180deg); }
+  .nav-item__dropdown { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 4px; padding: 0.6rem 0; min-width: 160px; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s; transform: translateX(-50%) translateY(4px); box-shadow: 0 8px 32px rgba(0,0,0,0.12); z-index: 200; }
+  .nav-item:hover .nav-item__dropdown, .nav-item:focus-within .nav-item__dropdown { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+  .nav-item__dropdown a { display: block; padding: 0.4rem 1.2rem; font-size: 0.78rem; letter-spacing: 0.04em; opacity: 0.7; transition: opacity 0.2s, background 0.2s; white-space: nowrap; }
+  .nav-item__dropdown a:hover { opacity: 1; background: var(--c-bg-soft); }
 
   h1 {
     font-family: 'Schrifted', 'Cinzel', Georgia, serif;
@@ -422,64 +409,54 @@
 </div>
 
 <script>
-// ── Theme ──
+// ── Theme toggle (idéntico a index.html) ──
 (function(){
-  var html = document.documentElement;
-  var saved = localStorage.getItem('mandragora-theme');
-  if(saved === 'light') html.removeAttribute('data-theme');
   var toggle = document.getElementById('theme-toggle');
-  if(toggle) toggle.addEventListener('click', function(){
-    if(html.hasAttribute('data-theme')){
-      html.removeAttribute('data-theme');
-      localStorage.setItem('mandragora-theme', 'light');
-    } else {
-      html.setAttribute('data-theme', 'dark');
-      localStorage.setItem('mandragora-theme', 'dark');
-    }
-  });
+  var html = document.documentElement;
+  if(toggle){
+    toggle.textContent = html.getAttribute('data-theme') === 'dark' ? '\u263e' : '\u2600';
+    toggle.addEventListener('click', function(){
+      var isDark = html.getAttribute('data-theme') === 'dark';
+      if(isDark){ html.removeAttribute('data-theme'); toggle.textContent = '\u2600'; localStorage.setItem('mandragora-theme','light'); }
+      else { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; localStorage.setItem('mandragora-theme','dark'); }
+    });
+  }
 })();
 
-// ── Hamburger ──
+// ── Hamburger + mobile accordion (idéntico a index.html) ──
 (function(){
   var hamburger = document.getElementById('hamburger');
   var mobileMenu = document.getElementById('mobile-menu');
   if(hamburger && mobileMenu){
     hamburger.addEventListener('click', function(){
-      hamburger.classList.toggle('is-open');
+      var open = hamburger.classList.toggle('is-open');
       mobileMenu.classList.toggle('is-open');
-      hamburger.setAttribute('aria-expanded', mobileMenu.classList.contains('is-open'));
+      hamburger.setAttribute('aria-expanded', open);
     });
-    mobileMenu.querySelectorAll('a:not(.mobile-submenu-toggle)').forEach(function(a){
+    mobileMenu.querySelectorAll('a').forEach(function(a){
       a.addEventListener('click', function(){
+        if(a.classList.contains('mobile-submenu-toggle')) return;
         hamburger.classList.remove('is-open');
         mobileMenu.classList.remove('is-open');
+        hamburger.setAttribute('aria-expanded', 'false');
       });
     });
   }
-})();
-
-// ── Mobile accordion ──
-(function(){
   document.querySelectorAll('.mobile-submenu-toggle').forEach(function(toggle){
     toggle.addEventListener('click', function(e){
       e.preventDefault();
+      this.classList.toggle('is-open');
       var sub = this.nextElementSibling;
-      if(sub && sub.classList.contains('mobile-submenu')){
-        sub.classList.toggle('open');
-      }
+      if(sub) sub.classList.toggle('is-open');
     });
   });
 })();
 
 // ── Scroll blur ──
-(function(){
+window.addEventListener('scroll', function(){
   var nav = document.querySelector('.site-nav');
-  if(nav){
-    window.addEventListener('scroll', function(){
-      nav.classList.toggle('is-scrolled', window.scrollY > 30);
-    });
-  }
-})();
+  if(nav) nav.classList.toggle('is-scrolled', window.scrollY > 50);
+});
 
 // ── Current year ──
 document.getElementById('current-year').textContent = new Date().getFullYear();
