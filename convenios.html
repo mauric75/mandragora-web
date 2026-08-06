@@ -104,16 +104,27 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 .theme-toggle { background: none; border: 1px solid currentColor; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 0.9rem; line-height: 1; padding: 0; opacity: 0.7; transition: opacity 0.3s, transform 0.4s var(--ease); }
 .theme-toggle:hover { opacity: 1; transform: rotate(15deg); }
 .theme-toggle:active { transform: rotate(180deg); }
-.hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; z-index: 101; opacity: 0.8; }
+.hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; min-width: 44px; min-height: 44px; z-index: 101; opacity: 0.8; }
 .hamburger span { display: block; width: 24px; height: 1.5px; background: currentColor; transition: transform 0.3s var(--ease), opacity 0.2s; }
 .hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
 .hamburger.is-open span:nth-child(2) { opacity: 0; }
 .hamburger.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
-.mobile-menu { position: fixed; inset: 0; z-index: 99; background: var(--c-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; pointer-events: none; transition: opacity 0.35s var(--ease); }
+.mobile-menu { position: fixed; inset: 0; z-index: 99; background: rgba(248,244,237,0.94); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.8rem; opacity: 0; pointer-events: none; transition: opacity 0.35s var(--ease); }
 .mobile-menu.is-open { opacity: 1; pointer-events: auto; }
 [data-theme="dark"] .mobile-menu { background: rgba(5,7,10,0.95); }
-.mobile-menu a { font-family: var(--f-display); font-size: 1.6rem; color: var(--c-cream); transition: color 0.3s; }
+.mobile-menu a { font-family: var(--f-display); font-size: 1.6rem; font-weight: 400; color: var(--c-cream); transition: color 0.3s, transform 0.2s; min-height: 48px; display: flex; align-items: center; }
+.mobile-menu a:active { transform: scale(0.96); }
 .mobile-menu a:hover { color: var(--c-gold); }
+.mobile-submenu { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.45s var(--ease), opacity 0.35s var(--ease), margin 0.45s var(--ease), padding 0.45s var(--ease); margin-top: 0; margin-bottom: 0; padding-top: 0; border-top: 1px solid transparent; }
+.mobile-submenu.is-open { max-height: 360px; opacity: 1; overflow: visible; margin-top: 0.3rem; margin-bottom: 0.3rem; padding-top: 0.7rem; border-top-color: var(--c-border); }
+.mobile-subitem { font-size: 1.2rem !important; opacity: 0.7; font-weight: 300 !important; padding: 0.3rem 0; min-height: 40px !important; }
+.mobile-subitem:hover { opacity: 1; color: var(--c-gold); }
+.mobile-subitem:active { transform: scale(0.95); }
+.mobile-submenu-toggle { display: flex; align-items: center; gap: 0.3em; cursor: pointer; min-height: 48px; background: none; border: none; font-family: var(--f-display); font-size: 1.6rem; color: var(--c-cream); }
+.mobile-submenu-toggle:hover { color: var(--c-gold); }
+.mobile-arrow { font-size: 0.6em; display: inline-block; transition: transform 0.35s var(--ease); opacity: 0.45; }
+.mobile-submenu-toggle.is-open .mobile-arrow { transform: rotate(180deg); opacity: 1; }
+.mobile-submenu-toggle.is-open { color: var(--c-gold); }
 @media (min-width: 881px) { .hamburger { display: none; } }
 @media (min-width: 880px) { .site-nav__links { display: flex; } }
 @media (max-width: 600px) { .site-nav__logo { height: 26px; } }
@@ -289,18 +300,38 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
   <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
-  <nav class="mobile-menu" id="mobile-menu">
-    <a href="index.html">Inicio</a>
-    <a href="escuela.html">Escuela</a>
-    <a href="sala.html">Sala</a>
-    <a href="compania.html">Compañía</a>
-    <a href="convenios.html">Convenios</a>
-    <a href="cine-viajero.html">Cine Viajero</a>
-    <a href="comunidad.html">Comunidad</a>
-    <a href="noticias.html">Noticias</a>
-    <a href="galeria.html">Galeria</a>
-    <a href="contacto.html">Contacto</a>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Menú principal">
+    <button class="mobile-submenu-toggle" aria-expanded="false">Escuela <span class="mobile-arrow">▾</span></button>
+    <div class="mobile-submenu">
+      <a href="escuela.html#talleres" class="mobile-subitem">Talleres</a>
+      <a href="escuela.html#docentes" class="mobile-subitem">Docentes</a>
+    </div>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Sala <span class="mobile-arrow">▾</span></button>
+    <div class="mobile-submenu">
+      <a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a>
+      <a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a>
+    </div>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Compañía <span class="mobile-arrow">▾</span></button>
+    <div class="mobile-submenu">
+      <a href="compania.html#elenco" class="mobile-subitem">Elenco</a>
+      <a href="compania.html#obras" class="mobile-subitem">Obras</a>
+    </div>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Convenios <span class="mobile-arrow">▾</span></button>
+    <div class="mobile-submenu">
+      <a href="convenios.html" class="mobile-subitem">Convenios</a>
+      <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
+      <a href="atrapasuenos.html" class="mobile-subitem">Atrapasueños Recreación</a>
+      <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
+    </div>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Nosotros <span class="mobile-arrow">▾</span></button>
+    <div class="mobile-submenu">
+      <a href="nosotros.html" class="mobile-subitem">Historia</a>
+      <a href="comunidad.html" class="mobile-subitem">Comunidad</a>
+      <a href="contacto.html" class="mobile-subitem">Contacto</a>
+    </div>
     <a href="agenda.html">Agenda</a>
+    <a href="noticias.html">Noticias</a>
+    <a href="galeria.html">Galería</a>
   </nav>
 </header>
 
