@@ -212,13 +212,13 @@ h1, h2, h3, h4 {
   border-top: 1px solid transparent;
 }
 .mobile-submenu.is-open {
-  max-height: 360px; opacity: 1;
+  max-height: 360px; opacity: 1; overflow: visible;
   margin-top: 0.3rem; margin-bottom: 0.3rem;
   padding-top: 0.7rem;
   border-top-color: var(--c-border);
 }
 .mobile-subitem {
-  font-size: 1.2rem; opacity: 0.7; font-weight: 300;
+  font-size: 1.2rem; opacity: 0.7; font-weight: 300; color: var(--c-cream);
   padding: 0.3rem 0; transition: opacity 0.2s, color 0.2s;
   min-height: 40px; display: flex; align-items: center;
 }
@@ -226,6 +226,10 @@ h1, h2, h3, h4 {
 .mobile-subitem:active { transform: scale(0.95); }
 .mobile-submenu-toggle {
   display: flex; align-items: center; gap: 0.3em; cursor: pointer;
+  color: var(--c-cream);
+  background: none; border: none;
+  font-family: var(--f-display); font-size: 1.6rem; font-weight: 400;
+  padding: 0;
   min-height: 48px;
 }
 .mobile-arrow {
@@ -480,7 +484,7 @@ h1, h2, h3, h4 {
   position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
   background: var(--c-bg); border: 1px solid var(--c-border);
   border-radius: 4px; padding: 0.6rem 0; min-width: 160px;
-  opacity: 0; pointer-events: none;
+  opacity: 0; pointer-events: none; color: var(--c-ink);
   transition: opacity 0.25s, transform 0.25s;
   transform: translateX(-50%) translateY(4px);
   box-shadow: 0 8px 32px rgba(0,0,0,0.12);
@@ -492,7 +496,7 @@ h1, h2, h3, h4 {
   transform: translateX(-50%) translateY(0);
 }
 .nav-item__dropdown a {
-  display: block; padding: 0.4rem 1.2rem;
+  display: block; color: var(--c-ink); padding: 0.4rem 1.2rem;
   font-size: 0.78rem; letter-spacing: 0.04em; opacity: 0.7;
   transition: opacity 0.2s, background 0.2s;
   white-space: nowrap;

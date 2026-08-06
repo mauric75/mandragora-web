@@ -52,6 +52,10 @@ a{color:inherit;text-decoration:none}h1,h2{font-family:var(--f-display);font-wei
 .mobile-subitem:hover { opacity: 1; color: var(--c-gold); }
 .mobile-submenu-toggle {
   display: flex; align-items: center; gap: 0.3em; cursor: pointer;
+  color: var(--c-cream);
+  background: none; border: none;
+  font-family: var(--f-display); font-size: 1.6rem; font-weight: 400;
+  padding: 0;
 }
 .mobile-arrow { font-size: 0.7em; display: inline-block; transition: transform 0.3s; }
 .mobile-submenu-toggle.is-open .mobile-arrow { transform: rotate(180deg); }
@@ -89,7 +93,7 @@ a{color:inherit;text-decoration:none}h1,h2{font-family:var(--f-display);font-wei
   position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
   background: var(--c-bg); border: 1px solid var(--c-border);
   border-radius: 4px; padding: 0.6rem 0; min-width: 160px;
-  opacity: 0; pointer-events: none;
+  opacity: 0; pointer-events: none; color: var(--c-ink);
   transition: opacity 0.25s, transform 0.25s;
   transform: translateX(-50%) translateY(4px);
   box-shadow: 0 8px 32px rgba(0,0,0,0.12);
@@ -101,7 +105,7 @@ a{color:inherit;text-decoration:none}h1,h2{font-family:var(--f-display);font-wei
   transform: translateX(-50%) translateY(0);
 }
 .nav-item__dropdown a {
-  display: block; padding: 0.4rem 1.2rem;
+  display: block; color: var(--c-ink); padding: 0.4rem 1.2rem;
   font-size: 0.78rem; letter-spacing: 0.04em; opacity: 0.7;
   transition: opacity 0.2s, background 0.2s;
   white-space: nowrap;
