@@ -168,60 +168,111 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
 .hamburger.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
 @media (min-width: 881px) { .hamburger { display: none; } }
 
-/* mobile menu */
+/* mobile menu — Elegante */
 .mobile-menu {
   position: fixed; inset: 0; z-index: 99;
-  background: rgba(248,244,237,0.94);
+  background: rgba(255,255,255,.96);
   backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  display: flex;
-  flex-direction: column; align-items: center; justify-content: center; gap: 1.8rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   opacity: 0; pointer-events: none;
   transition: opacity 0.35s var(--ease);
 }
-[data-theme="dark"] .mobile-menu { background: rgba(5,7,10,0.95); }
+[data-theme="dark"] .mobile-menu { background: rgba(9,16,34,.97); }
 .mobile-menu.is-open { opacity: 1; pointer-events: auto; }
-.mobile-menu a {
-  font-family: var(--f-display); font-size: 1.6rem; font-weight: 400;
-  color: var(--c-cream); transition: color 0.3s, transform 0.2s;
-  min-height: 48px; display: flex; align-items: center;
+
+.menu-close {
+  position: absolute; top: 1rem; right: 1rem;
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid var(--c-border); background: none; cursor: pointer;
+  display: grid; place-items: center;
+  font-size: 1rem; color: var(--c-ink-dim);
+  transition: border-color 0.3s, color 0.3s;
 }
-.mobile-menu a:active { transform: scale(0.96); }
-.mobile-menu a:hover { color: var(--c-gold); }
-/* mobile submenu dropdown */
+.menu-close:hover { border-color: var(--c-gold); color: var(--c-gold); }
+
+.menu-logo { margin-bottom: 1.8rem; opacity: .75; }
+.menu-logo img { height: 32px; }
+[data-theme="dark"] .menu-logo-light { display: none; }
+:not([data-theme="dark"]) .menu-logo-dark { display: none; }
+
+.menu-group { display: flex; flex-direction: column; align-items: center; }
+
+.mobile-submenu-toggle {
+  font-family: var(--f-display); font-size: 1.55rem; font-weight: 400;
+  background: none; border: none; color: var(--c-ink); cursor: pointer;
+  min-height: 50px; display: flex; align-items: center; gap: 0.3em;
+  transition: color 0.25s;
+}
+.mobile-submenu-toggle:hover { color: var(--c-gold); }
+.mobile-submenu-toggle.is-open { color: var(--c-gold); }
+
+.mobile-arrow {
+  font-size: 0.55em; opacity: 0.35;
+  display: inline-block; transition: transform 0.3s var(--ease);
+}
+.mobile-submenu-toggle.is-open .mobile-arrow { transform: rotate(180deg); opacity: 0.8; }
+
+/* submenu dropdown */
 .mobile-submenu {
-  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
   max-height: 0; overflow: hidden; opacity: 0;
-  transition: max-height 0.45s var(--ease), opacity 0.35s var(--ease), margin 0.45s var(--ease), padding 0.45s var(--ease);
-  margin-top: 0; margin-bottom: 0; padding-top: 0;
-  border-top: 1px solid transparent;
+  transition: max-height 0.45s var(--ease), opacity 0.35s var(--ease), margin 0.35s var(--ease);
 }
 .mobile-submenu.is-open {
-  max-height: 360px; opacity: 1; overflow: visible;
-  margin-top: 0.3rem; margin-bottom: 0.3rem;
-  padding-top: 0.7rem;
-  border-top-color: var(--c-border);
+  max-height: 280px; opacity: 1; overflow: visible;
+  margin: 0.3rem 0 0.6rem;
 }
+
 .mobile-subitem {
-  font-size: 1.2rem; opacity: 0.7; font-weight: 300; color: var(--c-cream);
-  padding: 0.3rem 0; transition: opacity 0.2s, color 0.2s;
-  min-height: 40px; display: flex; align-items: center;
+  font-family: var(--f-display); font-size: 1.15rem; font-style: italic;
+  font-weight: 400; color: var(--c-ink-dim); opacity: 0.75;
+  text-decoration: none;
+  min-height: 42px; display: flex; align-items: center;
+  transition: color 0.25s;
 }
-.mobile-subitem:hover { opacity: 1; color: var(--c-gold); }
+.mobile-subitem:hover { color: var(--c-gold); opacity: 1; }
 .mobile-subitem:active { transform: scale(0.95); }
-.mobile-submenu-toggle {
-  display: flex; align-items: center; gap: 0.3em; cursor: pointer;
-  color: var(--c-cream);
-  background: none; border: none;
-  font-family: var(--f-display); font-size: 1.6rem; font-weight: 400;
-  padding: 0;
-  min-height: 48px;
+
+.menu-divider {
+  width: 40px; height: 1px;
+  background: var(--c-border);
+  margin: 1rem 0;
 }
-.mobile-arrow {
-  font-size: 0.6em; display: inline-block; transition: transform 0.35s var(--ease);
-  opacity: 0.45;
+
+.menu-link {
+  font-family: var(--f-mark); font-size: 0.7rem;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--c-ink-dim); text-decoration: none;
+  min-height: 44px; display: flex; align-items: center;
+  transition: color 0.25s;
 }
-.mobile-submenu-toggle.is-open .mobile-arrow { transform: rotate(180deg); opacity: 1; }
-.mobile-submenu-toggle.is-open { color: var(--c-gold); }
+.menu-link:hover { color: var(--c-gold); }
+
+.menu-cta {
+  margin-top: 0.8rem;
+  background: var(--c-gold); color: var(--c-bg);
+  font-family: var(--f-mark); font-size: 0.68rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.65em 2em; border-radius: 2px;
+  transition: background 0.3s;
+}
+.menu-cta:hover { background: var(--c-gold-bright); }
+
+.menu-bottom { margin-top: 2rem; display: flex; align-items: center; gap: 1rem; }
+
+.menu-icon-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid var(--c-border); background: none; cursor: pointer;
+  display: grid; place-items: center;
+  font-size: 0.85rem; color: var(--c-ink-dim);
+  transition: border-color 0.3s, color 0.3s;
+  text-decoration: none;
+}
+.menu-icon-btn:hover { border-color: var(--c-gold); color: var(--c-gold); }
+
+/* scroll lock */
+body.menu-open { overflow: hidden; }
 
 
 
@@ -405,38 +456,62 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
   <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
-    <nav class="mobile-menu" id="mobile-menu">
-    <a href="#" class="mobile-submenu-toggle">Escuela <span class="mobile-arrow">▾</span></a>
-    <div class="mobile-submenu">
-      <a href="escuela.html#talleres" class="mobile-subitem">Talleres</a>
-      <a href="escuela.html#docentes" class="mobile-subitem">Docentes</a>
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Menú principal">
+    <button class="menu-close" id="menu-close" aria-label="Cerrar menú">✕</button>
+    <div class="menu-logo">
+      <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="menu-logo-light" width="100" height="25">
+      <img src="assets/brand-logos/logo-blanco.png" alt="Mandrágora" class="menu-logo-dark" width="100" height="25">
     </div>
-    <a href="#" class="mobile-submenu-toggle">Sala <span class="mobile-arrow">▾</span></a>
-    <div class="mobile-submenu">
-      <a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a>
-      <a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a>
+
+    <div class="menu-group">
+      <button class="mobile-submenu-toggle" aria-expanded="false">Escuela <span class="mobile-arrow">▾</span></button>
+      <div class="mobile-submenu">
+        <a href="escuela.html#talleres" class="mobile-subitem">Talleres</a>
+        <a href="escuela.html#docentes" class="mobile-subitem">Docentes</a>
+      </div>
     </div>
-    <a href="#" class="mobile-submenu-toggle">Compa&ntilde;&iacute;a <span class="mobile-arrow">▾</span></a>
-    <div class="mobile-submenu">
-      <a href="compania.html#elenco" class="mobile-subitem">Elenco</a>
-      <a href="compania.html#obras" class="mobile-subitem">Obras</a>
+    <div class="menu-group">
+      <button class="mobile-submenu-toggle" aria-expanded="false">Sala <span class="mobile-arrow">▾</span></button>
+      <div class="mobile-submenu">
+        <a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a>
+        <a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a>
+      </div>
     </div>
-    <a href="#" class="mobile-submenu-toggle">Convenios <span class="mobile-arrow">▾</span></a>
-    <div class="mobile-submenu">
-      <a href="convenios.html" class="mobile-subitem">Convenios</a>
-      <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
-      <a href="atrapasuenos.html" class="mobile-subitem">Atrapasue&ntilde;os Recreaci&oacute;n</a>
-      <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
+    <div class="menu-group">
+      <button class="mobile-submenu-toggle" aria-expanded="false">Compa&ntilde;&iacute;a <span class="mobile-arrow">▾</span></button>
+      <div class="mobile-submenu">
+        <a href="compania.html#elenco" class="mobile-subitem">Elenco</a>
+        <a href="compania.html#obras" class="mobile-subitem">Obras</a>
+      </div>
     </div>
-    <a href="#" class="mobile-submenu-toggle">Nosotros <span class="mobile-arrow">▾</span></a>
-    <div class="mobile-submenu">
-      <a href="nosotros.html" class="mobile-subitem">Historia</a>
-      <a href="comunidad.html" class="mobile-subitem">Comunidad</a>
-      <a href="contacto.html" class="mobile-subitem">Contacto</a>
+    <div class="menu-group">
+      <button class="mobile-submenu-toggle" aria-expanded="false">Convenios <span class="mobile-arrow">▾</span></button>
+      <div class="mobile-submenu">
+        <a href="convenios.html" class="mobile-subitem">Convenios</a>
+        <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
+        <a href="atrapasuenos.html" class="mobile-subitem">Atrapasue&ntilde;os Recreaci&oacute;n</a>
+        <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
+      </div>
     </div>
-    <a href="agenda.html">Agenda</a>
-    <a href="noticias.html">Noticias</a>
-    <a href="galeria.html">Galer&iacute;a</a>
+    <div class="menu-group">
+      <button class="mobile-submenu-toggle" aria-expanded="false">Nosotros <span class="mobile-arrow">▾</span></button>
+      <div class="mobile-submenu">
+        <a href="nosotros.html" class="mobile-subitem">Historia</a>
+        <a href="comunidad.html" class="mobile-subitem">Comunidad</a>
+        <a href="contacto.html" class="mobile-subitem">Contacto</a>
+      </div>
+    </div>
+
+    <div class="menu-divider"></div>
+    <a href="agenda.html" class="menu-link">Agenda</a>
+    <a href="noticias.html" class="menu-link">Noticias</a>
+    <a href="galeria.html" class="menu-link">Galer&iacute;a</a>
+    <a href="contacto.html" class="menu-cta">Reservar</a>
+
+    <div class="menu-bottom">
+      <button class="menu-icon-btn" id="menu-theme-toggle" aria-label="Cambiar tema">☾</button>
+      <a href="tel:+59897052948" class="menu-icon-btn" aria-label="Llamar">☏</a>
+    </div>
   </nav>
 </header>
 
@@ -546,29 +621,38 @@ h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; letter-spacing
   toggle.textContent = html.getAttribute('data-theme') === 'dark' ? '\u263e' : '\u2600';
   toggle.addEventListener('click', function(){
     var isDark = html.getAttribute('data-theme') === 'dark';
-    if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '\u2600'; localStorage.setItem('mandragora-theme','light'); }
-    else { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; localStorage.setItem('mandragora-theme','dark'); }
+    var menuTT = document.getElementById('menu-theme-toggle');
+    if (isDark) { html.removeAttribute('data-theme'); toggle.textContent = '\u2600'; if (menuTT) menuTT.textContent = '\u2600'; localStorage.setItem('mandragora-theme','light'); }
+    else { html.setAttribute('data-theme','dark'); toggle.textContent = '\u263e'; if (menuTT) menuTT.textContent = '\u263e'; localStorage.setItem('mandragora-theme','dark'); }
   });
 
-  // hamburger
+  // hamburger + scroll lock
   var hamburger = document.getElementById('hamburger');
   var mobileMenu = document.getElementById('mobile-menu');
   hamburger.addEventListener('click', function(){
     var open = hamburger.classList.toggle('is-open');
     mobileMenu.classList.toggle('is-open');
     hamburger.setAttribute('aria-expanded', open);
+    document.body.classList.toggle('menu-open', open);
   });
+  // Cerrar menú por ✕ o click en links
+  function closeMenu() {
+    hamburger.classList.remove('is-open');
+    mobileMenu.classList.remove('is-open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('menu-open');
+  }
+  var menuClose = document.getElementById('menu-close');
+  if (menuClose) { menuClose.addEventListener('click', closeMenu); }
   mobileMenu.querySelectorAll('a').forEach(function(a){
-    a.addEventListener('click', function(){ if (a.classList.contains('mobile-submenu-toggle')) return; hamburger.classList.remove('is-open');
-      mobileMenu.classList.remove('is-open');
-      hamburger.setAttribute('aria-expanded', 'false');
-    });
+    a.addEventListener('click', closeMenu);
   });
   // mobile submenu accordion
   document.querySelectorAll('.mobile-submenu-toggle').forEach(function(toggle) {
     toggle.addEventListener('click', function(e) {
       e.preventDefault();
-      this.classList.toggle('is-open');
+      var isOpen = this.classList.toggle('is-open');
+      this.setAttribute('aria-expanded', isOpen);
       var sub = this.nextElementSibling;
       if (sub) sub.classList.toggle('is-open');
     });

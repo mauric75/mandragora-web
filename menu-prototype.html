@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mandragora — Menú Móvil (Prototipo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MANDRÁGORA — Design Tokens (idénticos a index.html)
+   ============================================================ */
+@font-face {
+  font-family: 'Schrifted'; src: url('assets/fonts/SFTSchriftedRoundTRIAL-Regular.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Schrifted'; src: url('assets/fonts/SFTSchriftedRoundTRIAL-Medium.ttf') format('truetype');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Schrifted'; src: url('assets/fonts/SFTSchriftedRoundTRIAL-Bold.ttf') format('truetype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
+:root {
+  --c-bg:        #FFFFFF;
+  --c-bg-soft:   #EEF1F7;
+  --c-blue:      #1D3D91;
+  --c-green:     #8ABE28;
+  --c-gold:      #CE9A47;
+  --c-gold-bright:#D4A84B;
+  --c-gold-dim:   rgba(206, 154, 71, 0.25);
+  --c-gold-faint: rgba(206, 154, 71, 0.10);
+  --c-ink:       #000000;
+  --c-ink-dim:   rgba(0, 0, 0, 0.65);
+  --c-ink-faint: rgba(0, 0, 0, 0.22);
+  --c-cream:     #000000;
+  --c-cream-dim: rgba(0, 0, 0, 0.65);
+  --c-cream-faint:rgba(0, 0, 0, 0.18);
+  --c-border:    rgba(0, 0, 0, 0.10);
+
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-mark:    'Schrifted', 'Cinzel', Georgia, serif;
+  --f-body:    'Schrifted', 'Jost', system-ui, -apple-system, sans-serif;
+
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme="dark"] {
+  --c-bg:        #0D1A3E;
+  --c-bg-soft:   #111E4A;
+  --c-gold-bright:#e0b85a;
+  --c-gold-dim:   rgba(206, 154, 71, 0.30);
+  --c-gold-faint: rgba(206, 154, 71, 0.12);
+  --c-ink:       #FFFFFF;
+  --c-ink-dim:   rgba(255, 255, 255, 0.65);
+  --c-ink-faint: rgba(255, 255, 255, 0.22);
+  --c-cream:     #FFFFFF;
+  --c-cream-dim: rgba(255, 255, 255, 0.65);
+  --c-cream-faint:rgba(255, 255, 255, 0.22);
+  --c-border:    rgba(255, 255, 255, 0.10);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { 
+  background: var(--c-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--f-body);
+  color: var(--c-cream);
+  background: var(--c-bg);
+  line-height: 1.65;
+  overflow-x: hidden;
+  transition: background 0.6s var(--ease), color 0.4s var(--ease);
+}
+
+/* ============================================================
+   DEMO PAGE CONTENT (para poder scrollear y probar)
+   ============================================================ */
+.demo-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 1.5rem;
+  background: color-mix(in srgb, var(--c-bg) 96%, transparent);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--c-border);
+}
+.demo-nav__logo img { height: 32px; width: auto; display: block; }
+[data-theme="dark"] .demo-nav__logo-light { display: none; }
+[data-theme="dark"] .demo-nav__logo-dark { display: block; }
+:not([data-theme="dark"]) .demo-nav__logo-dark { display: none; }
+:not([data-theme="dark"]) .demo-nav__logo-light { display: block; }
+
+.demo-content {
+  padding: 6rem 1.5rem 4rem;
+  max-width: 640px; margin: 0 auto;
+}
+.demo-content h1 {
+  font-family: var(--f-display);
+  font-size: clamp(2rem, 8vw, 3.6rem);
+  color: var(--c-cream);
+  margin-bottom: 1rem;
+}
+.demo-content p {
+  color: var(--c-cream-dim);
+  margin-bottom: 1rem;
+}
+.demo-content .card {
+  background: var(--c-bg-soft);
+  border: 1px solid var(--c-border);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ============================================================
+   HAMBURGER BUTTON
+   ============================================================ */
+.hamburger {
+  display: flex; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 8px;
+  min-width: 44px; min-height: 44px; z-index: 102;
+  opacity: 0.8; color: var(--c-ink);
+}
+.hamburger span {
+  display: block; width: 24px; height: 1.5px;
+  background: currentColor;
+  transition: transform 0.3s var(--ease), opacity 0.2s;
+}
+.hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.is-open span:nth-child(2) { opacity: 0; }
+.hamburger.is-open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+/* ============================================================
+   BACKDROP
+   ============================================================ */
+.menu-backdrop {
+  position: fixed; inset: 0; z-index: 103;
+  background: rgba(0,0,0,0.5);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s var(--ease);
+}
+[data-theme="dark"] .menu-backdrop { background: rgba(0,0,0,0.7); }
+.menu-backdrop.is-visible { opacity: 1; pointer-events: auto; }
+
+/* ============================================================
+   MENU PANEL (slide-in from right)
+   ============================================================ */
+.menu-panel {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 104;
+  width: 88vw; max-width: 380px;
+  background: var(--c-bg);
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.4s var(--ease);
+  box-shadow: -8px 0 40px rgba(0,0,0,0.25);
+  overflow: hidden; /* contiene los slides internos */
+}
+.menu-panel.is-open { transform: translateX(0); }
+
+/* ---- HEADER ---- */
+.menu-panel__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--c-border);
+  flex-shrink: 0;
+}
+.menu-panel__header img { height: 30px; width: auto; display: block; }
+[data-theme="dark"] .menu-panel__logo-light { display: none; }
+[data-theme="dark"] .menu-panel__logo-dark { display: block; }
+:not([data-theme="dark"]) .menu-panel__logo-dark { display: none; }
+:not([data-theme="dark"]) .menu-panel__logo-light { display: block; }
+
+.menu-panel__close {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: none; border: 1px solid var(--c-border); cursor: pointer;
+  display: grid; place-items: center; font-size: 1.1rem;
+  color: var(--c-ink-dim);
+  transition: border-color 0.3s, color 0.3s;
+}
+.menu-panel__close:hover { border-color: var(--c-gold); color: var(--c-gold); }
+
+/* ---- BACK BUTTON ---- */
+.menu-panel__back {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: none; border: none; cursor: pointer;
+  font-family: var(--f-mark); font-size: 0.68rem;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c-gold); padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--c-border);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+.menu-panel__back.is-visible { opacity: 1; pointer-events: auto; }
+.menu-panel__back:active { color: var(--c-gold-bright); }
+
+/* ---- SLIDES CONTAINER ---- */
+.menu-slides {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---- SLIDE (main + sub) ---- */
+.menu-slide {
+  position: absolute; top: 0; left: 0; right: 0; min-height: 100%;
+  display: flex; flex-direction: column;
+  padding: 0.5rem 0 1rem;
+  transition: transform 0.35s var(--ease), opacity 0.35s var(--ease);
+  opacity: 0; pointer-events: none;
+  background: var(--c-bg);
+}
+.menu-slide--main { 
+  position: relative; /* main slide es el default visible */
+  opacity: 1; pointer-events: auto;
+  transform: translateX(0);
+}
+.menu-slide--main.is-hidden {
+  transform: translateX(-30%);
+  opacity: 0; pointer-events: none;
+}
+.menu-slide--sub {
+  transform: translateX(100%);
+}
+.menu-slide--sub.is-visible {
+  transform: translateX(0);
+  opacity: 1; pointer-events: auto;
+}
+
+/* ---- NAV ITEMS ---- */
+.menu-nav-item {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 0.85rem 1.5rem;
+  background: none; border: none; cursor: pointer;
+  font-family: var(--f-display); font-size: 1.35rem; font-weight: 400;
+  color: var(--c-cream); text-align: left;
+  min-height: 52px;
+  transition: color 0.2s, background 0.2s;
+  text-decoration: none;
+}
+.menu-nav-item:hover, .menu-nav-item:active { color: var(--c-gold); }
+.menu-nav-item:active { background: var(--c-gold-faint); }
+
+.menu-nav-item__arrow {
+  font-size: 0.8rem; opacity: 0.4;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.menu-nav-item:hover .menu-nav-item__arrow { opacity: 1; transform: translateX(2px); }
+
+/* submenu items (smaller, indented) */
+.menu-sub-item {
+  display: flex; align-items: center;
+  width: 100%; padding: 0.7rem 1.5rem 0.7rem 2.2rem;
+  background: none; border: none; cursor: pointer;
+  font-family: var(--f-display); font-size: 1.15rem; font-weight: 400; font-style: italic;
+  color: var(--c-cream-dim); text-align: left;
+  min-height: 48px;
+  transition: color 0.2s, background 0.2s;
+  text-decoration: none;
+}
+.menu-sub-item:hover, .menu-sub-item:active { color: var(--c-gold); }
+.menu-sub-item:active { background: var(--c-gold-faint); }
+
+/* ---- DIVIDER ---- */
+.menu-divider {
+  height: 1px; background: var(--c-border);
+  margin: 0.5rem 1.5rem;
+}
+
+/* ---- DIRECT LINKS ---- */
+.menu-direct-link {
+  display: flex; align-items: center;
+  width: 100%; padding: 0.85rem 1.5rem;
+  font-family: var(--f-mark); font-size: 0.72rem;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--c-cream-dim); text-decoration: none;
+  min-height: 48px;
+  transition: color 0.2s, background 0.2s;
+}
+.menu-direct-link:hover, .menu-direct-link:active { color: var(--c-gold); }
+.menu-direct-link:active { background: var(--c-gold-faint); }
+
+/* ---- CTA BUTTON ---- */
+.menu-cta {
+  display: flex; align-items: center; justify-content: center;
+  margin: 0.5rem 1.5rem; padding: 0.75rem;
+  background: var(--c-gold); color: #0D1A3E;
+  font-family: var(--f-mark); font-size: 0.72rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  text-decoration: none; border-radius: 2px;
+  min-height: 44px;
+  transition: background 0.3s, transform 0.2s;
+}
+.menu-cta:hover { background: var(--c-gold-bright); }
+.menu-cta:active { transform: scale(0.98); }
+
+/* ---- FOOTER ---- */
+.menu-panel__footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--c-border);
+  flex-shrink: 0;
+}
+.menu-footer-action {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: none; border: 1px solid var(--c-border); cursor: pointer;
+  display: grid; place-items: center; font-size: 1rem;
+  color: var(--c-ink-dim);
+  transition: border-color 0.3s, color 0.3s;
+}
+.menu-footer-action:hover { border-color: var(--c-gold); color: var(--c-gold); }
+.menu-footer-text {
+  font-size: 0.7rem; color: var(--c-ink-faint);
+  font-family: var(--f-mark); letter-spacing: 0.1em;
+}
+
+/* ---- BODY LOCK ---- */
+body.menu-locked { overflow: hidden; }
+
+/* ---- SUBMENU HEADER TITLE ---- */
+.menu-slide__title {
+  font-family: var(--f-mark); font-size: 0.66rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--c-gold); padding: 0.5rem 1.5rem 0.25rem;
+}
+</style>
+</head>
+<body>
+
+<!-- DEMO NAVBAR -->
+<header class="demo-nav">
+  <a href="#" class="demo-nav__logo">
+    <img class="demo-nav__logo-light" src="assets/brand-logos/logo-negro.png" alt="Mandragora" width="120" height="32">
+    <img class="demo-nav__logo-dark" src="assets/brand-logos/logo-blanco.png" alt="Mandragora" width="120" height="32">
+  </a>
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- DEMO CONTENT -->
+<main class="demo-content">
+  <h1>Mandragora</h1>
+  <p>Prototipo del nuevo menú móvil. Tocá la hamburguesa para abrirlo.</p>
+  <div class="card"><p>Este es contenido de ejemplo para simular scroll. El menú bloquea el scroll del body al abrirse.</p></div>
+  <div class="card"><p style="color:var(--c-gold)">☀ / ☾ El toggle de tema está dentro del menú, en el footer.</p></div>
+  <div class="card"><p>Las secciones con ▸ abren un submenú con slide lateral y botón ← para volver.</p></div>
+  <div class="card"><p>El backdrop oscuro se puede tocar para cerrar. También podés deslizar el menú hacia la derecha para cerrarlo.</p></div>
+</main>
+
+<!-- ============================================================
+     BACKDROP
+     ============================================================ -->
+<div class="menu-backdrop" id="menu-backdrop" aria-hidden="true"></div>
+
+<!-- ============================================================
+     MENU PANEL
+     ============================================================ -->
+<aside class="menu-panel" id="menu-panel" aria-label="Menú principal" aria-hidden="true">
+  
+  <!-- HEADER -->
+  <div class="menu-panel__header">
+    <img class="menu-panel__logo-light" src="assets/brand-logos/logo-negro.png" alt="Mandragora" width="90" height="23">
+    <img class="menu-panel__logo-dark" src="assets/brand-logos/logo-blanco.png" alt="Mandragora" width="90" height="23">
+    <button class="menu-panel__close" id="menu-close-btn" aria-label="Cerrar menú">✕</button>
+  </div>
+
+  <!-- BACK BUTTON -->
+  <button class="menu-panel__back" id="menu-back-btn">
+    <span aria-hidden="true">←</span> Volver
+  </button>
+
+  <!-- SLIDES CONTAINER -->
+  <div class="menu-slides" id="menu-slides">
+    
+    <!-- MAIN SLIDE -->
+    <div class="menu-slide menu-slide--main" id="slide-main">
+      <button class="menu-nav-item" data-sub="escuela">
+        Escuela <span class="menu-nav-item__arrow">▸</span>
+      </button>
+      <button class="menu-nav-item" data-sub="sala">
+        Sala <span class="menu-nav-item__arrow">▸</span>
+      </button>
+      <button class="menu-nav-item" data-sub="compania">
+        Compañía <span class="menu-nav-item__arrow">▸</span>
+      </button>
+      <button class="menu-nav-item" data-sub="convenios">
+        Convenios <span class="menu-nav-item__arrow">▸</span>
+      </button>
+      <button class="menu-nav-item" data-sub="nosotros">
+        Nosotros <span class="menu-nav-item__arrow">▸</span>
+      </button>
+      
+      <div class="menu-divider"></div>
+      
+      <a href="agenda.html" class="menu-direct-link">Agenda</a>
+      <a href="noticias.html" class="menu-direct-link">Noticias</a>
+      <a href="galeria.html" class="menu-direct-link">Galería</a>
+      
+      <a href="reservar.html" class="menu-cta">Reservar</a>
+    </div>
+
+    <!-- ESCUELA SUB-SLIDE -->
+    <div class="menu-slide menu-slide--sub" id="slide-escuela">
+      <div class="menu-slide__title">Escuela de Artes</div>
+      <a href="escuela.html" class="menu-sub-item">Ver Escuela</a>
+      <a href="escuela.html#talleres" class="menu-sub-item">Talleres</a>
+      <a href="escuela.html#docentes" class="menu-sub-item">Docentes</a>
+    </div>
+
+    <!-- SALA SUB-SLIDE -->
+    <div class="menu-slide menu-slide--sub" id="slide-sala">
+      <div class="menu-slide__title">Sala &amp; Eventos</div>
+      <a href="sala.html" class="menu-sub-item">Ver Sala</a>
+      <a href="sala.html#cartelera" class="menu-sub-item">Cartelera</a>
+      <a href="sala.html#alquiler" class="menu-sub-item">Alquiler</a>
+    </div>
+
+    <!-- COMPAÑIA SUB-SLIDE -->
+    <div class="menu-slide menu-slide--sub" id="slide-compania">
+      <div class="menu-slide__title">Compañía Teatral</div>
+      <a href="compania.html" class="menu-sub-item">Ver Compañía</a>
+      <a href="compania.html#elenco" class="menu-sub-item">Elenco</a>
+      <a href="compania.html#obras" class="menu-sub-item">Obras</a>
+    </div>
+
+    <!-- CONVENIOS SUB-SLIDE -->
+    <div class="menu-slide menu-slide--sub" id="slide-convenios">
+      <div class="menu-slide__title">Convenios</div>
+      <a href="convenios.html" class="menu-sub-item">Ver Convenios</a>
+      <a href="cine-viajero.html" class="menu-sub-item">Cine Viajero</a>
+      <a href="atrapasuenos.html" class="menu-sub-item">Atrapasueños Recreación</a>
+      <a href="convenio-sunca.html" class="menu-sub-item">SUNCA</a>
+    </div>
+
+    <!-- NOSOTROS SUB-SLIDE -->
+    <div class="menu-slide menu-slide--sub" id="slide-nosotros">
+      <div class="menu-slide__title">Nosotros</div>
+      <a href="nosotros.html" class="menu-sub-item">Historia</a>
+      <a href="comunidad.html" class="menu-sub-item">Comunidad</a>
+      <a href="contacto.html" class="menu-sub-item">Contacto</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="menu-panel__footer">
+    <button class="menu-footer-action" id="menu-theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">
+      <span id="theme-icon">☾</span>
+    </button>
+    <span class="menu-footer-text">Mandragora</span>
+    <a href="contacto.html" class="menu-footer-action" aria-label="Contacto" title="Contacto">
+      <span>☏</span>
+    </a>
+  </div>
+</aside>
+
+
+<script>
+(function(){
+  "use strict";
+
+  var hamburger   = document.getElementById('hamburger');
+  var backdrop    = document.getElementById('menu-backdrop');
+  var panel       = document.getElementById('menu-panel');
+  var closeBtn    = document.getElementById('menu-close-btn');
+  var backBtn     = document.getElementById('menu-back-btn');
+  var slides      = document.getElementById('menu-slides');
+  var mainSlide   = document.getElementById('slide-main');
+  var body        = document.body;
+  var html        = document.documentElement;
+
+  var currentSub  = null;
+  var touchStartX = 0;
+  var touchCurrentX = 0;
+  var isDragging  = false;
+
+  /* ========== OPEN ========== */
+  function openMenu() {
+    hamburger.classList.add('is-open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    backdrop.classList.add('is-visible');
+    panel.classList.add('is-open');
+    panel.setAttribute('aria-hidden', 'false');
+    body.classList.add('menu-locked');
+    // scroll submenus to top
+    var subs = slides.querySelectorAll('.menu-slide--sub');
+    for (var i = 0; i < subs.length; i++) { subs[i].scrollTop = 0; }
+    slides.scrollTop = 0;
+  }
+
+  /* ========== CLOSE ========== */
+  function closeMenu() {
+    hamburger.classList.remove('is-open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    backdrop.classList.remove('is-visible');
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
+    body.classList.remove('menu-locked');
+    // reset to main slide
+    goToMain();
+  }
+
+  /* ========== SUBMENU NAVIGATION ========== */
+  function goToSub(name) {
+    currentSub = name;
+    mainSlide.classList.add('is-hidden');
+    var subSlide = document.getElementById('slide-' + name);
+    if (subSlide) { subSlide.classList.add('is-visible'); subSlide.scrollTop = 0; }
+    backBtn.classList.add('is-visible');
+  }
+
+  function goToMain() {
+    currentSub = null;
+    mainSlide.classList.remove('is-hidden');
+    var subs = slides.querySelectorAll('.menu-slide--sub');
+    for (var i = 0; i < subs.length; i++) { subs[i].classList.remove('is-visible'); }
+    backBtn.classList.remove('is-visible');
+  }
+
+  /* ========== EVENTS ========== */
+  hamburger.addEventListener('click', function(){
+    if (hamburger.classList.contains('is-open')) { closeMenu(); }
+    else { openMenu(); }
+  });
+
+  backdrop.addEventListener('click', closeMenu);
+  closeBtn.addEventListener('click', closeMenu);
+  backBtn.addEventListener('click', goToMain);
+
+  // Submenu triggers
+  slides.querySelectorAll('[data-sub]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      var name = this.getAttribute('data-sub');
+      if (name) goToSub(name);
+    });
+  });
+
+  // Close on sub-item link click
+  panel.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      // Small delay so the navigation triggers before closing
+      setTimeout(closeMenu, 100);
+    });
+  });
+
+  // Close on ESC
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && panel.classList.contains('is-open')) {
+      if (currentSub) { goToMain(); }
+      else { closeMenu(); }
+    }
+  });
+
+  /* ========== SWIPE TO CLOSE (panel) ========== */
+  panel.addEventListener('touchstart', function(e){
+    if (e.target.closest('button') || e.target.closest('a')) return;
+    touchStartX = e.touches[0].clientX;
+    isDragging = true;
+    panel.style.transition = 'none';
+  }, {passive: true});
+
+  panel.addEventListener('touchmove', function(e){
+    if (!isDragging) return;
+    touchCurrentX = e.touches[0].clientX;
+    var dx = touchCurrentX - touchStartX;
+    if (dx > 0) { // only rightward swipe
+      panel.style.transform = 'translateX(' + dx + 'px)';
+    }
+  }, {passive: true});
+
+  panel.addEventListener('touchend', function(){
+    if (!isDragging) return;
+    isDragging = false;
+    panel.style.transition = 'transform 0.4s var(--ease)';
+    var dx = touchCurrentX - touchStartX;
+    if (dx > 80) { closeMenu(); }
+    panel.style.transform = '';
+  });
+
+  /* ========== SWIPE TO CLOSE (backdrop) ========== */
+  backdrop.addEventListener('touchstart', function(e){
+    closeMenu();
+  });
+
+  /* ========== THEME TOGGLE ========== */
+  var themeToggle = document.getElementById('menu-theme-toggle');
+  var themeIcon   = document.getElementById('theme-icon');
+
+  // init icon
+  themeIcon.textContent = html.getAttribute('data-theme') === 'dark' ? '\u263e' : '\u2600';
+
+  themeToggle.addEventListener('click', function(){
+    var isDark = html.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      html.removeAttribute('data-theme');
+      themeIcon.textContent = '\u2600';
+      localStorage.setItem('mandragora-theme', 'light');
+    } else {
+      html.setAttribute('data-theme', 'dark');
+      themeIcon.textContent = '\u263e';
+      localStorage.setItem('mandragora-theme', 'dark');
+    }
+  });
+
+  console.log('Mandragora v2 — Mobile menu prototype ready');
+})();
+</script>
+</body>
+</html>

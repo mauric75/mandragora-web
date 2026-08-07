@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mandragora — Menú Móvil · Variaciones</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== TOKENS ===== */
+@font-face{font-family:'Schrifted';src:url('assets/fonts/SFTSchriftedRoundTRIAL-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Schrifted';src:url('assets/fonts/SFTSchriftedRoundTRIAL-Medium.ttf') format('truetype');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Schrifted';src:url('assets/fonts/SFTSchriftedRoundTRIAL-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+
+:root{
+  --bg:#fff;--bg-soft:#EEF1F7;--gold:#CE9A47;--gold-bright:#D4A84B;--gold-dim:rgba(206,154,71,.25);--gold-faint:rgba(206,154,71,.10);
+  --ink:#000;--ink-dim:rgba(0,0,0,.55);--ink-faint:rgba(0,0,0,.18);--border:rgba(0,0,0,.08);
+  --ff-display:'Cormorant Garamond',Georgia,serif;--ff-mark:'Schrifted','Cinzel',Georgia,serif;--ff-body:'Schrifted','Jost',system-ui,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+[data-theme="dark"]{
+  --bg:#0D1A3E;--bg-soft:#111E4A;--gold-bright:#e0b85a;--gold-dim:rgba(206,154,71,.30);--gold-faint:rgba(206,154,71,.12);
+  --ink:#fff;--ink-dim:rgba(255,255,255,.55);--ink-faint:rgba(255,255,255,.18);--border:rgba(255,255,255,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);-webkit-font-smoothing:antialiased}
+body{font-family:var(--ff-body);color:var(--ink);background:var(--bg);line-height:1.65;overflow-x:hidden;transition:background .6s var(--ease)}
+img{max-width:100%;display:block}
+
+/* ===== LAYOUT ===== */
+.toolbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;gap:.6rem;
+  padding:.6rem 1rem;background:var(--bg);border-bottom:1px solid var(--border);
+}
+.toolbar img{height:28px;width:auto}
+[data-theme="dark"] .tb-logo-light,[data-theme="dark"] .tb-logo-dark{display:none}
+:not([data-theme="dark"]) .tb-logo-dark{display:none}
+.tb-actions{display:flex;align-items:center;gap:.3rem}
+.tb-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:none;cursor:pointer;display:grid;place-items:center;font-size:.95rem;color:var(--ink-dim);transition:border-color .3s,color .3s}
+.tb-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+.workspace{display:flex;flex-direction:column;align-items:center;padding:5rem 0 3rem;gap:2rem}
+
+/* ===== VARIATION SELECTOR ===== */
+.variation-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.variation-tab{padding:.55rem 1rem;border:none;background:var(--bg-soft);cursor:pointer;font-family:var(--ff-body);font-size:.75rem;color:var(--ink-dim);transition:all .25s}
+.variation-tab.active{background:var(--gold);color:var(--bg);font-weight:500}
+.variation-tab:not(.active):hover{color:var(--ink);background:var(--border)}
+
+/* ===== PHONE FRAME ===== */
+.phone-frame{width:375px;background:var(--bg);border:1px solid var(--border);border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.15);position:relative}
+.phone-notch{height:44px;background:var(--bg);display:flex;align-items:flex-end;justify-content:center;padding-bottom:.5rem;font-size:.65rem;color:var(--ink-faint);font-family:var(--ff-body);letter-spacing:.05em}
+.phone-screen{min-height:600px;position:relative}
+
+/* Fake nav bar */
+.fake-nav{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1.2rem;border-bottom:1px solid var(--border)}
+.fake-nav img{height:26px;width:auto}
+.fake-hamb{display:flex;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:6px;min-width:40px;min-height:40px}
+.fake-hamb span{display:block;width:22px;height:1.5px;background:var(--ink);transition:.3s var(--ease)}
+.fake-hamb.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.fake-hamb.open span:nth-child(2){opacity:0}
+.fake-hamb.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+
+/* ===== MENU OVERLAY ===== */
+.menu-overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .3s var(--ease)}
+.menu-overlay.hidden{opacity:0;pointer-events:none}
+
+/* --- VARIATION A: Elegante --- */
+.var-a .menu-overlay{background:rgba(255,255,255,.96)}
+[data-theme="dark"] .var-a .menu-overlay{background:rgba(9,16,34,.97)}
+.var-a .menu-logo{margin-bottom:1.8rem;opacity:.75}
+.var-a .menu-logo img{height:32px}
+.var-a .menu-group{display:flex;flex-direction:column;align-items:center}
+.var-a .menu-item{font-family:var(--ff-display);font-size:1.55rem;font-weight:400;color:var(--ink);min-height:50px;display:flex;align-items:center;transition:color .25s}
+.var-a .menu-item--sub{font-size:1.15rem;font-style:italic;color:var(--ink-dim);min-height:42px;opacity:.75}
+.var-a .menu-toggle{font-family:var(--ff-display);font-size:1.55rem;font-weight:400;background:none;border:none;color:var(--ink);cursor:pointer;min-height:50px;display:flex;align-items:center;gap:.3em;transition:color .25s}
+.var-a .menu-toggle:hover,.var-a .menu-item:hover{color:var(--gold)}
+.var-a .menu-arrow{font-size:.55em;opacity:.35;transition:transform .3s var(--ease)}
+.var-a .menu-toggle.open .menu-arrow{transform:rotate(180deg);opacity:.8}
+.var-a .submenu{display:flex;flex-direction:column;align-items:center;gap:.25rem;max-height:0;overflow:hidden;opacity:0;transition:max-height .45s var(--ease),opacity .35s var(--ease),margin .35s var(--ease)}
+.var-a .submenu.open{max-height:240px;opacity:1;margin:.3rem 0 .6rem}
+.var-a .menu-divider{width:40px;height:1px;background:var(--border);margin:1rem 0}
+.var-a .menu-link{font-family:var(--ff-mark);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-dim);text-decoration:none;min-height:44px;display:flex;align-items:center;transition:color .25s}
+.var-a .menu-link:hover{color:var(--gold)}
+.var-a .menu-cta{margin-top:.8rem;background:var(--gold);color:var(--bg);font-family:var(--ff-mark);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:.65em 2em;border-radius:2px;transition:background .3s}
+.var-a .menu-cta:hover{background:var(--gold-bright)}
+.var-a .menu-bottom{margin-top:2rem;display:flex;align-items:center;gap:1rem}
+.var-a .menu-icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:none;cursor:pointer;display:grid;place-items:center;font-size:.85rem;color:var(--ink-dim);transition:border-color .3s,color .3s}
+.var-a .menu-icon-btn:hover{border-color:var(--gold);color:var(--gold)}
+.var-a .menu-close{position:absolute;top:1rem;right:1rem;width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:none;cursor:pointer;display:grid;place-items:center;font-size:1rem;color:var(--ink-dim);transition:border-color .3s,color .3s}
+.var-a .menu-close:hover{border-color:var(--gold);color:var(--gold)}
+
+/* --- VARIATION B: Dramático --- */
+.var-b .menu-overlay{background:rgba(5,7,10,.96)}
+.var-b .menu-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 40% at 50% 50%,rgba(206,154,71,.06),transparent 70%);pointer-events:none}
+.var-b .menu-logo{margin-bottom:2.5rem;position:relative}
+.var-b .menu-logo::after{content:'';position:absolute;bottom:-1rem;left:50%;transform:translateX(-50%);width:60px;height:1px;background:var(--gold-dim)}
+.var-b .menu-logo img{height:28px;filter:brightness(0) invert(1)}
+.var-b .menu-group{display:flex;flex-direction:column;align-items:center}
+.var-b .menu-item{font-family:var(--ff-display);font-size:1.8rem;font-weight:300;color:rgba(255,255,255,.85);min-height:54px;display:flex;align-items:center;letter-spacing:.02em;transition:color .35s}
+.var-b .menu-item--sub{font-size:1.2rem;font-weight:300;color:rgba(255,255,255,.5);min-height:44px}
+.var-b .menu-toggle{font-family:var(--ff-display);font-size:1.8rem;font-weight:300;letter-spacing:.02em;background:none;border:none;color:rgba(255,255,255,.85);cursor:pointer;min-height:54px;display:flex;align-items:center;gap:.3em;transition:color .35s}
+.var-b .menu-toggle:hover,.var-b .menu-item:hover{color:var(--gold-bright)}
+.var-b .menu-arrow{font-size:.5em;opacity:.3;transition:transform .4s var(--ease),opacity .3s}
+.var-b .menu-toggle.open .menu-arrow{transform:rotate(180deg);opacity:.7}
+.var-b .menu-toggle.open{color:var(--gold-bright)}
+.var-b .submenu{display:flex;flex-direction:column;align-items:center;gap:.2rem;max-height:0;overflow:hidden;opacity:0;transition:max-height .5s var(--ease),opacity .4s var(--ease)}
+.var-b .submenu.open{max-height:240px;opacity:1;margin:.4rem 0 .8rem}
+.var-b .menu-divider{width:50px;height:1px;background:rgba(255,255,255,.1);margin:1.2rem 0}
+.var-b .menu-link{font-family:var(--ff-mark);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);text-decoration:none;min-height:46px;display:flex;align-items:center;transition:color .3s,letter-spacing .3s}
+.var-b .menu-link:hover{color:var(--gold-bright);letter-spacing:.24em}
+.var-b .menu-cta{margin-top:1.2rem;background:transparent;color:var(--gold);border:1px solid var(--gold-dim);font-family:var(--ff-mark);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:.7em 2.2em;border-radius:2px;transition:all .35s}
+.var-b .menu-cta:hover{background:var(--gold);color:#0a0e16;border-color:var(--gold)}
+.var-b .menu-bottom{margin-top:2.5rem;display:flex;align-items:center;gap:1.2rem}
+.var-b .menu-icon-btn{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:none;cursor:pointer;display:grid;place-items:center;font-size:.9rem;color:rgba(255,255,255,.35);transition:all .35s}
+.var-b .menu-icon-btn:hover{border-color:var(--gold-dim);color:var(--gold-bright)}
+.var-b .menu-close{position:absolute;top:1.2rem;right:1.2rem;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:none;cursor:pointer;display:grid;place-items:center;font-size:1rem;color:rgba(255,255,255,.4);transition:all .3s}
+.var-b .menu-close:hover{border-color:var(--gold-dim);color:var(--gold-bright)}
+
+/* --- VARIATION C: Cálido / Cartelera --- */
+.var-c .menu-overlay{background:#f6f1e7}
+.var-c .menu-overlay::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;opacity:.03;pointer-events:none;mix-blend-mode:multiply}
+.var-c .menu-logo{margin-bottom:1.5rem}
+.var-c .menu-logo img{height:30px;filter:brightness(.15)}
+.var-c .menu-group{display:flex;flex-direction:column;align-items:center}
+.var-c .menu-item{font-family:var(--ff-display);font-size:1.5rem;font-weight:500;color:#2a2115;min-height:48px;display:flex;align-items:center;transition:color .25s}
+.var-c .menu-item--sub{font-size:1.1rem;font-weight:400;font-style:italic;color:rgba(42,33,21,.55);min-height:40px}
+.var-c .menu-toggle{font-family:var(--ff-display);font-size:1.5rem;font-weight:500;background:none;border:none;color:#2a2115;cursor:pointer;min-height:48px;display:flex;align-items:center;gap:.3em;transition:color .25s}
+.var-c .menu-toggle:hover,.var-c .menu-item:hover{color:#8f1f1f}
+.var-c .menu-arrow{font-size:.55em;opacity:.35}
+.var-c .menu-toggle.open .menu-arrow{transform:rotate(180deg);opacity:.7}
+.var-c .menu-toggle.open{color:#8f1f1f}
+.var-c .submenu{display:flex;flex-direction:column;align-items:center;gap:.15rem;max-height:0;overflow:hidden;opacity:0;transition:max-height .45s var(--ease),opacity .35s var(--ease)}
+.var-c .submenu.open{max-height:240px;opacity:1;margin:.25rem 0 .5rem}
+.var-c .menu-divider{width:36px;height:1px;background:rgba(42,33,21,.12);margin:.8rem 0}
+.var-c .menu-link{font-family:var(--ff-mark);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(42,33,21,.5);text-decoration:none;min-height:42px;display:flex;align-items:center;transition:color .25s}
+.var-c .menu-link:hover{color:#8f1f1f}
+.var-c .menu-cta{margin-top:.6rem;background:#8f1f1f;color:#f6f1e7;font-family:var(--ff-mark);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:.6em 1.8em;border-radius:2px;transition:background .3s}
+.var-c .menu-cta:hover{background:#a82424}
+.var-c .menu-bottom{margin-top:1.5rem;display:flex;align-items:center;gap:.8rem}
+.var-c .menu-icon-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(42,33,21,.15);background:none;cursor:pointer;display:grid;place-items:center;font-size:.8rem;color:rgba(42,33,21,.4);transition:border-color .3s,color .3s}
+.var-c .menu-icon-btn:hover{border-color:rgba(143,31,31,.3);color:#8f1f1f}
+.var-c .menu-close{position:absolute;top:.8rem;right:.8rem;width:36px;height:36px;border-radius:50%;border:1px solid rgba(42,33,21,.15);background:none;cursor:pointer;display:grid;place-items:center;font-size:.9rem;color:rgba(42,33,21,.4);transition:border-color .3s,color .3s}
+.var-c .menu-close:hover{border-color:rgba(143,31,31,.3);color:#8f1f1f}
+
+/* ===== SHARED ===== */
+.hidden{display:none}
+.label{font-family:var(--ff-mark);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.4rem;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <img class="tb-logo-light" src="assets/brand-logos/logo-negro.png" alt="Mandragora" width="90" height="23">
+  <img class="tb-logo-dark" src="assets/brand-logos/logo-blanco.png" alt="Mandragora" width="90" height="23">
+  <div class="tb-actions">
+    <button class="tb-btn" id="tb-theme" title="Cambiar tema">☾</button>
+  </div>
+</div>
+
+<div class="workspace">
+  
+  <div class="variation-tabs">
+    <button class="variation-tab active" data-var="a">A · Elegante</button>
+    <button class="variation-tab" data-var="b">B · Dramático</button>
+    <button class="variation-tab" data-var="c">C · Cálido</button>
+  </div>
+
+  <!-- VARIATION A: Elegante -->
+  <div class="phone-frame var-a" id="var-a">
+    <div class="phone-notch">Mandragora</div>
+    <div class="phone-screen">
+      <div class="menu-overlay">
+        <button class="menu-close" onclick="this.closest('.menu-overlay').classList.add('hidden')">✕</button>
+        <div class="menu-logo"><img src="assets/brand-logos/logo-negro.png" alt="Mandragora" width="100" height="25"></div>
+        
+        <div class="menu-group">
+          <button class="menu-toggle open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Escuela <span class="menu-arrow">▾</span></button>
+          <div class="submenu open">
+            <a href="#" class="menu-item menu-item--sub">Talleres</a>
+            <a href="#" class="menu-item menu-item--sub">Docentes</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Sala <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Cartelera</a>
+            <a href="#" class="menu-item menu-item--sub">Alquiler</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Compañía <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Elenco</a>
+            <a href="#" class="menu-item menu-item--sub">Obras</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Convenios <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Cine Viajero</a>
+            <a href="#" class="menu-item menu-item--sub">Atrapasueños</a>
+            <a href="#" class="menu-item menu-item--sub">SUNCA</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Nosotros <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Historia</a>
+            <a href="#" class="menu-item menu-item--sub">Comunidad</a>
+            <a href="#" class="menu-item menu-item--sub">Contacto</a>
+          </div>
+        </div>
+        
+        <div class="menu-divider"></div>
+        <a href="#" class="menu-link">Agenda</a>
+        <a href="#" class="menu-link">Noticias</a>
+        <a href="#" class="menu-link">Galería</a>
+        <a href="#" class="menu-cta">Reservar</a>
+        
+        <div class="menu-bottom">
+          <button class="menu-icon-btn" onclick="toggleTheme()" title="Tema">☾</button>
+          <a href="#" class="menu-icon-btn" title="Contacto">☏</a>
+        </div>
+      </div>
+    </div>
+    <div class="label" style="margin:.7rem 0">A — Elegante</div>
+  </div>
+
+  <!-- VARIATION B: Dramático (siempre dark) -->
+  <div class="phone-frame var-b hidden" id="var-b" style="background:#0a0e16">
+    <div class="phone-notch" style="background:#0a0e16;color:rgba(255,255,255,.3)">Mandragora</div>
+    <div class="phone-screen" style="background:#0a0e16">
+      <div class="menu-overlay">
+        <button class="menu-close" onclick="this.closest('.menu-overlay').classList.add('hidden')">✕</button>
+        <div class="menu-logo"><img src="assets/brand-logos/logo-blanco.png" alt="Mandragora" width="100" height="25"></div>
+        
+        <div class="menu-group">
+          <button class="menu-toggle open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Escuela <span class="menu-arrow">▾</span></button>
+          <div class="submenu open">
+            <a href="#" class="menu-item menu-item--sub">Talleres</a>
+            <a href="#" class="menu-item menu-item--sub">Docentes</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Sala <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Cartelera</a>
+            <a href="#" class="menu-item menu-item--sub">Alquiler</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Compañía <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Elenco</a>
+            <a href="#" class="menu-item menu-item--sub">Obras</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Convenios <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Cine Viajero</a>
+            <a href="#" class="menu-item menu-item--sub">Atrapasueños</a>
+            <a href="#" class="menu-item menu-item--sub">SUNCA</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Nosotros <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Historia</a>
+            <a href="#" class="menu-item menu-item--sub">Comunidad</a>
+            <a href="#" class="menu-item menu-item--sub">Contacto</a>
+          </div>
+        </div>
+        
+        <div class="menu-divider"></div>
+        <a href="#" class="menu-link">Agenda</a>
+        <a href="#" class="menu-link">Noticias</a>
+        <a href="#" class="menu-link">Galería</a>
+        <a href="#" class="menu-cta">Reservar</a>
+        
+        <div class="menu-bottom">
+          <button class="menu-icon-btn" onclick="toggleTheme()" title="Tema">☀</button>
+          <a href="#" class="menu-icon-btn" title="Contacto">☏</a>
+        </div>
+      </div>
+    </div>
+    <div class="label" style="margin:.7rem 0">B — Dramático</div>
+  </div>
+
+  <!-- VARIATION C: Cálido -->
+  <div class="phone-frame var-c hidden" id="var-c">
+    <div class="phone-notch" style="background:#f6f1e7;color:rgba(42,33,21,.35)">Mandragora</div>
+    <div class="phone-screen" style="background:#f6f1e7">
+      <div class="menu-overlay">
+        <button class="menu-close" onclick="this.closest('.menu-overlay').classList.add('hidden')">✕</button>
+        <div class="menu-logo"><img src="assets/brand-logos/logo-negro.png" alt="Mandragora" width="100" height="25"></div>
+        
+        <div class="menu-group">
+          <button class="menu-toggle open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Escuela <span class="menu-arrow">▾</span></button>
+          <div class="submenu open">
+            <a href="#" class="menu-item menu-item--sub">Talleres</a>
+            <a href="#" class="menu-item menu-item--sub">Docentes</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Sala <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Cartelera</a>
+            <a href="#" class="menu-item menu-item--sub">Alquiler</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Compañía <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Elenco</a>
+            <a href="#" class="menu-item menu-item--sub">Obras</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Convenios <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Cine Viajero</a>
+            <a href="#" class="menu-item menu-item--sub">Atrapasueños</a>
+            <a href="#" class="menu-item menu-item--sub">SUNCA</a>
+          </div>
+        </div>
+        <div class="menu-group">
+          <button class="menu-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Nosotros <span class="menu-arrow">▾</span></button>
+          <div class="submenu">
+            <a href="#" class="menu-item menu-item--sub">Historia</a>
+            <a href="#" class="menu-item menu-item--sub">Comunidad</a>
+            <a href="#" class="menu-item menu-item--sub">Contacto</a>
+          </div>
+        </div>
+        
+        <div class="menu-divider"></div>
+        <a href="#" class="menu-link">Agenda</a>
+        <a href="#" class="menu-link">Noticias</a>
+        <a href="#" class="menu-link">Galería</a>
+        <a href="#" class="menu-cta">Reservar</a>
+        
+        <div class="menu-bottom">
+          <button class="menu-icon-btn" onclick="toggleTheme()" title="Tema">☀</button>
+          <a href="#" class="menu-icon-btn" title="Contacto">☏</a>
+        </div>
+      </div>
+    </div>
+    <div class="label" style="margin:.7rem 0">C — Cálido</div>
+  </div>
+
+</div>
+
+<script>
+// Variation switcher
+document.querySelectorAll('.variation-tab').forEach(btn => {
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.variation-tab').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    var v = this.dataset.var;
+    ['a','b','c'].forEach(x => {
+      document.getElementById('var-'+x).classList.toggle('hidden', x !== v);
+    });
+  });
+});
+
+// Theme toggle
+function toggleTheme(){
+  var html = document.documentElement;
+  var isDark = html.getAttribute('data-theme') === 'dark';
+  if(isDark){ html.removeAttribute('data-theme'); localStorage.setItem('mandragora-theme','light'); }
+  else { html.setAttribute('data-theme','dark'); localStorage.setItem('mandragora-theme','dark'); }
+  updateThemeIcon();
+}
+function updateThemeIcon(){
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.getElementById('tb-theme').textContent = isDark ? '\u263e' : '\u2600';
+}
+updateThemeIcon();
+document.getElementById('tb-theme').addEventListener('click', toggleTheme);
+</script>
+</body>
+</html>
