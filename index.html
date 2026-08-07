@@ -272,7 +272,7 @@ h1, h2, h3, h4, h5 {
 
 /* cartelera de noticias (papel pegado) */
 .cartelera {
-  position: absolute;
+  position: fixed;
   isolation: isolate;
   background: #f3ece0;
   color: #2a2115;
@@ -282,6 +282,7 @@ h1, h2, h3, h4, h5 {
   box-shadow: 0 10px 24px rgba(0,0,0,0.28), 0 2px 4px rgba(0,0,0,0.15);
   font-family: 'Courier New', 'Courier', monospace;
   z-index: 1000 !important;
+  transition: opacity 0.3s;
 }
 .cartelera.is-visible { display: block; }
 .cartelera--hero { top: 5.5rem; right: 1rem; }
@@ -305,7 +306,11 @@ h1, h2, h3, h4, h5 {
   .cartelera__title { font-size: 0.75rem; }
 }
 @media (max-width: 400px) {
-  .cartelera--hero { position: relative; top: auto; right: auto; max-width: 100%; margin: 0.5rem var(--gutter); transform: none; }
+  .cartelera--hero { top: 4.5rem; right: 0.3rem; max-width: 130px; padding: 0.6rem 0.7rem 0.8rem; transform: rotate(-1.5deg); }
+  .cartelera__title { font-size: 0.7rem; }
+  .cartelera__kicker { font-size: 0.5rem; }
+  .cartelera__date { font-size: 0.55rem; }
+  .cartelera__link { font-size: 0.6rem; }
 }
 
 /* cookie banner */
@@ -1214,13 +1219,6 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
     </div>
   </div>
 
-  <div class="cartelera cartelera--hero is-visible" id="cartelera">
-    <p class="cartelera__kicker">Recién pegado</p>
-    <p class="cartelera__title" id="cartelera-title">Cargando…</p>
-    <p class="cartelera__date" id="cartelera-date"></p>
-    <a href="noticias.html" class="cartelera__link">Leer más →</a>
-  </div>
-
   <a href="#threshold" class="hero__scroll-cue" aria-label="Entrar a Mandrágora">
     <span>Entrar</span>
     <span class="scroll-cue__line" aria-hidden="true"></span>
@@ -1635,9 +1633,28 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
       console.log('[Cartelera] sticker visible:', ultima.titulo);
     })
     .catch(function(e){ console.log('[Cartelera] error:', e); });
+
+  // Ocultar cartelera al scrollear fuera del hero
+  var carteleraEl = document.getElementById('cartelera');
+  var heroEl = document.getElementById('hero');
+  if (carteleraEl && heroEl) {
+    window.addEventListener('scroll', function(){
+      var heroBottom = heroEl.offsetTop + heroEl.offsetHeight;
+      carteleraEl.style.opacity = window.scrollY > heroBottom ? '0' : '1';
+      carteleraEl.style.pointerEvents = window.scrollY > heroBottom ? 'none' : 'auto';
+    }, { passive: true });
+  }
 })();
 </script>
 
 <script src="/assets/js/push.js" defer></script>
+
+<div class="cartelera cartelera--hero is-visible" id="cartelera">
+  <p class="cartelera__kicker">Recién pegado</p>
+  <p class="cartelera__title" id="cartelera-title">Cargando…</p>
+  <p class="cartelera__date" id="cartelera-date"></p>
+  <a href="noticias.html" class="cartelera__link">Leer más →</a>
+</div>
+
 </body>
 </html>
