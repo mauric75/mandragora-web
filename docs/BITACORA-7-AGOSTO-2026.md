@@ -124,8 +124,51 @@
 | `0eb0fb7` | Feat: link directo a página principal en cada submenú (Escuela, Sala, Compañía) |
 | `bb961c5` | Fix: link Nosotros como primer ítem del submenú Nosotros |
 | `5688a29` | Fix: Historia → nosotros.html#historia con ancla en la página |
+| `a3d5156` | Docs: actualizar bitácora con cambios del 7 de agosto |
+| `f8fe789` | Fix: aumentar font-size de .menu-link de 0.7rem a 0.9rem |
+| `abd8fb7` | Fix: cartelera z-index 15→1000 (no funcionó) |
+| `9bb2ff4` | Debug: cartelera is-visible hardcodeado + console.log + z-index !important |
+| `c43e67f` | Fix: cartelera position:absolute→fixed |
+| `a604000` | Fix: agregar isolation:isolate a cartelera |
+| `646963b` | Debug: estilos inline agresivos + z-index 10000 + borde rojo (confirmó visibilidad) |
+| `7d662e5` | Fix: restaurar cartelera limpia — position:fixed + isolation + z-index:1000 |
+| `ac272cc` | Fix: eliminar display:none de .cartelera |
+| `7062c49` | Fix: mover cartelera fuera de hero → hijo directo de body |
+| `4f2c4c6` | Fix: cartelera móvil position:fixed anclada abajo (revertido por horrible) |
+| `18c30b8` | Fix: cartelera móvil fixed pequeña esquina superior derecha |
+| `c2b18a1` | Fix: cartelera de vuelta en hero con position:absolute (desapareció) |
+| `eeb65f4` | Fix: cartelera position:fixed + scroll handler (no desaparecía al scrollear) |
+| `d06883c` | Fix: usar getBoundingClientRect para scroll handler |
+
+## 🐛 Bug: Cartelera de noticias desaparecida
+
+### Síntoma
+El sticker de "Recién pegado" en el hero de `index.html` dejó de ser visible después de la integración del menú móvil.
+
+### Investigación
+- **Rama de prueba:** `test/cartelera-fix` (commit `9db1564`)
+- Se restauró la cartelera exactamente a su estado pre-menú-móvil (`8b56264`) con único cambio `z-index: 15 → 1002`
+- **Resultado:** sigue sin verse
+
+### Hipótesis probadas (todas fallaron)
+
+| Hipótesis | Qué se hizo | Resultado |
+|-----------|------------|-----------|
+| Grain la tapa (z-index 999) | Subir cartelera a z-index 1000+ | ❌ No se ve |
+| `position: absolute` compite con `fixed` | Cambiar a `position: fixed` | ✅ Se ve pero no scrollea |
+| `mix-blend-mode: overlay` del grain | `isolation: isolate` | ❌ No ayudó |
+| `display: none` no se sobreescribe | Hardcodear `is-visible`, quitar `display:none` | ❌ No ayudó |
+| Hero interfiere (overflow/stacking) | Mover fuera del hero, hijo directo de body | ✅ Se ve pero no scrollea |
+| CSS cascade | Estilos inline con `!important` y borde rojo | ✅ Único caso donde funcionó |
+
+### Conclusión
+El problema está en la interacción entre `position: absolute` dentro del hero y los nuevos elementos del menú móvil (`position: fixed; z-index: 1000; backdrop-filter`). Con `position: fixed` la cartelera se ve pero pierde el scroll natural. **No se encontró solución que preserve ambas cosas.** Queda pendiente para otra sesión.
+
+### Estado actual en producción (main)
+La cartelera usa `position: fixed` + `isolation: isolate` + `z-index: 1000` + `getBoundingClientRect` scroll handler. Se ve pero el scroll handler no está funcionando correctamente (no desaparece al scrollear).
 
 ## Rama
 
 - Desarrollo: `test/mobile-menu-v2`
-- Producción: mergeado a `main` (desplegado en Vercel)
+- Debug cartelera: `test/cartelera-fix` (NO mergear)
+- Producción: `main` (desplegado en Vercel)
