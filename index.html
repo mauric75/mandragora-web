@@ -1639,9 +1639,9 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
   var heroEl = document.getElementById('hero');
   if (carteleraEl && heroEl) {
     window.addEventListener('scroll', function(){
-      var heroBottom = heroEl.offsetTop + heroEl.offsetHeight;
-      carteleraEl.style.opacity = window.scrollY > heroBottom ? '0' : '1';
-      carteleraEl.style.pointerEvents = window.scrollY > heroBottom ? 'none' : 'auto';
+      var heroBottom = heroEl.getBoundingClientRect().bottom;
+      carteleraEl.style.opacity = heroBottom <= 0 ? '0' : '1';
+      carteleraEl.style.pointerEvents = heroBottom <= 0 ? 'none' : 'auto';
     }, { passive: true });
   }
 })();
