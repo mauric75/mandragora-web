@@ -124,14 +124,14 @@ h1,h2,h3{font-family:var(--f-display);font-weight:500;letter-spacing:.01em;line-
 }
 .mobile-subitem:hover { opacity: 1; color: var(--c-gold); }
 .mobile-subitem:active { transform: scale(0.95); }
-.mobile-submenu-toggle {
+.mobile-submenu-toggle {transition:color 0.3s,transform 0.2s;
   display: flex; align-items: center; gap: 0.3em; cursor: pointer;
   min-height: 48px; color: var(--c-cream);
   background: none; border: none;
   font-family: var(--f-display); font-size: 1.6rem; font-weight: 400;
   padding: 0;
 }
-.mobile-submenu-toggle:hover { color: var(--c-gold); }
+.mobile-submenu-toggle:hover { color: var(--c-gold); }.mobile-submenu-toggle:active{transform:scale(0.96)}.mobile-group{display:flex;flex-direction:column;align-items:center}
 .mobile-arrow {
   font-size: 0.6em; display: inline-block; transition: transform 0.35s var(--ease);
   opacity: 0.45;
@@ -396,18 +396,16 @@ h1,h2,h3{font-family:var(--f-display);font-weight:500;letter-spacing:.01em;line-
     hamburger.setAttribute('aria-expanded', open);
   });
     mobileMenu.querySelectorAll('a').forEach(function(a){
-    a.addEventListener('click', function(){
-      if (a.classList.contains('mobile-submenu-toggle')) return;
-      hamburger.classList.remove('is-open');
+    a.addEventListener('click', function(){hamburger.classList.remove('is-open');
       mobileMenu.classList.remove('is-open');
-      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.setAttribute('aria-expanded', 'false');document.querySelectorAll('.mobile-submenu-toggle').forEach(function(t){t.classList.remove('is-open');t.setAttribute('aria-expanded','false');});document.querySelectorAll('.mobile-submenu').forEach(function(s){s.classList.remove('is-open');});;
     });
   });
   // mobile submenu accordion
   document.querySelectorAll('.mobile-submenu-toggle').forEach(function(toggle) {
     toggle.addEventListener('click', function(e) {
       e.preventDefault();
-      this.classList.toggle('is-open');
+      this.classList.toggle('is-open'); this.setAttribute('aria-expanded',this.classList.contains('is-open'));
       var sub = this.nextElementSibling;
       if (sub) sub.classList.toggle('is-open');
     });

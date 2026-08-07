@@ -118,7 +118,6 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 }
 .mobile-submenu.is-open {
   max-height: 360px; opacity: 1; overflow: visible;
-  margin-top: 0.3rem; margin-bottom: 0.3rem;
   padding-top: 0.7rem;
   border-top-color: var(--c-border);
 }
@@ -129,7 +128,7 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 }
 .mobile-subitem:hover { opacity: 1; color: var(--c-gold); }
 .mobile-subitem:active { transform: scale(0.95); }
-.mobile-submenu-toggle {
+.mobile-submenu-toggle {transition:color 0.3s,transform 0.2s;
   display: flex; align-items: center; gap: 0.3em; cursor: pointer;
   color: var(--c-cream);
   background: none; border: none;
@@ -335,39 +334,49 @@ body.is-admin .noticia-card__edit { display: inline-block; }
   <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
-    <nav class="mobile-menu" id="mobile-menu">
-    <a href="#" class="mobile-submenu-toggle">Escuela <span class="mobile-arrow">▾</span></a>
-    <div class="mobile-submenu">
-      <a href="escuela.html#talleres" class="mobile-subitem">Talleres</a>
-      <a href="escuela.html#docentes" class="mobile-subitem">Docentes</a>
-    </div>
-    <a href="#" class="mobile-submenu-toggle">Sala <span class="mobile-arrow">▾</span></a>
-    <div class="mobile-submenu">
-      <a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a>
-      <a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a>
-    </div>
-    <a href="#" class="mobile-submenu-toggle">Compa&ntilde;&iacute;a <span class="mobile-arrow">▾</span></a>
-    <div class="mobile-submenu">
-      <a href="compania.html#elenco" class="mobile-subitem">Elenco</a>
-      <a href="compania.html#obras" class="mobile-subitem">Obras</a>
-    </div>
-    <a href="#" class="mobile-submenu-toggle">Convenios <span class="mobile-arrow">▾</span></a>
-    <div class="mobile-submenu">
-      <a href="convenios.html" class="mobile-subitem">Convenios</a>
-      <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
-      <a href="atrapasuenos.html" class="mobile-subitem">Atrapasue&ntilde;os Recreaci&oacute;n</a>
-      <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
-    </div>
-    <a href="#" class="mobile-submenu-toggle">Nosotros <span class="mobile-arrow">▾</span></a>
-    <div class="mobile-submenu">
-      <a href="nosotros.html" class="mobile-subitem">Historia</a>
-      <a href="comunidad.html" class="mobile-subitem">Comunidad</a>
-      <a href="contacto.html" class="mobile-subitem">Contacto</a>
-    </div>
-    <a href="agenda.html">Agenda</a>
-    <a href="noticias.html">Noticias</a>
-    <a href="galeria.html">Galer&iacute;a</a>
-  </nav>
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Menú principal">
+        <div class="mobile-group">
+          <button class="mobile-submenu-toggle" aria-expanded="false">Escuela <span class="mobile-arrow">▾</span></button>
+          <div class="mobile-submenu">
+            <a href="escuela.html#talleres" class="mobile-subitem">Talleres</a>
+            <a href="escuela.html#docentes" class="mobile-subitem">Docentes</a>
+          </div>
+        </div>
+        <div class="mobile-group">
+          <button class="mobile-submenu-toggle" aria-expanded="false">Sala <span class="mobile-arrow">▾</span></button>
+          <div class="mobile-submenu">
+            <a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a>
+            <a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a>
+          </div>
+        </div>
+        <div class="mobile-group">
+          <button class="mobile-submenu-toggle" aria-expanded="false">Compa&ntilde;&iacute;a <span class="mobile-arrow">▾</span></button>
+          <div class="mobile-submenu">
+            <a href="compania.html#elenco" class="mobile-subitem">Elenco</a>
+            <a href="compania.html#obras" class="mobile-subitem">Obras</a>
+          </div>
+        </div>
+        <div class="mobile-group">
+          <button class="mobile-submenu-toggle" aria-expanded="false">Convenios <span class="mobile-arrow">▾</span></button>
+          <div class="mobile-submenu">
+            <a href="convenios.html" class="mobile-subitem">Convenios</a>
+            <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
+            <a href="atrapasuenos.html" class="mobile-subitem">Atrapasue&ntilde;os Recreaci&oacute;n</a>
+            <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
+          </div>
+        </div>
+        <div class="mobile-group">
+          <button class="mobile-submenu-toggle" aria-expanded="false">Nosotros <span class="mobile-arrow">▾</span></button>
+          <div class="mobile-submenu">
+            <a href="nosotros.html" class="mobile-subitem">Historia</a>
+            <a href="comunidad.html" class="mobile-subitem">Comunidad</a>
+            <a href="contacto.html" class="mobile-subitem">Contacto</a>
+          </div>
+        </div>
+        <a href="agenda.html">Agenda</a>
+        <a href="noticias.html">Noticias</a>
+        <a href="galeria.html">Galer&iacute;a</a>
+      </nav>
 </header>
 
 <section class="section-hero">
@@ -429,14 +438,14 @@ body.is-admin .noticia-card__edit { display: inline-block; }
     hamburger.setAttribute('aria-expanded', open);
   });
 	  mobileMenu.querySelectorAll('a').forEach(function(a){
-	    a.addEventListener('click', function(){ if (a.classList.contains('mobile-submenu-toggle')) return; hamburger.classList.remove('is-open'); mobileMenu.classList.remove('is-open'); hamburger.setAttribute('aria-expanded','false'); });
+	    a.addEventListener('click', function(){hamburger.classList.remove('is-open'); mobileMenu.classList.remove('is-open'); hamburger.setAttribute('aria-expanded','false');document.querySelectorAll('.mobile-submenu-toggle').forEach(function(t){t.classList.remove('is-open');t.setAttribute('aria-expanded','false');});document.querySelectorAll('.mobile-submenu').forEach(function(s){s.classList.remove('is-open');});; });
 	  });
 
 	  // mobile submenu accordion
 	  document.querySelectorAll('.mobile-submenu-toggle').forEach(function(toggle) {
 	    toggle.addEventListener('click', function(e) {
 	      e.preventDefault();
-	      this.classList.toggle('is-open');
+	      this.classList.toggle('is-open'); this.setAttribute('aria-expanded',this.classList.contains('is-open'));
 	      var sub = this.nextElementSibling;
 	      if (sub) sub.classList.toggle('is-open');
 	    });

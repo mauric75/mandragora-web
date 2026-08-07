@@ -425,7 +425,6 @@ h1, h2, h3, h4, h5 {
 }
 .mobile-submenu.is-open {
   max-height: 360px; opacity: 1; overflow: visible;
-  margin-top: 0.3rem; margin-bottom: 0.3rem;
   padding-top: 0.7rem;
   border-top-color: var(--c-border);
 }
@@ -442,8 +441,14 @@ h1, h2, h3, h4, h5 {
   background: none; border: none;
   font-family: var(--f-display); font-size: 1.6rem; font-weight: 400;
   padding: 0;
+  transition: color 0.3s, transform 0.2s;
 }
-.mobile-submenu-toggle:hover { color: var(--c-gold); }
+.mobile-submenu-toggle:hover { color: var(--c-gold); }.mobile-submenu-toggle:active{transform:scale(0.96)}.mobile-group{display:flex;flex-direction:column;align-items:center}
+.mobile-submenu-toggle:active { transform: scale(0.96); }
+/* mobile group wrapper */
+.mobile-group {
+  display: flex; flex-direction: column; align-items: center;
+}
 .mobile-arrow {
   font-size: 0.6em; display: inline-block; transition: transform 0.35s var(--ease);
   opacity: 0.45;
@@ -1073,37 +1078,47 @@ h1, h2, h3, h4, h5 {
     <span></span><span></span><span></span>
   </button>
     <nav class="mobile-menu" id="mobile-menu" aria-label="Menú principal">
-    <button class="mobile-submenu-toggle" aria-expanded="false">Escuela <span class="mobile-arrow">▾</span></button>
-    <div class="mobile-submenu">
-      <a href="escuela.html#talleres" class="mobile-subitem">Talleres</a>
-      <a href="escuela.html#docentes" class="mobile-subitem">Docentes</a>
+    <div class="mobile-group">
+      <button class="mobile-submenu-toggle" aria-expanded="false">Escuela <span class="mobile-arrow">▾</span></button>
+      <div class="mobile-submenu">
+        <a href="escuela.html#talleres" class="mobile-subitem">Talleres</a>
+        <a href="escuela.html#docentes" class="mobile-subitem">Docentes</a>
+      </div>
     </div>
-    <button class="mobile-submenu-toggle" aria-expanded="false">Sala <span class="mobile-arrow">▾</span></button>
-    <div class="mobile-submenu">
-      <a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a>
-      <a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a>
+    <div class="mobile-group">
+      <button class="mobile-submenu-toggle" aria-expanded="false">Sala <span class="mobile-arrow">▾</span></button>
+      <div class="mobile-submenu">
+        <a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a>
+        <a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a>
+      </div>
     </div>
-    <button class="mobile-submenu-toggle" aria-expanded="false">Compañía <span class="mobile-arrow">▾</span></button>
-    <div class="mobile-submenu">
-      <a href="compania.html#elenco" class="mobile-subitem">Elenco</a>
-      <a href="compania.html#obras" class="mobile-subitem">Obras</a>
+    <div class="mobile-group">
+      <button class="mobile-submenu-toggle" aria-expanded="false">Compa&ntilde;&iacute;a <span class="mobile-arrow">▾</span></button>
+      <div class="mobile-submenu">
+        <a href="compania.html#elenco" class="mobile-subitem">Elenco</a>
+        <a href="compania.html#obras" class="mobile-subitem">Obras</a>
+      </div>
     </div>
-    <button class="mobile-submenu-toggle" aria-expanded="false">Convenios <span class="mobile-arrow">▾</span></button>
-    <div class="mobile-submenu">
-      <a href="convenios.html" class="mobile-subitem">Convenios</a>
-      <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
-      <a href="atrapasuenos.html" class="mobile-subitem">Atrapasueños Recreación</a>
-      <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
+    <div class="mobile-group">
+      <button class="mobile-submenu-toggle" aria-expanded="false">Convenios <span class="mobile-arrow">▾</span></button>
+      <div class="mobile-submenu">
+        <a href="convenios.html" class="mobile-subitem">Convenios</a>
+        <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
+        <a href="atrapasuenos.html" class="mobile-subitem">Atrapasue&ntilde;os Recreaci&oacute;n</a>
+        <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
+      </div>
     </div>
-    <button class="mobile-submenu-toggle" aria-expanded="false">Nosotros <span class="mobile-arrow">▾</span></button>
-    <div class="mobile-submenu">
-      <a href="nosotros.html" class="mobile-subitem">Historia</a>
-      <a href="comunidad.html" class="mobile-subitem">Comunidad</a>
-      <a href="contacto.html" class="mobile-subitem">Contacto</a>
+    <div class="mobile-group">
+      <button class="mobile-submenu-toggle" aria-expanded="false">Nosotros <span class="mobile-arrow">▾</span></button>
+      <div class="mobile-submenu">
+        <a href="nosotros.html" class="mobile-subitem">Historia</a>
+        <a href="comunidad.html" class="mobile-subitem">Comunidad</a>
+        <a href="contacto.html" class="mobile-subitem">Contacto</a>
+      </div>
     </div>
     <a href="agenda.html">Agenda</a>
     <a href="noticias.html">Noticias</a>
-    <a href="galeria.html">Galería</a>
+    <a href="galeria.html">Galer&iacute;a</a>
   </nav>
 </header>
 
@@ -1501,14 +1516,20 @@ h1, h2, h3, h4, h5 {
     a.addEventListener('click', function(){
       hamburger.classList.remove('is-open');
       mobileMenu.classList.remove('is-open');
-      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.setAttribute('aria-expanded', 'false');document.querySelectorAll('.mobile-submenu-toggle').forEach(function(t){t.classList.remove('is-open');t.setAttribute('aria-expanded','false');});document.querySelectorAll('.mobile-submenu').forEach(function(s){s.classList.remove('is-open');});;
+      document.querySelectorAll('.mobile-submenu-toggle').forEach(function(t){
+        t.classList.remove('is-open'); t.setAttribute('aria-expanded','false');
+      });
+      document.querySelectorAll('.mobile-submenu').forEach(function(s){
+        s.classList.remove('is-open');
+      });
     });
   });
   // mobile submenu accordion (ahora con <button>)
   document.querySelectorAll('.mobile-submenu-toggle').forEach(function(toggle) {
     toggle.addEventListener('click', function(e) {
       e.preventDefault();
-      var isOpen = this.classList.toggle('is-open');
+      var isOpen = this.classList.toggle('is-open'); this.setAttribute('aria-expanded',this.classList.contains('is-open'));
       this.setAttribute('aria-expanded', isOpen);
       var sub = this.nextElementSibling;
       if (sub) sub.classList.toggle('is-open');
