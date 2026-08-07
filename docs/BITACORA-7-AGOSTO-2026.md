@@ -29,8 +29,26 @@
 ### 4. Fix: scroll lock robusto (iOS Safari)
 - `body.menu-open` ahora incluye `position: fixed; width: 100%` además de `overflow: hidden`
 - JS: guarda `window.scrollY` antes de abrir el menú, aplica `body.style.top = '-Xpx'`, restaura al cerrar con `window.scrollTo(0, _menuScrollY)`
-- Aplicado a 15 páginas (todas las que usan scroll lock)
-- **Commit:** pendiente (agente en ejecución)
+- Aplicado a 15 páginas
+- **Commit:** `9bbe296`
+
+### 5. Fix: z-index incorrecto en nosotros.html y convenio-sunca.html
+- `.mobile-menu`: `z-index: 99` → `1000` (debajo del header `.site-nav` en 100 y `.grain` en 999)
+- `.hamburger`: `z-index: 101` → `1001`
+- Las otras 13 páginas ya tenían los valores correctos
+- **Commit:** `c211f46`
+
+### 6. Feat: links directos a página principal en cada submenú
+- Cada submenú ahora incluye un link a la página principal como primer ítem (estilo normal, sin itálica)
+- Escuela → `escuela.html`, Sala → `sala.html`, Compañía → `compania.html`, Nosotros → `nosotros.html`
+- Convenios ya tenía su link principal (`convenios.html`)
+- **Commit:** `0eb0fb7`
+
+### 7. Fix: link de Historia ahora apunta a `nosotros.html#historia`
+- Agregado `id="historia"` en `<section class="content">` de `nosotros.html`
+- Links "Historia" en menú móvil y nav desktop cambiados de `nosotros.html` a `nosotros.html#historia`
+- Agregado link "Nosotros" como primer ítem del submenú (commit anterior)
+- **Commits:** `bb961c5`, `5688a29`
 
 ## Estructura final del menú móvil (Variación A · Elegante)
 
@@ -41,12 +59,15 @@
 │     [logo Mandrágora]       │
 │                             │
 │     Escuela ▾               │
+│       Escuela               │  ← link directo (normal)
 │       Talleres              │
 │       Docentes              │
 │     Sala ▾                  │
+│       Sala                  │  ← link directo (normal)
 │       Cartelera             │
 │       Alquiler              │
 │     Compañía ▾              │
+│       Compañía              │  ← link directo (normal)
 │       Elenco                │
 │       Obras                 │
 │     Convenios ▾             │
@@ -55,7 +76,8 @@
 │       Atrapasueños          │
 │       SUNCA                 │
 │     Nosotros ▾              │
-│       Historia              │
+│       Nosotros              │  ← link directo (normal)
+│       Historia              │  → nosotros.html#historia
 │       Comunidad             │
 │       Contacto              │
 │     ────────────            │
@@ -90,6 +112,18 @@
 - `nosotros.html`, `comunidad.html`, `contacto.html`, `noticias.html`, `galeria.html`
 - `convenios.html`, `cine-viajero.html`, `atrapasuenos.html`, `convenio-sunca.html`
 - `admin.html`, `guia-rapida.html`, `manual.html`, `reservar.html`
+
+## Commits en main
+
+| Commit | Descripción |
+|--------|-------------|
+| `0b872a0` | Integración Variación A · Elegante en index.html |
+| `fdc939a` | Extensión a las 14 páginas restantes |
+| `9bbe296` | Fix: z-index mobile-menu 1000, hamburger 1001 (15 páginas) |
+| `c211f46` | Fix: z-index en nosotros.html y convenio-sunca.html (estaban con 99/101) |
+| `0eb0fb7` | Feat: link directo a página principal en cada submenú (Escuela, Sala, Compañía) |
+| `bb961c5` | Fix: link Nosotros como primer ítem del submenú Nosotros |
+| `5688a29` | Fix: Historia → nosotros.html#historia con ancla en la página |
 
 ## Rama
 
