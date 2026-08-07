@@ -155,7 +155,7 @@ h1, h2, h3, h4 {
 [data-theme="dark"] .site-nav__logo-dark { display: block; }
 .theme-toggle {
   background: none; border: 1px solid currentColor; cursor: pointer;
-  width: 34px; height: 34px; border-radius: 50%;
+  width: 44px; height: 44px; border-radius: 50%;
   display: grid; place-items: center; color: inherit;
   font-size: 0.9rem; line-height: 1; padding: 0;
   opacity: 0.7; transition: opacity 0.3s, transform 0.4s var(--ease);
@@ -173,6 +173,7 @@ h1, h2, h3, h4 {
 .hamburger {
   display: flex; flex-direction: column; gap: 5px;
   background: none; border: none; cursor: pointer; padding: 4px;
+  min-width: 44px; min-height: 44px;
   z-index: 101;
 }
 .hamburger span {
@@ -559,33 +560,33 @@ h1, h2, h3, h4 {
   </nav>
 
   <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">☀</button>
-  <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
     <span></span><span></span><span></span>
   </button>
     <nav class="mobile-menu" id="mobile-menu">
-    <a href="#" class="mobile-submenu-toggle">Escuela <span class="mobile-arrow">▾</span></a>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Escuela <span class="mobile-arrow">▾</span></button>
     <div class="mobile-submenu">
       <a href="escuela.html#talleres" class="mobile-subitem">Talleres</a>
       <a href="escuela.html#docentes" class="mobile-subitem">Docentes</a>
     </div>
-    <a href="#" class="mobile-submenu-toggle">Sala <span class="mobile-arrow">▾</span></a>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Sala <span class="mobile-arrow">▾</span></button>
     <div class="mobile-submenu">
       <a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a>
       <a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a>
     </div>
-    <a href="#" class="mobile-submenu-toggle">Compa&ntilde;&iacute;a <span class="mobile-arrow">▾</span></a>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Compa&ntilde;&iacute;a <span class="mobile-arrow">▾</span></button>
     <div class="mobile-submenu">
       <a href="compania.html#elenco" class="mobile-subitem">Elenco</a>
       <a href="compania.html#obras" class="mobile-subitem">Obras</a>
     </div>
-    <a href="#" class="mobile-submenu-toggle">Convenios <span class="mobile-arrow">▾</span></a>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Convenios <span class="mobile-arrow">▾</span></button>
     <div class="mobile-submenu">
       <a href="convenios.html" class="mobile-subitem">Convenios</a>
       <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
       <a href="atrapasuenos.html" class="mobile-subitem">Atrapasue&ntilde;os Recreaci&oacute;n</a>
       <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
     </div>
-    <a href="#" class="mobile-submenu-toggle">Nosotros <span class="mobile-arrow">▾</span></a>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Nosotros <span class="mobile-arrow">▾</span></button>
     <div class="mobile-submenu">
       <a href="nosotros.html" class="mobile-subitem">Historia</a>
       <a href="comunidad.html" class="mobile-subitem">Comunidad</a>
@@ -680,7 +681,7 @@ h1, h2, h3, h4 {
 <button class="back-to-top" id="back-to-top" aria-label="Volver arriba">↑</button>
 </footer>
 
-<div class="lightbox" id="lightbox">
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visor de imagen">
   <button class="lightbox__close" id="lightbox-close">✕</button>
   <img src="" alt="" id="lightbox-img">
 </div>
