@@ -94,10 +94,11 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 500; letter-spacing: 0.
 .site-nav__links a { opacity: 0.72; transition: opacity 0.3s var(--ease); }
 .site-nav__links a:hover { opacity: 1; }
 .site-nav__links a.is-active { opacity: 1; color: var(--c-gold); }
-.theme-toggle { background: none; border: 1px solid currentColor; cursor: pointer; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 0.9rem; line-height: 1; padding: 0; opacity: 0.7; transition: opacity 0.3s, transform 0.4s var(--ease); }
+.theme-toggle { background: none; border: 1px solid currentColor; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 0.9rem; line-height: 1; padding: 0; opacity: 0.7; transition: opacity 0.3s, transform 0.4s var(--ease); }
 .theme-toggle:hover { opacity: 1; transform: rotate(15deg); }
 .theme-toggle:active { transform: rotate(180deg); }
-.hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; z-index: 101; opacity: 0.8; }
+.hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; z-index: 101; opacity: 0.8; opacity: 0.8; }
+  min-width: 44px; min-height: 44px;
 .hamburger span { display: block; width: 24px; height: 1.5px; background: currentColor; transition: transform 0.3s var(--ease), opacity 0.2s; }
 .hamburger.is-open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
 .hamburger.is-open span:nth-child(2) { opacity: 0; }
@@ -332,33 +333,33 @@ body.is-admin .noticia-card__edit { display: inline-block; }
   </nav>
 
   <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Claro / Oscuro">☀</button>
-  <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
     <span></span><span></span><span></span>
   </button>
     <nav class="mobile-menu" id="mobile-menu">
-    <a href="#" class="mobile-submenu-toggle">Escuela <span class="mobile-arrow">▾</span></a>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Escuela <span class="mobile-arrow">▾</span></button>
     <div class="mobile-submenu">
       <a href="escuela.html#talleres" class="mobile-subitem">Talleres</a>
       <a href="escuela.html#docentes" class="mobile-subitem">Docentes</a>
     </div>
-    <a href="#" class="mobile-submenu-toggle">Sala <span class="mobile-arrow">▾</span></a>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Sala <span class="mobile-arrow">▾</span></button>
     <div class="mobile-submenu">
       <a href="sala.html#cartelera" class="mobile-subitem">Cartelera</a>
       <a href="sala.html#alquiler" class="mobile-subitem">Alquiler</a>
     </div>
-    <a href="#" class="mobile-submenu-toggle">Compa&ntilde;&iacute;a <span class="mobile-arrow">▾</span></a>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Compa&ntilde;&iacute;a <span class="mobile-arrow">▾</span></button>
     <div class="mobile-submenu">
       <a href="compania.html#elenco" class="mobile-subitem">Elenco</a>
       <a href="compania.html#obras" class="mobile-subitem">Obras</a>
     </div>
-    <a href="#" class="mobile-submenu-toggle">Convenios <span class="mobile-arrow">▾</span></a>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Convenios <span class="mobile-arrow">▾</span></button>
     <div class="mobile-submenu">
       <a href="convenios.html" class="mobile-subitem">Convenios</a>
       <a href="cine-viajero.html" class="mobile-subitem">Cine Viajero</a>
       <a href="atrapasuenos.html" class="mobile-subitem">Atrapasue&ntilde;os Recreaci&oacute;n</a>
       <a href="convenio-sunca.html" class="mobile-subitem">SUNCA</a>
     </div>
-    <a href="#" class="mobile-submenu-toggle">Nosotros <span class="mobile-arrow">▾</span></a>
+    <button class="mobile-submenu-toggle" aria-expanded="false">Nosotros <span class="mobile-arrow">▾</span></button>
     <div class="mobile-submenu">
       <a href="nosotros.html" class="mobile-subitem">Historia</a>
       <a href="comunidad.html" class="mobile-subitem">Comunidad</a>
