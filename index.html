@@ -281,7 +281,7 @@ h1, h2, h3, h4, h5 {
   box-shadow: 0 10px 24px rgba(0,0,0,0.28), 0 2px 4px rgba(0,0,0,0.15);
   font-family: 'Courier New', 'Courier', monospace;
   display: none;
-  z-index: 1000;
+  z-index: 1000 !important;
 }
 .cartelera.is-visible { display: block; }
 .cartelera--hero { top: 5.5rem; right: 1rem; }
@@ -1214,7 +1214,7 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
     </div>
   </div>
 
-  <div class="cartelera cartelera--hero" id="cartelera">
+  <div class="cartelera cartelera--hero is-visible" id="cartelera">
     <p class="cartelera__kicker">Recién pegado</p>
     <p class="cartelera__title" id="cartelera-title">Cargando…</p>
     <p class="cartelera__date" id="cartelera-date"></p>
@@ -1618,21 +1618,23 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
   fetch('data/noticias.json?t=' + Date.now(), { cache: 'no-store' })
     .then(function(r){ return r.json(); })
     .then(function(noticias){
+      console.log('[Cartelera] noticias.json cargado, items:', (noticias||[]).length);
       var publicadas = (noticias || []).filter(function(n){ return n.publicada; });
-      if (!publicadas.length) return;
+      if (!publicadas.length) { console.log('[Cartelera] sin noticias publicadas'); return; }
       publicadas.sort(function(a,b){ return (b.fecha || '').localeCompare(a.fecha || ''); });
 
       var ultima = publicadas[0];
       var cartelera = document.getElementById('cartelera');
       var titleEl = document.getElementById('cartelera-title');
       var dateEl = document.getElementById('cartelera-date');
-      if (!cartelera || !titleEl || !dateEl) return;
+      if (!cartelera || !titleEl || !dateEl) { console.log('[Cartelera] elementos no encontrados'); return; }
 
       titleEl.textContent = ultima.titulo;
       dateEl.textContent = ultima.fecha ? new Date(ultima.fecha + 'T12:00:00').toLocaleDateString('es-UY', { day: 'numeric', month: 'long' }) : '';
       cartelera.classList.add('is-visible');
+      console.log('[Cartelera] sticker visible:', ultima.titulo);
     })
-    .catch(function(){ /* si falla, la portada sigue funcionando igual sin noticias */ });
+    .catch(function(e){ console.log('[Cartelera] error:', e); });
 })();
 </script>
 
