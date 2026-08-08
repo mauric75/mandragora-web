@@ -132,12 +132,11 @@ h1, h2, h3, h4, h5 {
 .grain {
   position: fixed; inset: 0; z-index: 999;
   pointer-events: none; opacity: 0.05;
-  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   background-repeat: repeat;
 }
 [data-theme="dark"] .grain {
-  mix-blend-mode: overlay; opacity: 0.04;
+  opacity: 0.04;
 }
 
 /* ---- buttons ---- */
@@ -272,8 +271,7 @@ h1, h2, h3, h4, h5 {
 
 /* cartelera de noticias (papel pegado) */
 .cartelera {
-  position: fixed;
-  isolation: isolate;
+  position: absolute;
   background: #f3ece0;
   color: #2a2115;
   max-width: 200px;
@@ -281,7 +279,8 @@ h1, h2, h3, h4, h5 {
   transform: rotate(-2.5deg);
   box-shadow: 0 10px 24px rgba(0,0,0,0.28), 0 2px 4px rgba(0,0,0,0.15);
   font-family: 'Courier New', 'Courier', monospace;
-  z-index: 1000 !important;
+  display: none;
+  z-index: 15;
   transition: opacity 0.3s;
 }
 .cartelera.is-visible { display: block; }
@@ -1219,6 +1218,13 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
     </div>
   </div>
 
+  <div class="cartelera cartelera--hero" id="cartelera">
+    <p class="cartelera__kicker">Recién pegado</p>
+    <p class="cartelera__title" id="cartelera-title">Cargando…</p>
+    <p class="cartelera__date" id="cartelera-date"></p>
+    <a href="noticias.html" class="cartelera__link">Leer más →</a>
+  </div>
+
   <a href="#threshold" class="hero__scroll-cue" aria-label="Entrar a Mandrágora">
     <span>Entrar</span>
     <span class="scroll-cue__line" aria-hidden="true"></span>
@@ -1638,29 +1644,6 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 </script>
 
 <script src="/assets/js/push.js" defer></script>
-
-<div class="cartelera cartelera--hero is-visible" id="cartelera">
-  <p class="cartelera__kicker">Recién pegado</p>
-  <p class="cartelera__title" id="cartelera-title">Cargando…</p>
-  <p class="cartelera__date" id="cartelera-date"></p>
-  <a href="noticias.html" class="cartelera__link">Leer más →</a>
-</div>
-
-<script>
-(function(){
-  "use strict";
-  // Ocultar cartelera al scrollear fuera del hero
-  var carteleraEl = document.getElementById('cartelera');
-  var heroEl = document.getElementById('hero');
-  if (carteleraEl && heroEl) {
-    window.addEventListener('scroll', function(){
-      var heroBottom = heroEl.getBoundingClientRect().bottom;
-      carteleraEl.style.opacity = heroBottom <= 0 ? '0' : '1';
-      carteleraEl.style.pointerEvents = heroBottom <= 0 ? 'none' : 'auto';
-    }, { passive: true });
-  }
-})();
-</script>
 
 </body>
 </html>
