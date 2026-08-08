@@ -1634,6 +1634,21 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
     })
     .catch(function(e){ console.log('[Cartelera] error:', e); });
 
+})();
+</script>
+
+<script src="/assets/js/push.js" defer></script>
+
+<div class="cartelera cartelera--hero is-visible" id="cartelera">
+  <p class="cartelera__kicker">Recién pegado</p>
+  <p class="cartelera__title" id="cartelera-title">Cargando…</p>
+  <p class="cartelera__date" id="cartelera-date"></p>
+  <a href="noticias.html" class="cartelera__link">Leer más →</a>
+</div>
+
+<script>
+(function(){
+  "use strict";
   // Ocultar cartelera al scrollear fuera del hero
   var carteleraEl = document.getElementById('cartelera');
   var heroEl = document.getElementById('hero');
@@ -1646,15 +1661,6 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
   }
 })();
 </script>
-
-<script src="/assets/js/push.js" defer></script>
-
-<div class="cartelera cartelera--hero is-visible" id="cartelera">
-  <p class="cartelera__kicker">Recién pegado</p>
-  <p class="cartelera__title" id="cartelera-title">Cargando…</p>
-  <p class="cartelera__date" id="cartelera-date"></p>
-  <a href="noticias.html" class="cartelera__link">Leer más →</a>
-</div>
 
 </body>
 </html>
