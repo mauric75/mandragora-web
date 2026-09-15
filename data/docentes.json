@@ -117,18 +117,6 @@
     "activo": true
   },
   {
-    "id": "docente-1785718750414",
-    "nombre": "Agustín Camacho",
-    "rol": "Elenco · Docente · Director de Infernum",
-    "foto": "assets/images/docentes/agustin-camacho-id.jpg",
-    "frase": "",
-    "trayectoria": "",
-    "instagram": "",
-    "whatsapp": "",
-    "precio": 2500,
-    "activo": true
-  },
-  {
     "id": "docente-1785718750415",
     "nombre": "Lucía Caballero",
     "rol": "Elenco · Docente",
