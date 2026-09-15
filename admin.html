@@ -580,6 +580,10 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       <span>Chat IA</span>
     </button>
+    <button data-tab="comentarios">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      <span>Comentarios</span>
+    </button>
   </nav>
 
   <!-- Content -->
@@ -776,6 +780,70 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
       <button class="primary" id="ai-send">Enviar</button>
     </div>
   </section>
+
+  <!-- ====== TAB: COMENTARIOS ====== -->
+  <section class="tab-panel" id="tab-comentarios">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1rem">
+      <div>
+        <button class="primary" id="btn-add-comentario">+ Agregar comentario</button>
+      </div>
+      <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
+        <select id="comentarios-filtro-obra" style="padding:0.4rem 0.6rem;border-radius:var(--radius);border:1px solid var(--c-border);background:var(--c-surface);color:var(--c-text);font-size:0.82rem">
+          <option value="">Todas las obras</option>
+          <option value="__general__">Generales (sin obra)</option>
+        </select>
+        <label style="display:flex;align-items:center;gap:0.3rem;font-size:0.82rem;color:var(--c-dim);cursor:pointer">
+          <input type="checkbox" id="comentarios-filtro-destacado"> Solo destacados
+        </label>
+      </div>
+    </div>
+    <p id="comentarios-msg" style="font-size:0.82rem;color:var(--c-dim);margin-bottom:0.75rem"></p>
+    <div class="table-wrap"><div id="comentarios-table"></div></div>
+    <div class="no-data" id="comentarios-empty">No hay comentarios todavía.</div>
+  </section>
+
+  <!-- Modal agregar comentario -->
+  <div id="modal-comentario" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center">
+    <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);padding:2rem;max-width:500px;width:90%;max-height:90vh;overflow-y:auto">
+      <h3 style="margin-bottom:1rem;font-size:1.1rem">Agregar comentario</h3>
+      <form id="form-comentario" style="display:flex;flex-direction:column;gap:0.8rem">
+        <div>
+          <label style="font-size:0.78rem;color:var(--c-dim);display:block;margin-bottom:0.3rem">Obra (opcional)</label>
+          <select name="obra_id" id="comentario-obra-select" style="width:100%;padding:0.5rem;border-radius:var(--radius);border:1px solid var(--c-border);background:var(--c-bg);color:var(--c-text)">
+            <option value="">General (sin obra)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.78rem;color:var(--c-dim);display:block;margin-bottom:0.3rem">Nombre *</label>
+          <input type="text" name="nombre" required minlength="2" maxlength="80" placeholder="Nombre del espectador" style="width:100%;padding:0.5rem;border-radius:var(--radius);border:1px solid var(--c-border);background:var(--c-bg);color:var(--c-text)">
+        </div>
+        <div>
+          <label style="font-size:0.78rem;color:var(--c-dim);display:block;margin-bottom:0.3rem">Comentario *</label>
+          <textarea name="texto" required minlength="3" maxlength="1000" rows="3" placeholder="Texto del comentario" style="width:100%;padding:0.5rem;border-radius:var(--radius);border:1px solid var(--c-border);background:var(--c-bg);color:var(--c-text);resize:vertical"></textarea>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+          <div>
+            <label style="font-size:0.78rem;color:var(--c-dim);display:block;margin-bottom:0.3rem">Estrellas (opcional)</label>
+            <select name="estrellas" style="padding:0.5rem;border-radius:var(--radius);border:1px solid var(--c-border);background:var(--c-bg);color:var(--c-text)">
+              <option value="">Sin puntuación</option>
+              <option value="1">★ (1)</option>
+              <option value="2">★★ (2)</option>
+              <option value="3">★★★ (3)</option>
+              <option value="4">★★★★ (4)</option>
+              <option value="5">★★★★★ (5)</option>
+            </select>
+          </div>
+          <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.85rem;cursor:pointer;margin-top:1.2rem">
+            <input type="checkbox" name="destacado"> Destacado
+          </label>
+        </div>
+        <div style="display:flex;gap:0.8rem;justify-content:flex-end;margin-top:0.5rem">
+          <button type="button" class="ghost" id="btn-cancel-comentario">Cancelar</button>
+          <button type="submit" class="primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
   </div><!-- /content -->
 </div><!-- /dashboard -->
 
@@ -839,7 +907,7 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
   document.getElementById('logout-btn').addEventListener('click', logout);
 
   // ── Tabs ─────────────────────────────
-  var VALID_TABS = ['reservas','noticias','docentes','agenda','obras','push','chat'];
+  var VALID_TABS = ['reservas','noticias','docentes','agenda','obras','push','chat','comentarios'];
   function switchTab(tabName){
     if(VALID_TABS.indexOf(tabName)===-1) tabName = 'reservas';
     document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.remove('active'); });
@@ -851,7 +919,7 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
     if(tabName==='docentes') loadDocentes();
     if(tabName==='agenda') loadAgenda();
     if(tabName==='obras') loadObras();
-    if(tabName==='obras') loadObras();
+    if(tabName==='comentarios') loadComentarios();
   }
 
   document.querySelectorAll('.tabs button').forEach(function(btn){
@@ -1610,6 +1678,186 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
   }
 
   checkSession();
+
+  // ─────────────────────────────────────
+  //  TAB: COMENTARIOS
+  // ─────────────────────────────────────
+  var comentariosData = [];
+  var obrasForSelect = [];
+  var comentariosTable = document.getElementById('comentarios-table');
+  var comentariosEmpty = document.getElementById('comentarios-empty');
+  var comentariosMsg = document.getElementById('comentarios-msg');
+  var filtroObra = document.getElementById('comentarios-filtro-obra');
+  var filtroDestacado = document.getElementById('comentarios-filtro-destacado');
+  var modalComentario = document.getElementById('modal-comentario');
+  var formComentario = document.getElementById('form-comentario');
+
+  function formatDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    return d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+  }
+
+  function renderStars(n) {
+    if (!n) return '—';
+    var s = '';
+    for (var i = 1; i <= 5; i++) s += i <= n ? '★' : '☆';
+    return s;
+  }
+
+  function loadObrasForSelect() {
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'list',resource:'obra'})})
+      .then(function(r){
+        obrasForSelect = (r.data && r.data.obras) || [];
+        var select = document.getElementById('comentario-obra-select');
+        // Keep first option (General)
+        while (select.options.length > 1) select.remove(1);
+        obrasForSelect.forEach(function(o){
+          var opt = document.createElement('option');
+          opt.value = o.id;
+          opt.textContent = o.titulo;
+          select.appendChild(opt);
+        });
+        // Also populate filter select
+        while (filtroObra.options.length > 2) filtroObra.remove(2);
+        obrasForSelect.forEach(function(o){
+          var opt = document.createElement('option');
+          opt.value = o.id;
+          opt.textContent = o.titulo;
+          filtroObra.appendChild(opt);
+        });
+      });
+  }
+
+  function loadComentarios() {
+    comentariosMsg.textContent = 'Cargando...';
+    var params = {action:'list'};
+    var obraFilter = filtroObra.value;
+    if (obraFilter === '__general__') {
+      params.destacados = false; // will be overridden by logic
+    }
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({}, params, {resource:'comentario'}))})
+      .then(function(r){
+        comentariosData = (r.data && r.data.comentarios) || [];
+        renderComentarios();
+        comentariosMsg.textContent = comentariosData.length + ' comentarios en total';
+        loadObrasForSelect();
+      })
+      .catch(function(){ comentariosMsg.textContent = 'Error al cargar comentarios'; });
+  }
+
+  function renderComentarios() {
+    var filtered = comentariosData;
+    var obraVal = filtroObra.value;
+    if (obraVal === '__general__') {
+      filtered = filtered.filter(function(c){ return !c.obra_id; });
+    } else if (obraVal) {
+      filtered = filtered.filter(function(c){ return c.obra_id === obraVal; });
+    }
+    if (filtroDestacado.checked) {
+      filtered = filtered.filter(function(c){ return c.destacado; });
+    }
+
+    if (!filtered.length) {
+      comentariosTable.innerHTML = '';
+      comentariosEmpty.style.display = 'block';
+      return;
+    }
+    comentariosEmpty.style.display = 'none';
+
+    var html = '<table><thead><tr>' +
+      '<th>Fecha</th><th>Obra</th><th>Nombre</th><th>Comentario</th><th>Estrellas</th><th>Destacado</th><th>Fuente</th><th>Acciones</th>' +
+      '</tr></thead><tbody>';
+
+    filtered.forEach(function(c){
+      var obraName = 'General';
+      if (c.obra_id) {
+        var obra = obrasForSelect.find(function(o){ return o.id === c.obra_id; });
+        obraName = obra ? obra.titulo : c.obra_id;
+      }
+      var texto = c.texto.length > 80 ? c.texto.substring(0, 80) + '...' : c.texto;
+      html += '<tr>' +
+        '<td>' + formatDate(c.creado) + '</td>' +
+        '<td style="font-size:0.78rem">' + escHtml(obraName) + '</td>' +
+        '<td>' + escHtml(c.nombre) + '</td>' +
+        '<td style="font-size:0.82rem;max-width:250px">' + escHtml(texto) + '</td>' +
+        '<td style="color:var(--c-gold)">' + renderStars(c.estrellas) + '</td>' +
+        '<td><button class="ghost" style="font-size:0.78rem;padding:0.2em 0.6em" onclick="toggleDestacado(\'' + c.id + '\')">' + (c.destacado ? '★ Sí' : '☆ No') + '</button></td>' +
+        '<td style="font-size:0.72rem;color:var(--c-dim)">' + escHtml(c.fuente) + '</td>' +
+        '<td><button class="ghost" style="font-size:0.78rem;color:var(--c-red)" onclick="deleteComentario(\'' + c.id + '\')">Borrar</button></td>' +
+      '</tr>';
+    });
+
+    html += '</tbody></table>';
+    comentariosTable.innerHTML = html;
+  }
+
+  function escHtml(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+  // Filters
+  filtroObra.addEventListener('change', renderComentarios);
+  filtroDestacado.addEventListener('change', renderComentarios);
+
+  // Modal
+  document.getElementById('btn-add-comentario').addEventListener('click', function(){
+    modalComentario.style.display = 'flex';
+    formComentario.reset();
+  });
+  document.getElementById('btn-cancel-comentario').addEventListener('click', function(){
+    modalComentario.style.display = 'none';
+  });
+  modalComentario.addEventListener('click', function(e){
+    if (e.target === modalComentario) modalComentario.style.display = 'none';
+  });
+
+  // Save comentario (admin)
+  formComentario.addEventListener('submit', function(e){
+    e.preventDefault();
+    var fd = new FormData(formComentario);
+    var body = {
+      action: 'save',
+      nombre: fd.get('nombre'),
+      texto: fd.get('texto'),
+      obra_id: fd.get('obra_id') || null,
+      estrellas: fd.get('estrellas') ? parseInt(fd.get('estrellas')) : null,
+      destacado: fd.get('destacado') === 'on',
+      fuente: 'admin'
+    };
+
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({}, body, {resource:'comentario'}))})
+      .then(function(r){
+        if (r.data && r.data.ok) {
+          modalComentario.style.display = 'none';
+          comentariosMsg.textContent = 'Comentario agregado';
+          loadComentarios();
+        } else {
+          alert('Error: ' + (r.data && r.data.error || 'desconocido'));
+        }
+      })
+      .catch(function(){ alert('Error de conexión'); });
+  });
+
+  // Global functions for inline onclick
+  window.toggleDestacado = function(id) {
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'toggle-destacado', resource:'comentario', id: id})})
+      .then(function(r){
+        if (r.data && r.data.ok) loadComentarios();
+        else alert('Error: ' + (r.data && r.data.error || ''));
+      });
+  };
+
+  window.deleteComentario = function(id) {
+    if (!confirm('¿Eliminar este comentario?')) return;
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'delete', resource:'comentario', id: id})})
+      .then(function(r){
+        if (r.data && r.data.ok) {
+          comentariosMsg.textContent = 'Comentario eliminado';
+          loadComentarios();
+        } else {
+          alert('Error: ' + (r.data && r.data.error || ''));
+        }
+      });
+  };
 })();
 </script>
 
