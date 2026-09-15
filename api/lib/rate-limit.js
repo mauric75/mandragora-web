@@ -3,20 +3,22 @@
 
 const store = new Map();
 
-const WINDOW_MS = 60_000; // 1 minuto
-const MAX_REQUESTS = 10;   // máximo 10 por ventana
+const DEFAULT_WINDOW_MS = 60_000; // 1 minuto
+const DEFAULT_MAX_REQUESTS = 10;   // máximo 10 por ventana
 
-export function checkRateLimit(key) {
+export function checkRateLimit(key, maxRequests, windowMs) {
   const now = Date.now();
   const entry = store.get(key);
+  const window = windowMs || DEFAULT_WINDOW_MS;
+  const max = maxRequests || DEFAULT_MAX_REQUESTS;
 
-  if (!entry || now - entry.windowStart > WINDOW_MS) {
+  if (!entry || now - entry.windowStart > window) {
     store.set(key, { windowStart: now, count: 1 });
     return true;
   }
 
   entry.count++;
-  if (entry.count > MAX_REQUESTS) {
+  if (entry.count > max) {
     return false;
   }
 
@@ -25,7 +27,7 @@ export function checkRateLimit(key) {
 
 // Limpieza cada 5 minutos para evitar fugas de memoria
 setInterval(() => {
-  const cutoff = Date.now() - WINDOW_MS * 2;
+  const cutoff = Date.now() - DEFAULT_WINDOW_MS * 2;
   for (const [key, entry] of store) {
     if (entry.windowStart < cutoff) store.delete(key);
   }

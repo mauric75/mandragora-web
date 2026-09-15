@@ -904,10 +904,10 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
   }
 
   function loadComentarios(obraId, container) {
-    fetch('/api/comentarios', {
+    fetch('/api/docentes', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({action:'list', obra_id: obraId, limit: 5})
+      body: JSON.stringify({action:'list', resource:'comentario', obra_id: obraId, limit: 5})
     })
     .then(function(r){ return r.json(); })
     .then(function(data){
@@ -943,10 +943,10 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
     if (btnVerMas) {
       btnVerMas.addEventListener('click', function(){
         var offset = parseInt(this.dataset.offset);
-        fetch('/api/comentarios', {
+        fetch('/api/docentes', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({action:'list', obra_id: obraId, offset: offset, limit: 10})
+          body: JSON.stringify({action:'list', resource:'comentario', obra_id: obraId, offset: offset, limit: 10})
         })
         .then(function(r){ return r.json(); })
         .then(function(data){
@@ -1002,10 +1002,10 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
       msgEl.textContent = 'Enviando...';
       msgEl.className = 'comentario-form__msg';
 
-      fetch('/api/comentarios', {
+      fetch('/api/docentes', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({action:'save', obra_id: obraId, nombre: nombre, texto: texto, estrellas: estrellas})
+        body: JSON.stringify({action:'save', resource:'comentario', obra_id: obraId, nombre: nombre, texto: texto, estrellas: estrellas})
       })
       .then(function(r){ return r.json(); })
       .then(function(data){

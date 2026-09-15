@@ -1736,7 +1736,7 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
     if (obraFilter === '__general__') {
       params.destacados = false; // will be overridden by logic
     }
-    api('/api/comentarios', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(params)})
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({}, params, {resource:'comentario'}))})
       .then(function(r){
         comentariosData = (r.data && r.data.comentarios) || [];
         renderComentarios();
@@ -1824,7 +1824,7 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
       fuente: 'admin'
     };
 
-    api('/api/comentarios', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)})
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({}, body, {resource:'comentario'}))})
       .then(function(r){
         if (r.data && r.data.ok) {
           modalComentario.style.display = 'none';
@@ -1839,7 +1839,7 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 
   // Global functions for inline onclick
   window.toggleDestacado = function(id) {
-    api('/api/comentarios', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'toggle-destacado', id: id})})
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'toggle-destacado', resource:'comentario', id: id})})
       .then(function(r){
         if (r.data && r.data.ok) loadComentarios();
         else alert('Error: ' + (r.data && r.data.error || ''));
@@ -1848,7 +1848,7 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 
   window.deleteComentario = function(id) {
     if (!confirm('¿Eliminar este comentario?')) return;
-    api('/api/comentarios', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'delete', id: id})})
+    api('/api/docentes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'delete', resource:'comentario', id: id})})
       .then(function(r){
         if (r.data && r.data.ok) {
           comentariosMsg.textContent = 'Comentario eliminado';

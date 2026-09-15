@@ -883,10 +883,10 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
     return '<span class="opinion-card__estrellas">' + s + '</span>';
   }
 
-  fetch('/api/comentarios', {
+  fetch('/api/docentes', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({action:'list', destacados: true})
+    body: JSON.stringify({action:'list', resource:'comentario', destacados: true})
   })
   .then(function(r){ return r.json(); })
   .then(function(data){
