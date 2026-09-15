@@ -392,6 +392,54 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 
 /* footer */
 .site-footer {
+
+/* ============================================================
+   OPINIONES DESTACADAS
+   ============================================================ */
+.opiniones-section {
+  padding: 5rem var(--gutter);
+  background: var(--c-bg-soft);
+  border-top: 1px solid var(--c-border);
+}
+.opiniones-section__header { text-align: center; margin-bottom: 3rem; }
+.opiniones-section__kicker {
+  font-family: var(--f-mark); font-size: 0.68rem; letter-spacing: 0.26em;
+  text-transform: uppercase; color: var(--c-gold); margin-bottom: 1rem;
+}
+.opiniones-section__title { font-size: clamp(1.9rem, 4.2vw, 3rem); font-weight: 400; margin-bottom: 1rem; }
+.opiniones-section__sub { font-size: 1rem; color: var(--c-cream-dim); max-width: 48ch; margin: 0 auto; }
+.opiniones-grid {
+  display: grid; grid-template-columns: 1fr;
+  gap: 1.5rem; max-width: 900px; margin: 0 auto;
+}
+@media (min-width: 600px) { .opiniones-grid { grid-template-columns: 1fr 1fr; } }
+.opinion-card {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  padding: 1.8rem;
+  position: relative;
+  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.opinion-card:hover { border-color: var(--c-gold-dim); transform: translateY(-2px); }
+.opinion-card__comillas {
+  font-family: var(--f-display); font-size: 4rem; line-height: 1;
+  color: var(--c-gold-dim); position: absolute; top: 0.5rem; left: 1rem;
+}
+.opinion-card__texto {
+  font-family: var(--f-display); font-style: italic;
+  font-size: 1.05rem; line-height: 1.6; color: var(--c-cream);
+  margin-bottom: 1rem; padding-top: 1.5rem;
+}
+.opinion-card__footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+.opinion-card__autor { font-family: var(--f-mark); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-gold); }
+.opinion-card__obra { font-size: 0.75rem; color: var(--c-cream-dim); }
+.opinion-card__obra a { color: var(--c-gold); text-decoration: underline; text-underline-offset: 2px; }
+.opinion-card__estrellas { color: var(--c-gold); font-size: 0.9rem; letter-spacing: 0.1em; }
+.opiniones-vacias { text-align: center; padding: 3rem; color: var(--c-cream-dim); font-style: italic; }
+
+/* footer */
+.site-footer {
   padding: 5rem var(--gutter) 2.5rem; text-align: center;
   background: var(--c-bg); border-top: 1px solid var(--c-border);
 }
@@ -618,6 +666,17 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 
 <div id="agenda-container"></div>
 
+<section class="opiniones-section reveal" id="opiniones">
+  <div class="opiniones-section__header">
+    <p class="opiniones-section__kicker">Testimonios</p>
+    <h2 class="opiniones-section__title">Opiniones del público</h2>
+    <p class="opiniones-section__sub">Lo que dicen nuestros espectadores sobre las obras de Mandrágora.</p>
+  </div>
+  <div class="opiniones-grid" id="opiniones-grid">
+    <div class="opiniones-vacias">Cargando opiniones...</div>
+  </div>
+</section>
+
 <footer class="site-footer" id="contacto">
   <a href="index.html" aria-label="Inicio">
   <img src="assets/brand-logos/logo-negro.png" alt="Mandrágora" class="site-footer__logo site-footer__logo-light">
@@ -809,6 +868,60 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 
   function esc(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
   function escAttr(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+})();
+</script>
+
+<script>
+(function(){
+  var grid = document.getElementById('opiniones-grid');
+  if(!grid) return;
+
+  function renderStars(n) {
+    if (!n) return '';
+    var s = '';
+    for (var i = 1; i <= 5; i++) s += i <= n ? '★' : '☆';
+    return '<span class="opinion-card__estrellas">' + s + '</span>';
+  }
+
+  fetch('/api/comentarios', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({action:'list', destacados: true})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    var opiniones = data.comentarios || [];
+    if (!opiniones.length) {
+      grid.innerHTML = '<div class="opiniones-vacias">Próximamente aquí encontrarás opiniones de nuestro público.</div>';
+      return;
+    }
+
+    grid.innerHTML = opiniones.map(function(o){
+      var obraLink = o.obra_id ? '<span class="opinion-card__obra">· <a href="compania.html#obras">Ver obra</a></span>' : '';
+      return '<article class="opinion-card reveal">' +
+        '<span class="opinion-card__comillas">"</span>' +
+        '<p class="opinion-card__texto">' + esc(o.texto) + '</p>' +
+        '<div class="opinion-card__footer">' +
+          '<span class="opinion-card__autor">' + esc(o.nombre) + '</span>' +
+          (o.estrellas ? renderStars(o.estrellas) : '') +
+          obraLink +
+        '</div>' +
+      '</article>';
+    }).join('');
+
+    // Reveal animations
+    setTimeout(function(){
+      grid.querySelectorAll('.opinion-card.reveal').forEach(function(el){
+        var obs = new IntersectionObserver(function(entries){
+          entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('is-visible'); });
+        },{threshold:0.1});
+        obs.observe(el);
+      });
+    },100);
+  })
+  .catch(function(){ grid.innerHTML = '<div class="opiniones-vacias">No se pudieron cargar las opiniones.</div>'; });
+
+  function esc(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
 })();
 </script>
 <script src="/assets/js/push.js" defer></script>

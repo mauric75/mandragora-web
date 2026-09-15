@@ -382,6 +382,36 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 .obra-card__extra h4 { font-family: var(--f-mark); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--c-gold); margin: 0.6rem 0 0.2rem; }
 .obra-card__extra p { font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--c-cream-dim); }
 
+/* Comentarios de obra */
+.obra-comentarios { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--c-border); }
+.obra-comentarios__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+.obra-comentarios__title { font-family: var(--f-mark); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--c-gold); }
+.obra-comentarios__count { font-size: 0.75rem; color: var(--c-cream-dim); }
+.comentario-item { padding: 0.8rem 0; border-bottom: 1px solid var(--c-border); }
+.comentario-item:last-child { border-bottom: none; }
+.comentario-item__header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.3rem; }
+.comentario-item__nombre { font-family: var(--f-display); font-weight: 600; font-size: 0.95rem; }
+.comentario-item__fecha { font-size: 0.72rem; color: var(--c-cream-dim); }
+.comentario-item__estrellas { color: var(--c-gold); font-size: 0.85rem; letter-spacing: 0.1em; }
+.comentario-item__texto { font-size: 0.88rem; line-height: 1.5; color: var(--c-cream-dim); }
+.comentario-ver-mas { background: none; border: none; color: var(--c-gold); font-size: 0.78rem; cursor: pointer; padding: 0.3rem 0; margin-top: 0.5rem; }
+.comentario-ver-mas:hover { text-decoration: underline; }
+.obra-comentarios__form { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid var(--c-border); }
+.obra-comentarios__form h4 { font-family: var(--f-mark); font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--c-gold); margin-bottom: 0.6rem; }
+.comentario-form { display: flex; flex-direction: column; gap: 0.6rem; }
+.comentario-form input, .comentario-form textarea { font-family: var(--f-body); font-size: 0.85rem; padding: 0.6rem 0.8rem; background: var(--c-bg); border: 1px solid var(--c-border); border-radius: 4px; color: var(--c-cream); }
+.comentario-form input:focus, .comentario-form textarea:focus { outline: none; border-color: var(--c-gold-dim); }
+.comentario-form textarea { min-height: 60px; resize: vertical; }
+.comentario-form__row { display: flex; gap: 0.6rem; align-items: center; }
+.comentario-form__estrellas { display: flex; gap: 0.2rem; }
+.comentario-form__estrella { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--c-cream-faint); transition: color 0.2s; padding: 0; }
+.comentario-form__estrella.activa { color: var(--c-gold); }
+.comentario-form__estrella:hover { color: var(--c-gold-bright); }
+.comentario-form__submit { align-self: flex-end; }
+.comentario-form__msg { font-size: 0.78rem; padding: 0.3rem 0; }
+.comentario-form__msg--ok { color: var(--c-green); }
+.comentario-form__msg--error { color: #e74c3c; }
+
 /* ============================================================
    ELENCO
    ============================================================ */
@@ -859,6 +889,162 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
   var grid = document.getElementById('obras-grid');
   if(!grid) return;
 
+  function formatDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    var meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    return d.getDate() + ' ' + meses[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  function renderStars(n) {
+    if (!n) return '';
+    var s = '';
+    for (var i = 1; i <= 5; i++) s += i <= n ? '★' : '☆';
+    return '<span class="comentario-item__estrellas">' + s + '</span>';
+  }
+
+  function loadComentarios(obraId, container) {
+    fetch('/api/comentarios', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({action:'list', obra_id: obraId, limit: 5})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var comentarios = data.comentarios || [];
+      if (!comentarios.length) {
+        container.innerHTML = '<p style="font-size:0.82rem;color:var(--c-cream-dim);opacity:0.6">Sin comentarios aún. Sé el primero en opinar.</p>';
+        return;
+      }
+      renderComentarios(comentarios, container, obraId);
+    })
+    .catch(function(){ container.innerHTML = ''; });
+  }
+
+  function renderComentarios(comentarios, container, obraId) {
+    var html = comentarios.map(function(c){
+      return '<div class="comentario-item">' +
+        '<div class="comentario-item__header">' +
+          '<span class="comentario-item__nombre">' + escHtml(c.nombre) + '</span>' +
+          (c.estrellas ? renderStars(c.estrellas) : '') +
+          '<span class="comentario-item__fecha">' + formatDate(c.creado) + '</span>' +
+        '</div>' +
+        '<p class="comentario-item__texto">' + escHtml(c.texto) + '</p>' +
+      '</div>';
+    }).join('');
+
+    if (comentarios.length >= 5) {
+      html += '<button class="comentario-ver-mas" data-obra="' + escAttr(obraId) + '" data-offset="5">Ver más comentarios...</button>';
+    }
+    container.innerHTML = html;
+
+    // Evento ver más
+    var btnVerMas = container.querySelector('.comentario-ver-mas');
+    if (btnVerMas) {
+      btnVerMas.addEventListener('click', function(){
+        var offset = parseInt(this.dataset.offset);
+        fetch('/api/comentarios', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({action:'list', obra_id: obraId, offset: offset, limit: 10})
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          var nuevos = data.comentarios || [];
+          if (nuevos.length) {
+            var moreHtml = nuevos.map(function(c){
+              return '<div class="comentario-item">' +
+                '<div class="comentario-item__header">' +
+                  '<span class="comentario-item__nombre">' + escHtml(c.nombre) + '</span>' +
+                  (c.estrellas ? renderStars(c.estrellas) : '') +
+                  '<span class="comentario-item__fecha">' + formatDate(c.creado) + '</span>' +
+                '</div>' +
+                '<p class="comentario-item__texto">' + escHtml(c.texto) + '</p>' +
+              '</div>';
+            }).join('');
+            btnVerMas.insertAdjacentHTML('beforebegin', moreHtml);
+            btnVerMas.dataset.offset = offset + nuevos.length;
+            if (nuevos.length < 10) btnVerMas.remove();
+          } else {
+            btnVerMas.remove();
+          }
+        });
+      });
+    }
+  }
+
+  function initComentarioForm(form, obraId, listContainer) {
+    var estrellasInput = form.querySelector('input[name="estrellas"]');
+    var estrellasBtns = form.querySelectorAll('.comentario-form__estrella');
+    var msgEl = form.querySelector('.comentario-form__msg');
+
+    estrellasBtns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var val = parseInt(this.dataset.val);
+        estrellasInput.value = val;
+        estrellasBtns.forEach(function(b){
+          b.classList.toggle('activa', parseInt(b.dataset.val) <= val);
+        });
+      });
+    });
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var nombre = form.querySelector('input[name="nombre"]').value.trim();
+      var texto = form.querySelector('textarea[name="texto"]').value.trim();
+      var estrellas = estrellasInput.value ? parseInt(estrellasInput.value) : null;
+
+      if (!nombre || nombre.length < 2) { msgEl.textContent = 'Nombre requerido (mín. 2 caracteres)'; msgEl.className = 'comentario-form__msg comentario-form__msg--error'; return; }
+      if (!texto || texto.length < 3) { msgEl.textContent = 'Comentario requerido (mín. 3 caracteres)'; msgEl.className = 'comentario-form__msg comentario-form__msg--error'; return; }
+
+      var submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      msgEl.textContent = 'Enviando...';
+      msgEl.className = 'comentario-form__msg';
+
+      fetch('/api/comentarios', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({action:'save', obra_id: obraId, nombre: nombre, texto: texto, estrellas: estrellas})
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        submitBtn.disabled = false;
+        if (data.ok && data.comentario) {
+          msgEl.textContent = '¡Gracias por tu comentario!';
+          msgEl.className = 'comentario-form__msg comentario-form__msg--ok';
+          form.reset();
+          estrellasBtns.forEach(function(b){ b.classList.remove('activa'); });
+          estrellasInput.value = '';
+          // Prepend el nuevo comentario
+          var nuevoHtml = '<div class="comentario-item">' +
+            '<div class="comentario-item__header">' +
+              '<span class="comentario-item__nombre">' + escHtml(data.comentario.nombre) + '</span>' +
+              (data.comentario.estrellas ? renderStars(data.comentario.estrellas) : '') +
+              '<span class="comentario-item__fecha">Ahora</span>' +
+            '</div>' +
+            '<p class="comentario-item__texto">' + escHtml(data.comentario.texto) + '</p>' +
+          '</div>';
+          listContainer.insertAdjacentHTML('afterbegin', nuevoHtml);
+          // Actualizar count
+          var countEl = listContainer.closest('.obra-comentarios').querySelector('.obra-comentarios__count');
+          if (countEl) {
+            var current = parseInt(countEl.textContent) || 0;
+            countEl.textContent = (current + 1) + ' comentarios';
+          }
+        } else {
+          msgEl.textContent = data.error || 'Error al enviar';
+          msgEl.className = 'comentario-form__msg comentario-form__msg--error';
+        }
+      })
+      .catch(function(){
+        submitBtn.disabled = false;
+        msgEl.textContent = 'Error de conexión';
+        msgEl.className = 'comentario-form__msg comentario-form__msg--error';
+      });
+    });
+  }
+
   fetch('data/obras.json?t=' + Date.now(), {cache:'no-store'})
     .then(r => r.json())
     .then(obras => {
@@ -871,7 +1057,7 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
       var sinopsis = obra.sinopsis || '';
       var elenco = obra.elenco || '';
       var direccion = obra.direccion || '';
-      var tieneExtra = sinopsis || elenco || direccion;
+      var tieneExtra = true; // Siempre mostrar "+ Más info" para comentarios
 
       var card = document.createElement('article');
       card.className = 'obra-card reveal';
@@ -881,24 +1067,61 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
           '<div class="obra-card__tag">' + (labels[obra.estado] || obra.estado) + '</div>' +
           '<h3>' + escHtml(obra.titulo) + '</h3>' +
           '<p>' + escHtml(obra.descripcion || '') + '</p>' +
-          (tieneExtra ? '<button class="obra-card__toggle">+ Más info</button>' : '') +
+          '<button class="obra-card__toggle">+ Más info</button>' +
           '<div class="obra-card__extra">' +
             (sinopsis ? '<h4>Sinopsis</h4><p>' + escHtml(sinopsis) + '</p>' : '') +
             (elenco ? '<h4>Elenco</h4><p>' + escHtml(elenco) + '</p>' : '') +
             (direccion ? '<h4>Dirección</h4><p>' + escHtml(direccion) + '</p>' : '') +
             '<a href="#elenco" style="display:inline-block;margin-top:0.8rem;font-size:0.78rem;color:var(--c-gold)">Ver elenco →</a>' +
+            '<div class="obra-comentarios" data-obra-id="' + escAttr(obra.id) + '">' +
+              '<div class="obra-comentarios__header">' +
+                '<span class="obra-comentarios__title">Opiniones del público</span>' +
+                '<span class="obra-comentarios__count"></span>' +
+              '</div>' +
+              '<div class="obra-comentarios__list"></div>' +
+              '<div class="obra-comentarios__form">' +
+                '<h4>Dejá tu comentario</h4>' +
+                '<form class="comentario-form">' +
+                  '<input type="text" name="nombre" placeholder="Tu nombre" maxlength="80" required>' +
+                  '<textarea name="texto" placeholder="¿Qué te pareció la obra?" maxlength="1000" required></textarea>' +
+                  '<div class="comentario-form__row">' +
+                    '<span style="font-size:0.78rem;color:var(--c-cream-dim)">Puntuación:</span>' +
+                    '<div class="comentario-form__estrellas">' +
+                      '<button type="button" class="comentario-form__estrella" data-val="1">★</button>' +
+                      '<button type="button" class="comentario-form__estrella" data-val="2">★</button>' +
+                      '<button type="button" class="comentario-form__estrella" data-val="3">★</button>' +
+                      '<button type="button" class="comentario-form__estrella" data-val="4">★</button>' +
+                      '<button type="button" class="comentario-form__estrella" data-val="5">★</button>' +
+                    '</div>' +
+                    '<input type="hidden" name="estrellas" value="">' +
+                    '<button type="submit" class="btn btn--gold comentario-form__submit">Enviar</button>' +
+                  '</div>' +
+                  '<div class="comentario-form__msg"></div>' +
+                '</form>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
           '<div class="obra-card__meta">' + escHtml(obra.fecha_texto || '') + '</div>' +
         '</div>';
 
-      if (tieneExtra) {
-        var toggle = card.querySelector('.obra-card__toggle');
-        var extra = card.querySelector('.obra-card__extra');
-        toggle.addEventListener('click', function(){
-          var open = extra.classList.toggle('is-open');
-          toggle.textContent = open ? '− Menos info' : '+ Más info';
-        });
-      }
+      var toggle = card.querySelector('.obra-card__toggle');
+      var extra = card.querySelector('.obra-card__extra');
+      var comentariosLoaded = false;
+
+      toggle.addEventListener('click', function(){
+        var open = extra.classList.toggle('is-open');
+        toggle.textContent = open ? '− Menos info' : '+ Más info';
+        // Cargar comentarios solo la primera vez que se abre
+        if (open && !comentariosLoaded) {
+          comentariosLoaded = true;
+          var comentariosDiv = card.querySelector('.obra-comentarios');
+          var listContainer = comentariosDiv.querySelector('.obra-comentarios__list');
+          loadComentarios(obra.id, listContainer);
+          // Init form
+          var form = comentariosDiv.querySelector('.comentario-form');
+          initComentarioForm(form, obra.id, listContainer);
+        }
+      });
 
       grid.appendChild(card);
     });
