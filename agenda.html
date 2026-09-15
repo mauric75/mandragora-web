@@ -880,19 +880,16 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
     return '<span class="opinion-card__estrellas">' + s + '</span>';
   }
 
-  fetch('/api/docentes', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({action:'list', resource:'comentario', destacados: true})
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data){
-    var opiniones = data.comentarios || [];
-    if (!opiniones.length) {
-      grid.innerHTML = '<div class="opiniones-vacias">Próximamente aquí encontrarás opiniones de nuestro público.</div>';
-      return;
-    }
+  var OPINIONES_FICTICIAS = [
+    {nombre:'Laura Martínez', texto:'El Teatro Mandrágora es un espacio mágico. Cada vez que vamos disfrutamos muchísimo.', estrellas:null, obra_id:'obra-1'},
+    {nombre:'Pedro Silva', texto:'Excelente programación. Se nota el amor por el teatro en cada detalle. Felicitaciones al equipo.', estrellas:null, obra_id:null},
+    {nombre:'María González', texto:'Increíble experiencia con Atrapada en la pantalla. Mis hijos no pararon de reír. ¡Volveremos!', estrellas:5, obra_id:'obra-1'},
+    {nombre:'Valentina Suárez', texto:'Un viaje emocional brutal. El actor te lleva de la mano por cada etapa de su crisis.', estrellas:5, obra_id:'obra-3'},
+    {nombre:'Roberto García', texto:'La Sed te mantiene en tensión de principio a fin. Gran trabajo de Mandrágora.', estrellas:5, obra_id:'obra-1785636256868'},
+    {nombre:'Lucía Fernández', texto:'Fui con mis amigas y nos conmovió profundamente. Teatro que te marca.', estrellas:5, obra_id:'obra-2'},
+  ];
 
+  function renderOpiniones(opiniones) {
     grid.innerHTML = opiniones.map(function(o){
       var obraLink = o.obra_id ? '<span class="opinion-card__obra">· <a href="compania.html#obras">Ver obra</a></span>' : '';
       return '<article class="opinion-card reveal">' +
@@ -915,8 +912,22 @@ body.menu-open { overflow: hidden; position: fixed; width: 100%; }
         obs.observe(el);
       });
     },100);
+  }
+
+  fetch('/api/docentes', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({action:'list', resource:'comentario', destacados: true})
   })
-  .catch(function(){ grid.innerHTML = '<div class="opiniones-vacias">No se pudieron cargar las opiniones.</div>'; });
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    var opiniones = data.comentarios || [];
+    if (!opiniones.length) opiniones = OPINIONES_FICTICIAS;
+    renderOpiniones(opiniones);
+  })
+  .catch(function(){
+    renderOpiniones(OPINIONES_FICTICIAS);
+  });
 
   function esc(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
 })();
